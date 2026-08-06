@@ -8,6 +8,13 @@
       "when": 1786026323204,
       "tag": "0000_round_giant_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786032468038,
+      "tag": "0001_lowly_bug",
+      "breakpoints": true
     }
   ]
 }
