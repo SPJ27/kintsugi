@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@better-auth/infra": "^0.3.7",
+    "@neondatabase/serverless": "^1.1.0",
     "better-auth": "^1.6.25",
     "drizzle-orm": "^0.45.2",
     "next": "16.2.12",
@@ -20,7 +21,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/pg": "^8.20.0",
+    "@types/pg": "^8.20.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
