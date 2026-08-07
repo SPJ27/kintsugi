@@ -11,7 +11,7 @@ export const auth = betterAuth({
     schema,
   }),
 
-  baseURL: "http://localhost:3000",
+  baseURL: process.env.BASE_URL,
 
   user: {
     additionalFields: {
@@ -21,6 +21,17 @@ export const auth = betterAuth({
       slackId: {
         type: "string",
       },
+      pots: {
+        type: "number",
+        defaultValue: 0,
+      },
+      role: {
+        type: "string[]",
+        defaultValue: ["member"],
+      },
+      hackatimeLinked: {
+        type: "boolean"
+      }
     },
   },
 

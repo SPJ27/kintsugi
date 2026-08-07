@@ -15,7 +15,8 @@ export const user = pgTable("user", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
-  role: text("roles").array().default(['member']).notNull()
+  role: text("roles").array().default(["member"]).notNull(),
+  hackatimeLinked: boolean('hackatime_linked').default(false)
 });
 
 export const logs = pgTable(
@@ -29,9 +30,9 @@ export const logs = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    type: text("type").notNull(), 
-    potsAwarded: integer("pots_awarded").default(0), 
-    metadata: text("metadata"), 
+    type: text("type").notNull(),
+    potsAwarded: integer("pots_awarded").default(0),
+    metadata: text("metadata"),
   },
   (table) => [index("logs_userId_idx").on(table.userId)],
 );
@@ -119,6 +120,5 @@ export const logsRelations = relations(logs, ({ one }) => ({
   user: one(user, {
     fields: [logs.userId],
     references: [user.id],
-    relationName: "userLogs",
   }),
 }));
