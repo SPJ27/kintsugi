@@ -1,2 +1,26 @@
 @import "tailwindcss";
 
+.notebook{
+  position: fixed;
+  inset: 0;
+  background-image: repeating-linear-gradient(transparent 0px,
+transparent 31px,
+rgba(200,160,60,.25) 31px,
+rgba(200,160,60,.25) 32px);
+}
+
+.paper-noise{
+  position: absolute;
+  inset: 0;
+  background-image: url('/images/paper-noise.png');
+  opacity: .05;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.coffee-ring{
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(130, 80, 25, .18);
+  pointer-events: none;
+}
