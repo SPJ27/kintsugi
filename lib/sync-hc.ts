@@ -1,5 +1,6 @@
 import { db } from "@/db";
-import { user, account } from "@/db/schema";
+import { user, account, logs } from "@/db/schema";
+import { randomUUID } from "crypto";
 import { eq, and } from "drizzle-orm";
 
 export async function syncHackClubUser(userId: string) {
@@ -30,4 +31,15 @@ export async function syncHackClubUser(userId: string) {
       slackId: profile.slack_id,
     })
     .where(eq(user.id, userId));
+
+  await db.insert(logs).values({
+    id: randomUUID(),
+    title: 'User Log In',
+    description: 'User Logged In',
+    location: '/',
+    userId: userId,
+    type: 'auth',
+    metadata: `userId: ${ userId}`,
+
+  })
 }

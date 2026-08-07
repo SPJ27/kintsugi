@@ -15,6 +15,27 @@
       "when": 1786032468038,
       "tag": "0001_lowly_bug",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786093558543,
+      "tag": "0002_mighty_lethal_legion",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786093787200,
+      "tag": "0003_harsh_bushwacker",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786094022984,
+      "tag": "0004_short_mongoose",
+      "breakpoints": true
     }
   ]
 }

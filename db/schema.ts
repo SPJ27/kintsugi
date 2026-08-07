@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, integer } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -10,11 +10,31 @@ export const user = pgTable("user", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   verificationStatus: text("verification_status"),
   slackId: text("slack_id"),
+  pots: integer("pots").default(0).notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  role: text("roles").array().default(['member']).notNull()
 });
+
+export const logs = pgTable(
+  "logs",
+  {
+    id: text("id").primaryKey(),
+    title: text("title").notNull(),
+    description: text("description").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    location: text("location").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    type: text("type").notNull(), 
+    potsAwarded: integer("pots_awarded").default(0), 
+    metadata: text("metadata"), 
+  },
+  (table) => [index("logs_userId_idx").on(table.userId)],
+);
 
 export const session = pgTable(
   "session",
@@ -78,6 +98,7 @@ export const verification = pgTable(
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  logs: many(logs),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -91,5 +112,13 @@ export const accountRelations = relations(account, ({ one }) => ({
   user: one(user, {
     fields: [account.userId],
     references: [user.id],
+  }),
+}));
+
+export const logsRelations = relations(logs, ({ one }) => ({
+  user: one(user, {
+    fields: [logs.userId],
+    references: [user.id],
+    relationName: "userLogs",
   }),
 }));

@@ -1,0 +1,1 @@
+ALTER TABLE "logs" ALTER COLUMN "pots_awarded" DROP NOT NULL;
