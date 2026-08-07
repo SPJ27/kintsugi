@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { user, account, logs } from "@/db/schema";
 import { randomUUID } from "crypto";
 import { eq, and } from "drizzle-orm";
+import { addLog } from "./db/logs";
 
 export async function syncHackClubUser(userId: string) {
   const hackclubAccount = await db.query.account.findFirst({
@@ -12,7 +13,7 @@ export async function syncHackClubUser(userId: string) {
   });
 
   if (!hackclubAccount?.accessToken) return;
-
+  console.log(hackclubAccount.accessToken)
   const response = await fetch(
     "https://auth.hackclub.com/oauth/userinfo",
     {
@@ -22,7 +23,9 @@ export async function syncHackClubUser(userId: string) {
     }
   );
 
+  console.log(response)
   const profile = await response.json();
+  console.log('here2')
 
   await db
     .update(user)
@@ -32,14 +35,11 @@ export async function syncHackClubUser(userId: string) {
     })
     .where(eq(user.id, userId));
 
-  await db.insert(logs).values({
-    id: randomUUID(),
-    title: 'User Log In',
+  await addLog({
+    title: 'User Login',
     description: 'User Logged In',
     location: '/',
-    userId: userId,
-    type: 'auth',
-    metadata: `userId: ${ userId}`,
-
+    type: 'Auth',
+    metadata: ''
   })
 }

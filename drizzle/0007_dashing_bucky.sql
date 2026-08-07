@@ -1,0 +1,1 @@
+ALTER TABLE "user" ADD COLUMN "hackatime_linked" boolean DEFAULT false;
