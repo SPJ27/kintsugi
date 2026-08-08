@@ -2,6 +2,7 @@ import Doodle from "../Doodles";
 import CoffeRing from "./CoffeeRing";
 import FloatingCards from "./FloatingCards";
 import FloatingLayer from "./FloatingLayer";
+import LeftBar from "./LeftBar";
 import NoteBookLines from "./NotebookLines";
 import PaperNoise from "./PaperNoise";
 
@@ -21,6 +22,7 @@ size={90}
         <FloatingLayer />
         <Doodle />
         <FloatingCards />
+        <LeftBar />
         </div>
     )
 }

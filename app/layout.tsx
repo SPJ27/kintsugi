@@ -11,12 +11,9 @@ export default function RootLayout({
   return (
     <html lang="en" >
       <body
-        className={`relative flex flex-col min-h-screen antialiased nb  `}
-
-      >
+        className={`relative flex flex-col min-h-screen antialiased nb  `}>
         <Background />
-              <Navbar />
-
+        <Navbar />
         <main className="flex-1">{children}</main>
       </body>
     </html>
