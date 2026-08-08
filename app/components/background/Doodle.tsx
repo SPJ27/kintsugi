@@ -1,4 +1,5 @@
-import Doodles from "./background/Doodles";
+import Doodles from "./Doodles"
+
 const icons = [
     'star.svg',
     'random-doodle.svg',
