@@ -2,8 +2,8 @@
 import { authClient } from "@/lib/auth-client";
 
 const page = () => {
-  const {data: session, isPending, error} = authClient.useSession()
-  console.log(session)
+  const { data: session, isPending, error } = authClient.useSession();
+  console.log(session?.user)
   return (
     // <div>
     //   {isPending && <h1>Loading...</h1>}
