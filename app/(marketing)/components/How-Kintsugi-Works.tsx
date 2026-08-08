@@ -38,7 +38,7 @@ export default function HowKintsugiWorks(){
     return(
         <div className="flex flex-col gap-4 min-h-screen">
             <div className="flex gap-2 flex-col items-center w-full">
-                <h1 className={`${kalam.className} text-[#2a1a08] text-4xl font-bold`}>How KINTUSUGI Works?</h1>
+                <h1 className={`${kalam.className} text-[#2a1a08] text-4xl font-bold`}>How KINTSUGI Works?</h1>
                 <p className={`text-lg ${kalam.className} text-[#ac9453]`}>Break it. Fix it. Ship it.</p>
             </div>
             <div className="flex gap-4 mt-26 justify-around items-center">
