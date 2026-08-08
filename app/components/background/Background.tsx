@@ -1,6 +1,6 @@
+import Doodle from "../Doodles";
 import CoffeRing from "./CoffeeRing";
-import Doodles from "./Doodles";
-import FloatingLines from "./FloatingLines";
+import FloatingLayer from "./FloatingLayer";
 import NoteBookLines from "./NotebookLines";
 import PaperNoise from "./PaperNoise";
 
@@ -17,8 +17,8 @@ rotate={-12}
 
 size={90}
  />
-        <FloatingLines />
-        <Doodles />
+        <FloatingLayer />
+        <Doodle />
         </div>
     )
 }

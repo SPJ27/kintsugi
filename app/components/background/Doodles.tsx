@@ -1,3 +1,4 @@
+import Image from "next/image";
 
 interface DoodleProps {
     src: string;
@@ -17,19 +18,21 @@ export default function Doodles({
     bottom,
     size = 32,
     rotation = 0,
-    opacity = 0.15,
+    opacity = 0.06,
+
 }: DoodleProps) {
     return (
-        <img
+        <Image
             src={src}
             alt=""
+            width={size}
+            height={size}
             className="absolute pointer-events-none select-none"
             style={{
                 top,
                 left,
                 right,
                 bottom,
-                width: size,
                 opacity,
                 transform: `rotate(${rotation}deg)`,
             }}
