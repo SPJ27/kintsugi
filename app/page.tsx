@@ -38,15 +38,13 @@ const Page = () => {
         </button>
       )}
 
-      {session && !session.user.hackatimeLinked && (
+      {session && (
         <a href="/api/hackatime/connect">
           <button>Link Hackatime</button>
         </a>
       )}
 
-      {session && session.user.hackatimeLinked && (
-        <p>Hackatime Already Linked</p>
-      )}
+    
     </div>
   );
 };
