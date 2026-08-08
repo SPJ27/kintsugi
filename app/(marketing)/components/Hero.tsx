@@ -6,8 +6,8 @@ const kalam = Kalam({
     weight: ["300", "400", "700"]
 })
 const rubiks_Wet_Paint = Rubik_Wet_Paint({
-    subsets: ['latin'],
-    weight: "400"
+    subsets : ['latin'],
+    weight : "400"
 })
 export default function Hero() {
 
@@ -61,11 +61,11 @@ export default function Hero() {
 
                         </div>
                     </div>
-                    <div className="absolute left-60  top-20">
-                        <div className="w-60 h-60 relative rotate-24" >
-                            <Image src={"/images/hero-star.svg"} alt="hero-star" className="absolute" fill />
-                        </div>
-                    </div>
+                                    <div className="absolute left-60  top-20">
+                <div className="w-60 h-60 relative rotate-24" >
+                    <Image src={"/images/hero-star.svg"} alt="hero-star" className="absolute" fill />
+                </div>
+                </div>
                 </div>
 
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pt-24">
