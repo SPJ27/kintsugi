@@ -36,7 +36,7 @@ export default function PotTiers() {
             icon: "✦",
             image: "/pots/golden.png",
             title: "1 Gold Pots",
-            description: "Well made ProjectGood storytelling and visible efforts Something which blows up our socks.Not just basic webpage.",
+            description: "Well made Project Good storytelling and visible efforts Something which blows up our socks.Not just basic webpage.",
             tags: "Full Stack"
         },
         {
@@ -51,7 +51,7 @@ export default function PotTiers() {
             id: 6,
             image: "/images/event-ticket.png",
             title: "Hackathon Ticket ✈️",
-            description: "Work on a general project for 50 hours The rarest Tier.金継ぎ master..",
+            description: "Work on a general project for 50 hours The rarest Tier. 金継ぎ master..",
             tags: "50hrs. ELITE HACKATHON",
         },
     ]
@@ -64,7 +64,7 @@ export default function PotTiers() {
             </div>
             <div className="grid grid-cols-2 gap-12 place-items-center justify-center ">
                 {Cards.map((card) => (
-                    <div key={card.id} className="col-span-1 w-180 h-70 rounded-4xl  bg-[#2A1A08] px-6 py-6 justify-between border-4 border-[#c9a030] border-dashed flex flex-col gap-2 cursor-grab transition-all duration-300 hover:scale-102 hover:shadow-[3px_8px_0_rgba(26,18,9,0.18)]  hover:-translate-y-2">
+                    <div key={card.id} className="col-span-1 w-160 h-70 rounded-4xl  bg-[#2A1A08] px-6 py-6 justify-between border-4 border-[#c9a030] border-dashed flex flex-col gap-2 cursor-grab transition-all duration-300 hover:scale-102 hover:shadow-[3px_8px_0_rgba(26,18,9,0.18)]  hover:-translate-y-2">
                         <div className="select-none">
                            <Image src={card.image} alt={card.title} width={120} height={120} /> 
                         </div>
