@@ -10,7 +10,7 @@ export default function PreviousHackathon() {
             <div className="bg-[#2A1A08]  py-24 flex gap-4 justify-center border-4 border-dashed border-[#c9a030] w-full mx-8 px-6 rounded-4xl group-hover:scale-102 cursor-grab transition-all duration-300">
                 <div className="flex justify-between flex-col gap-4">
                     <div className="text-3xl font-bold text-[#c9a030] ">
-                        This december,110+ hackclubbers from every corner will code and fix in japan for a 4 day long patchy hackathon
+                        This december,110+ hackclubbers from every corner will code and fix in japan for a 5 day long patchy hackathon
                     </div>
                     <div className="text-2xl text-[#F5E4B0] font-light">
                         This hackathon will be organised by <span className="underline decoration-2 underline-offset-4 decoration-dashed text-[#c9a030]">Hack Club</span>, A US bases 501(c)(3) nonprofit and network of 100,000 teens across the world.
