@@ -10,7 +10,7 @@ export default function PotTiers() {
         {
             id: 1,
             icon: "✦",
-            image: "/pots/gold-pot.png",
+            image: "/pots/silver.png",
             title: "1 Silver Pots",
             description: "Work on a real problem for 10+ hours.. Log em properly.Commit regularly.",
             tags: "10hrs"
@@ -18,7 +18,7 @@ export default function PotTiers() {
         {
             id: 2,
             icon: "✦",
-            image: '/pots/gold-pot.png',
+            image: '/pots/bronze.png',
             title: "1 Bronze Pots",
             description: "Work on a general project for any amount of hours. Get one pot for each hour you code.",
             tags: "general"
@@ -26,7 +26,7 @@ export default function PotTiers() {
         {
             id: 3,
             icon: "✦✦",
-            image: "/pots/gold-pot.png",
+            image: "/pots/silver.png",
             title: "2 Silver Pots",
             description: "People actually use it. HC Staff and community really like it.Solves it for many not just you.",
             tags: "Community loved"
@@ -34,7 +34,7 @@ export default function PotTiers() {
         {
             id: 4,
             icon: "✦",
-            image: "/pots/gold-pot.png",
+            image: "/pots/golden.png",
             title: "1 Gold Pots",
             description: "Well made ProjectGood storytelling and visible efforts Something which blows up our socks.Not just basic webpage.",
             tags: "Full Stack"
@@ -42,7 +42,7 @@ export default function PotTiers() {
         {
             id: 5,
             icon: "✦✦✦",
-            image: "/pots/gold-pot.png",
+            image: "/pots/silver.png",
             title: "3 Silver Pots",
             description: "30+ logged hours, Qualifies previous silver tiers.",
             tags: "30 hrs grind",
@@ -64,8 +64,8 @@ export default function PotTiers() {
             </div>
             <div className="grid grid-cols-2 gap-12 place-items-center justify-center ">
                 {Cards.map((card) => (
-                    <div key={card.id} className="col-span-1 w-180 h-70 rounded-4xl  bg-[#2A1A08] px-6 py-6 justify-between border-4 border-[#c9a030] border-dashed flex flex-col gap-2">
-                        <div className="">
+                    <div key={card.id} className="col-span-1 w-180 h-70 rounded-4xl  bg-[#2A1A08] px-6 py-6 justify-between border-4 border-[#c9a030] border-dashed flex flex-col gap-2 cursor-grab transition-all duration-300 hover:scale-102 hover:shadow-[3px_8px_0_rgba(26,18,9,0.18)]  hover:-translate-y-2">
+                        <div className="select-none">
                            <Image src={card.image} alt={card.title} width={120} height={120} /> 
                         </div>
                         <div className={`flex gap-2 text-[#F5E4B0] font-medium text-2xl ${kalam.className}`}>
