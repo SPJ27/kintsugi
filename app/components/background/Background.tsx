@@ -1,4 +1,4 @@
-import Doodle from "../Doodles";
+import Doodle from "./Doodle";
 import CoffeRing from "./CoffeeRing";
 import FloatingCards from "./FloatingCards";
 import FloatingLayer from "./FloatingLayer";
@@ -10,7 +10,7 @@ export default function (){
     return(
         <div className="fixed inset-0 -z-50 overflow-hidden bg-[#fdf0c2]">
         <PaperNoise />
-        <NoteBookLines />
+        {/* <NoteBookLines /> */}
         <CoffeRing bottom="15%"
 
 right="5%"

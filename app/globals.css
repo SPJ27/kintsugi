@@ -4,6 +4,7 @@
   --font-caveat: "Caveat", cursive;
 }
 
+
 .notebook{
   position: fixed;
   inset: 0;
@@ -12,6 +13,8 @@ transparent 31px,
 rgba(200,160,60,.25) 31px,
 rgba(200,160,60,.25) 32px);
 }
+
+
 
 .paper-noise{
   position: absolute;
