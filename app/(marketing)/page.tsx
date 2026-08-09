@@ -28,14 +28,14 @@ export default function homePage(){
 //     // <div>
 //     //   {isPending && <h1>Loading...</h1>}
 //     //   {session && <h1>{session.user.name}</h1>}
-//     //   {!session && !isPending && <button
-//     //     onClick={async () => {
-//     //       await authClient.signIn.oauth2({
-//     //         providerId: "hackclub",
-//     //         callbackURL: "/auth/callback",
-//     //       });
-//     //     }}
-//     //   >
+    //   {!session && !isPending && <button
+    //     onClick={async () => {
+    //       await authClient.signIn.oauth2({
+    //         providerId: "hackclub",
+    //         callbackURL: "/auth/callback",
+    //       });
+    //     }}
+    //   >
 //     //     Login
 //     //   </button>}
 //     //   {session && !isPending && <button
