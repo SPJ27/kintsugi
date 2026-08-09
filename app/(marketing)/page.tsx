@@ -3,6 +3,7 @@ import Hero from "./components/Hero";
 import HowKintsugiWorks from "./components/How-Kintsugi-Works";
 import PotTiers from "./components/Pot-tiers";
 import PreviousHackathon from "./components/PreviousHackathon";
+import SignUpSection from "./components/SignUpSection";
 
 export default function homePage(){
     return(
@@ -12,6 +13,7 @@ export default function homePage(){
         <PotTiers />
         <PreviousHackathon />
         <GotQuestions />
+        <SignUpSection />
     </ main>
     )
 }
@@ -26,14 +28,14 @@ export default function homePage(){
 //     // <div>
 //     //   {isPending && <h1>Loading...</h1>}
 //     //   {session && <h1>{session.user.name}</h1>}
-//     //   {!session && !isPending && <button
-//     //     onClick={async () => {
-//     //       await authClient.signIn.oauth2({
-//     //         providerId: "hackclub",
-//     //         callbackURL: "/auth/callback",
-//     //       });
-//     //     }}
-//     //   >
+    //   {!session && !isPending && <button
+    //     onClick={async () => {
+    //       await authClient.signIn.oauth2({
+    //         providerId: "hackclub",
+    //         callbackURL: "/auth/callback",
+    //       });
+    //     }}
+    //   >
 //     //     Login
 //     //   </button>}
 //     //   {session && !isPending && <button
