@@ -4,12 +4,13 @@ import { randomUUID } from "crypto";
 import { auth } from "../auth";
 import { headers } from "next/headers";
 
-interface addLog {
+interface newLog {
   title: string;
   description: string;
   location: string;
   type: string;
   metadata: string;
+  userId: string
 }
 
 export async function addLog({
@@ -18,16 +19,8 @@ export async function addLog({
   location,
   type,
   metadata='',
-}: addLog) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-
-  const userId = session.user.id;
+  userId
+}: newLog) {
 
   await db.insert(logs).values({
     id: randomUUID(),

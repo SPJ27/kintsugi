@@ -40,6 +40,7 @@ export async function syncHackClubUser(userId: string) {
     description: 'User Logged In',
     location: '/',
     type: 'Auth',
-    metadata: ''
+    metadata: '',
+    userId
   })
 }

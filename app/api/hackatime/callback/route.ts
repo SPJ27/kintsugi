@@ -61,6 +61,7 @@ export async function GET(req: NextRequest) {
     location: "/hackatime/callback",
     type: "auth",
     metadata: "",
+    userId: session.user.id
   });
 
   return NextResponse.redirect(new URL("/", req.url));
