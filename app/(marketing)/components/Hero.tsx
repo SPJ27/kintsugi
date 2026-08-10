@@ -13,6 +13,8 @@ const rubiks_Wet_Paint = Rubik_Wet_Paint({
     weight: "400"
 })
 export default function Hero() {
+    const authDisabled = process.env.NEXT_PUBLIC_AUTH_DISABLED === "true";
+
     const { data: session, isPending, error } = authClient.useSession();
     return (
         <div className="flex  flex-col gap-4  relative min-h-screen justify-center items-center text-center ">
@@ -84,7 +86,7 @@ export default function Hero() {
             </div>
             <div className="w-215 -translate-y-12 relative items-center text-center flex border-2 py-6 px-6 gap-4 border-dashed bg-[#2a1a08] border-[#c9a030] shadow-[3px_5px_0_rgba(26,18,9,0.18)] rounded-2xl" >
                 <div className="absolute left-80 -rotate-2 pointer-events-none -top-4 z-2 border-1 w-30 h-8 border-[#d2b432] bg-[#FFF4968A]" />
-                {!session && !isPending && (
+                {!session && !isPending && !authDisabled && (
                     <>
                         <input type="text" required placeholder="enter your email..." className={`bg-[#3a3128] border-[1px] rounded-xl px-4 py-4 items-center justify-center text-[#f5e4b0]  outline-none text-xl font-light ${kalam.className} w-full`} />
 
@@ -107,7 +109,11 @@ export default function Hero() {
                         Open Dashboard
                     </Link>
                 )}
-
+                {!session && !isPending && authDisabled && (
+                    <p className={`${kalam.className} text-[#F5E4B0] text-lg flex justify-center items-center w-full`}>
+                        Sign-ins are temporarily closed. Please check back soon.
+                    </p>
+                )}
                 <div className="w-[1.5px] -bottom-8 left-100 absolute h-[22px] bg-[#d4a017] -translate-y-2">
                     <div className="block w-[5px] h-[5px] rounded-full bg-[#d4a017] m-auto translate-y-[21px]" />
                 </div>
