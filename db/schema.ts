@@ -8,6 +8,7 @@ export const user = pgTable("user", {
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  slug : text('slug').unique(),
   verificationStatus: text("verification_status"),
   slackId: text("slack_id"),
   pots: integer("pots").default(0).notNull(),

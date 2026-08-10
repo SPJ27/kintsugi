@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, string } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { genericOAuth } from "better-auth/plugins";
 
@@ -33,6 +33,9 @@ export const auth = betterAuth({
         type: "boolean",
         defaultValue: false,
 
+      },
+      slug : {
+        type : "string",
       }
     },
   },
