@@ -64,6 +64,13 @@
       "when": 1786188181104,
       "tag": "0008_fancy_princess_powerful",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1786349956830,
+      "tag": "0009_dazzling_true_believers",
+      "breakpoints": true
     }
   ]
 }

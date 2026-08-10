@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed:admin": "bun --env-file=.env tsx scripts/seed-admin.ts"
   },
   "dependencies": {
     "@better-auth/infra": "^0.3.7",
@@ -19,7 +20,8 @@
     "next": "16.2.12",
     "pg": "^8.22.0",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "sonner": "^2.0.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

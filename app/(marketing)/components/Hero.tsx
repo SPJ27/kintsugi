@@ -3,6 +3,7 @@ import { authClient } from "@/lib/auth-client";
 import { MoveRight } from "lucide-react";
 import { Kalam, Rubik_Wet_Paint } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 const kalam = Kalam({
     subsets: ['latin'],
     weight: ["300", "400", "700"]
@@ -83,23 +84,30 @@ export default function Hero() {
             </div>
             <div className="w-215 -translate-y-12 relative items-center text-center flex border-2 py-6 px-6 gap-4 border-dashed bg-[#2a1a08] border-[#c9a030] shadow-[3px_5px_0_rgba(26,18,9,0.18)] rounded-2xl" >
                 <div className="absolute left-80 -rotate-2 pointer-events-none -top-4 z-2 border-1 w-30 h-8 border-[#d2b432] bg-[#FFF4968A]" />
-                <input type="text" required placeholder="enter your email..." className={`bg-[#3a3128] border-[1px] rounded-xl px-4 py-4 items-center justify-center text-[#f5e4b0]  outline-none text-xl font-light ${kalam.className} w-full`} />
-
                 {!session && !isPending && (
-                    <button
-                        onClick={async () => {
-                            await authClient.signIn.oauth2({
-                                providerId: "hackclub",
-                                callbackURL: "/auth/callback",
-                            });
-                        }} className={`${kalam.className} text-center items-center justify-center flex gap-2 text-[#2a1a08] cursor-pointer hover:-translate-y-1 transition-all duration-300 ease-in border-[2px] border-[#1a1209] bg-[#e8dfa0] h-full py-4 px-4 rounded-xl text-lg`}>
-                        <span>Start</span>
-                        <span>
-                            <MoveRight size={24} strokeWidth={1} />
-                        </span>
-                    </button>
+                    <>
+                        <input type="text" required placeholder="enter your email..." className={`bg-[#3a3128] border-[1px] rounded-xl px-4 py-4 items-center justify-center text-[#f5e4b0]  outline-none text-xl font-light ${kalam.className} w-full`} />
+
+                        <button
+                            onClick={async () => {
+                                await authClient.signIn.oauth2({
+                                    providerId: "hackclub",
+                                    callbackURL: "/auth/callback",
+                                });
+                            }} className={`${kalam.className} text-center items-center justify-center flex gap-2 text-[#2a1a08] cursor-pointer hover:-translate-y-1 transition-all duration-300 ease-in border-[2px] border-[#1a1209] bg-[#e8dfa0] h-full py-4 px-4 rounded-xl text-lg`}>
+                            <span>Start</span>
+                            <span>
+                                <MoveRight size={24} strokeWidth={1} />
+                            </span>
+                        </button>
+                    </>
                 )}
-                
+                {session && !isPending && (
+                    <Link className={`${kalam.className} w-full text-3xl py-2 font-semibold uppercase rounded-2xl border-4 border-dashed border-[#1a1209] text-center items-center justify-center flex gap-2 text-[#2a1a08] bg-[#e8dfa0] `} href={'/user'}>
+                        Open Dashboard
+                    </Link>
+                )}
+
                 <div className="w-[1.5px] -bottom-8 left-100 absolute h-[22px] bg-[#d4a017] -translate-y-2">
                     <div className="block w-[5px] h-[5px] rounded-full bg-[#d4a017] m-auto translate-y-[21px]" />
                 </div>

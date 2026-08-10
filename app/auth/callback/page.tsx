@@ -13,5 +13,5 @@ export default async function CallbackPage() {
   
   await syncHackClubUser(session.user.id);
 
-  redirect("/");
+  redirect("/user");
 }

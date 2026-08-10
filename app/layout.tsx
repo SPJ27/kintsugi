@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navbar from "./components/Layout/Navbar";
 import Background from "./components/background/Background";
+import { Toaster } from "sonner";
 
 
 export default function RootLayout({
@@ -14,6 +15,7 @@ export default function RootLayout({
         className={`relative flex flex-col min-h-screen antialiased nb  `}>
         <Background />
         <main className="flex-1">{children}</main>
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );
