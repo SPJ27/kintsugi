@@ -7,7 +7,7 @@ const kalam = Kalam({
 export default function PreviousHackathon() {
     return (
         <div className={`flex relative group min-h-[60vh] my-16 justify-center ${kalam.className} `}>
-            <div className="bg-[#2A1A08]  py-24 flex gap-4 justify-center border-4 border-dashed border-[#c9a030] w-full mx-8 px-6 rounded-4xl group-hover:scale-102 cursor-grab transition-all duration-300">
+            <div className="bg-[#2A1A08] items-center gap-8  py-24 lg:flex lg:flex-row flex-col  justify-center border-4 border-dashed border-[#c9a030] w-full mx-8 px-6 rounded-4xl group-hover:scale-102 cursor-grab transition-all duration-300">
                 <div className="flex justify-between flex-col gap-4">
                     <div className="text-3xl font-bold text-[#c9a030] ">
                         This december,110+ hackclubbers from every corner will code and fix in japan for a 5 day long patchy hackathon
@@ -22,12 +22,12 @@ export default function PreviousHackathon() {
                         Photos from a hc hackathon held in Singapore
                     </div>
                 </div>
-                <div className="bg-[#F5E4B0] py-5 px-5 rotate-6">
-                    <div className="w-160 select-none h-100 relative">
+                <div className="bg-[#F5E4B0] py-5 w-fit h-fit px-5 rotate-6 justify-center items-center">
+                    <div className="xl:w-160 w-120 h-80 select-none  xl:h-100 relative">
                         <Image src={'/images/hc1.webp'} alt="hc-event" className="absolute" fill />
 
                     </div>
-                              <div className="absolute right-70  pointer-events-none z-2 border-1 w-20 h-8 -rotate-4 -top-5 border-[#d2b432] bg-[#FFF4968A]" />
+                    <div className="absolute right-70  pointer-events-none z-2 border-1 w-20 h-8 -rotate-4 -top-5 border-[#d2b432] bg-[#FFF4968A]" />
 
                 </div>
             </div>
