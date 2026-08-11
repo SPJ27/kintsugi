@@ -36,21 +36,21 @@ export default function HowKintsugiWorks() {
         }
     ]
     return (
-        <div className="flex flex-col gap-4 min-h-screen">
+        <div className="flex flex-col gap-4 min-h-screen py-8 sm:py-12">
             <div className="flex gap-2 flex-col items-center w-full">
-                <h1 className={`${kalam.className} text-[#2a1a08] text-4xl font-bold`}>How KINTSUGI Works?</h1>
-                <p className={`text-lg ${kalam.className} text-[#ac9453]`}>Break it. Fix it. Ship it.</p>
+                <h1 className={`${kalam.className} text-[#2a1a08] text-3xl sm:text-4xl font-bold`}>How KINTSUGI Works?</h1>
+                <p className={`text-base sm:text-lg ${kalam.className} text-[#ac9453]`}>Break it. Fix it. Ship it.</p>
             </div>
-            <div className="flex gap-4 mt-20 justify-around items-center">
+            <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4 w-full">
                 {Cards.map((card) => (
-                    <div key={card.id} className="w-80 cursor-grab px-6 items-center justify-between py-12 border-4 border-dashed rounded-3xl h-120 bg-[#2a1a08] border-[#c9a030] transition-all duration-300  hover:shadow-[8px_10px_0_rgba(26,18,9,0.18)] hover:-rotate-2 hover:-translate-y-2">
+                    <div key={card.id} className="w-full max-w-sm mx-auto cursor-grab px-6 py-10 border-4 border-dashed rounded-3xl min-h-[280px] bg-[#2a1a08] border-[#c9a030] transition-all duration-300 hover:shadow-[8px_10px_0_rgba(26,18,9,0.18)] hover:-rotate-2 hover:-translate-y-2">
                         <div className={`${kalam.className} flex justify-between h-full flex-col gap-4 text-[#FDF0C2]`}>
-                            <div className="flex gap-2 text-4xl">
+                            <div className="flex gap-2 text-3xl sm:text-4xl">
                                 <div>{card.icon}</div>
                                 <div>{card.title}</div>
                             </div>
-                            <div className="text-2xl font-light">{card.description}</div>
-                            <div className="text-lg bg-[#3d2A08] w-fit px-2 py-2 rounded-full text-[#c9a030]">{card.tag}</div>
+                            <div className="text-lg sm:text-2xl font-light">{card.description}</div>
+                            <div className="text-base sm:text-lg bg-[#3d2A08] w-fit px-2 py-2 rounded-full text-[#c9a030]">{card.tag}</div>
                         </div>
                     </div>
                 ))}

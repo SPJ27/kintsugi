@@ -7,7 +7,7 @@ import SignUpSection from "./components/SignUpSection";
 
 export default function homePage(){
     return(
-    <main className="mx-12">
+    <main className="mx-3 overflow-x-hidden sm:mx-6 lg:mx-12">
         <Hero />
         <HowKintsugiWorks />
         <PotTiers />
