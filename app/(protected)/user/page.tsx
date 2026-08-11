@@ -3,7 +3,6 @@ import Link from "next/link";
 
 export default async function page() {
   const session = await requireRole("member");
-  console.log(session);
   return (
     <main>
       <h1>You are logged in as an user Yay</h1>

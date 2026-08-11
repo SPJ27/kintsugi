@@ -17,7 +17,8 @@ export const user = pgTable("user", {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
   role: text("roles").array().default(["member"]).notNull(),
-  hackatimeLinked: boolean('hackatime_linked').default(false)
+  hackatimeLinked: boolean('hackatime_linked').default(false),
+  lastSyncedAt: timestamp("last_synced_at"),
 });
 
 export const projects = pgTable(

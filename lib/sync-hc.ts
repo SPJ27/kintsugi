@@ -11,9 +11,7 @@ export async function syncHackClubUser(userId: string) {
       eq(account.providerId, "hackclub")
     ),
   });
-
   if (!hackclubAccount?.accessToken) return;
-  console.log(hackclubAccount.accessToken)
   const response = await fetch(
     "https://auth.hackclub.com/oauth/userinfo",
     {
@@ -23,10 +21,9 @@ export async function syncHackClubUser(userId: string) {
     }
   );
 
-  console.log(response)
   const profile = await response.json();
-  console.log('here2')
 
+  
   await db
     .update(user)
     .set({
