@@ -7,5 +7,10 @@ export default async function ProtectedLayout({
     children: React.ReactNode
 }) {
     await requireAuth();
-    return <>{children}</>
+    return (
+    <>
+    
+        {children}
+    </>
+    )
 }
