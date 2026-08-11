@@ -75,6 +75,12 @@ export const session = pgTable(
   (table) => [index("session_userId_idx").on(table.userId)],
 );
 
+export const shopItems = pgTable("shop_items", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  itemName: text("item_name").notNull(),
+  itemDescription: text("item_description")
+})
+
 export const account = pgTable(
   "account",
   {
