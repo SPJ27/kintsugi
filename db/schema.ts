@@ -17,7 +17,8 @@ export const user = pgTable("user", {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
   role: text("roles").array().default(["member"]).notNull(),
-  hackatimeLinked: boolean('hackatime_linked').default(false)
+  hackatimeLinked: boolean('hackatime_linked').default(false),
+  lastSyncedAt: timestamp("last_synced_at"),
 });
 
 export const projects = pgTable(
@@ -74,6 +75,12 @@ export const session = pgTable(
   },
   (table) => [index("session_userId_idx").on(table.userId)],
 );
+
+export const shopItems = pgTable("shop_items", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  itemName: text("item_name").notNull(),
+  itemDescription: text("item_description")
+})
 
 export const account = pgTable(
   "account",

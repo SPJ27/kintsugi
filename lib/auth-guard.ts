@@ -1,11 +1,16 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers"
-export async function requireAuth(){
-    const session = await auth.api.getSession({
-        headers : await headers(),
-    })
+import { cache } from "react";
+import { getHackatimeProjects } from "./hackatime";
 
+const getSession = cache(async ()=> {
+    return auth.api.getSession({headers: await headers()})
+})
+
+export async function requireAuth(){
+    const session = await getSession()
+    
     if(!session){
         redirect('/')
     }
@@ -14,6 +19,7 @@ export async function requireAuth(){
 
 export async function requireRole(role : string){
     const session = await requireAuth();
+
     if(!session.user.role?.includes(role)){
         redirect('/');
     }

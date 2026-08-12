@@ -71,6 +71,13 @@
       "when": 1786349956830,
       "tag": "0009_dazzling_true_believers",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1786448009550,
+      "tag": "0010_blue_switch",
+      "breakpoints": true
     }
   ]
 }

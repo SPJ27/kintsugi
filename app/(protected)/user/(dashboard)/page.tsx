@@ -1,5 +1,5 @@
-import { requireRole } from "@/lib/auth-guard"
-import Link from 'next/link';
+import { requireRole } from "@/lib/auth-guard";
+import Link from "next/link";
 
 export default async function page() {
     const session = await requireRole('member');
