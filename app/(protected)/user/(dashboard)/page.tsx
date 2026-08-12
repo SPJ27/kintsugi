@@ -4,8 +4,8 @@ import Link from 'next/link';
 export default async function page() {
     const session = await requireRole('member');
     return (
-        <div className="pl-25 py-12 absolute z-5">
-            <h1>You are logged in as an user Yay</h1>
+        <div className="">
+            <h1>You are logged in as a user Yay</h1>
             <p>Welcome, {session.user.name}</p>
             <div className="flex flex-col gap-2">
             </div>
