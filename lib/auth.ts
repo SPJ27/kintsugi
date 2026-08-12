@@ -1,4 +1,4 @@
-import { betterAuth, string } from "better-auth";
+import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { genericOAuth } from "better-auth/plugins";
 
@@ -15,28 +15,12 @@ export const auth = betterAuth({
 
   user: {
     additionalFields: {
-      verificationStatus: {
-        type: "string",
-      },
-      slackId: {
-        type: "string",
-      },
-      pots: {
-        type: "number",
-        defaultValue: 0,
-      },
-      role: {
-        type: "string[]",
-        defaultValue: ["member"],
-      },
-      hackatimeLinked: {
-        type: "boolean",
-        defaultValue: false,
-
-      },
-      slug : {
-        type : "string",
-      }
+      verificationStatus: { type: "string" },
+      slackId: { type: "string" },
+      pots: { type: "number", defaultValue: 0 },
+      role: { type: "string[]", defaultValue: ["member"] },
+      hackatimeLinked: { type: "boolean", defaultValue: false },
+      slug: { type: "string" },
     },
   },
 
@@ -56,6 +40,16 @@ export const auth = betterAuth({
             "verification_status",
             "slack_id",
           ],
+          overrideUserInfo: true, 
+             mapProfileToUser: (profile) => {
+            return {
+              name: profile.slack_id ?? profile.email?.split("@")[0] ?? "user",
+              email: profile.email,
+              emailVerified: profile.email_verified,
+              slackId: profile.slack_id,
+              verificationStatus: profile.verification_status,
+            };
+          },
         },
       ],
     }),

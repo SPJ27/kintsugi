@@ -7,12 +7,11 @@ import { getHackatimeProjects } from "./hackatime";
 const SLACK_TOKEN = process.env.SLACK_BOT_TOKEN;
 
 interface SlackProfile {
-    displayName: string;
-    realName: string;
+    name: string;
     image?: string;
 }
 
-const getSlackProfile = (async (slackUserId: string): Promise<SlackProfile | null> => {
+const getSlackProfile = cache(async (slackUserId: string): Promise<SlackProfile | null> => {
     if (!slackUserId || !SLACK_TOKEN) return null;
 
     try {
@@ -31,8 +30,7 @@ const getSlackProfile = (async (slackUserId: string): Promise<SlackProfile | nul
             return null;
         }
         return {
-            displayName: data.profile.display_name || data.profile.real_name,
-            realName: data.profile.real_name,
+            name: data.profile.display_name || data.profile.real_name,
             image: data.profile.image_192,
         };
     } catch (err) {
@@ -55,26 +53,23 @@ export async function requireAuth() {
         ? await getSlackProfile(session.user.slackId)
         : null;
     
-    console.log({
-        ...session,
-        user: {
-            ...session.user,
-            slackProfile,
-        },
-    })
-    return {
-        ...session,
-        user: {
-            ...session.user,
-            slackProfile,
-        },
-    };
+    const returnObj = {
+        id: session.user.id,
+        createdAt: session.user.createdAt,
+        verificationStatus: session.user.verificationStatus,
+        pots: session.user.pots,
+        hackatimeLinked: session.user.hackatimeLinked,
+        name: slackProfile?.name,
+        image: slackProfile?.image,
+        role: session.user.role
+    }
+    return returnObj
 }
 
 export async function requireRole(role: string) {
     const session = await requireAuth();
 
-    if (!session.user.role?.includes(role)) {
+    if (!session.role?.includes(role)) {
         redirect('/');
     }
 
@@ -83,7 +78,7 @@ export async function requireRole(role: string) {
 
 export async function requireAnyRole(roles: string[]) {
     const session = await requireAuth();
-    const hasRole = roles.some((role) => session.user.role?.includes(role));
+    const hasRole = roles.some((role) => session.role?.includes(role));
     if (!hasRole) {
         redirect('/');
     }

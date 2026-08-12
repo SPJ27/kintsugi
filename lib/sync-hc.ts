@@ -27,6 +27,7 @@ export async function syncHackClubUser(userId: string) {
   await db
     .update(user)
     .set({
+      name: '',
       verificationStatus: profile.verification_status,
       slackId: profile.slack_id,
     })

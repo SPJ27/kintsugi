@@ -24,7 +24,7 @@ export async function createNewProject(
   const session = await requireAuth();
   
 
-  const userId = session.user.id;
+  const userId = session.id;
 
   const name = formData.get("name") as string;
   if (!name?.trim()) {
@@ -150,11 +150,11 @@ export async function getProject(projectId: number) {
       location: `/projects/${projectId}`,
       type: "error",
       metadata: err instanceof Error ? err.message : String(err),
-      userId: session.user.id,
+      userId: session.id,
     });
     return { success: false, error: "Unable to fetch project" };
   }
-  const userCreated = session.user.id === data?.userId;
+  const userCreated = session.id === data?.userId;
   return { success: true, project: data, userCreated };
 }
 

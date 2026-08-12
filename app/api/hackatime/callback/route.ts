@@ -1,14 +1,12 @@
 import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/auth-guard";
 import { addLog } from "@/lib/db/logs";
 import { addHackatimeToken } from "@/lib/db/user";
 import { headers, cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
+  const session = await requireAuth();
 
   const searchParams = req.nextUrl.searchParams;
   const code = searchParams.get("code");
@@ -52,8 +50,12 @@ export async function GET(req: NextRequest) {
   }
 
   const tokenData = await tokenRes.json();
-
-  await addHackatimeToken(session.user.id, tokenData.access_token);
+  if (!tokenData.access_token) {
+    return NextResponse.redirect(
+      new URL("/dashboard?hackatime_error=missing_token", req.url),
+    );
+  }
+  await addHackatimeToken(session.id, tokenData.access_token);
 
   await addLog({
     title: "Hackatime Connected",
@@ -61,7 +63,7 @@ export async function GET(req: NextRequest) {
     location: "/hackatime/callback",
     type: "auth",
     metadata: "",
-    userId: session.user.id
+    userId: session.id,
   });
 
   return NextResponse.redirect(new URL("/", req.url));

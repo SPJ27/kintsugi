@@ -6,7 +6,7 @@ export default async function page() {
     return (
         <div className="">
             <h1>You are logged in as a user Yay</h1>
-            <p>Welcome, {session.user.name}</p>
+            <p>Welcome, {session.name}</p>
             <div className="flex flex-col gap-2">
             </div>
         </div>
