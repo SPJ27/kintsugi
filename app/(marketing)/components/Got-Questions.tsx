@@ -26,7 +26,7 @@ export default function GotQuestions() {
         {
             id: 4,
             question: "How can I track time?",
-            answer: "Software development time is tracked using and hardware time is tracked through Lapse."
+            answer: "Software development time is tracked using Hackatime and hardware time is tracked through Lapse."
         },
         {
             id: 5,

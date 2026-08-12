@@ -14,7 +14,7 @@ const kalam = Kalam({
 export default function SignUpSection() {
     const { data: session, error, isPending } = authClient.useSession();
     const [loading, setLoading] = useState(false);
-    const authDisabled = process.env.NEXT_PUBLIC_AUTH_DISABLED === "false";
+    const authDisabled = process.env.NEXT_PUBLIC_AUTH_DISABLED === "true";
     return (
         <div className="flex my-12">
             <div className="bg-[#2A1A08] relative min-h-60 items-center flex justify-between  py-6  gap-12  border-4 border-dashed border-[#c9a030] w-full mx-8 px-6 rounded-4xl group-hover:scale-102 transition-all duration-300">

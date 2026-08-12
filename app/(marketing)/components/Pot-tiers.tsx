@@ -25,27 +25,11 @@ export default function PotTiers() {
         },
         {
             id: 3,
-            icon: "✦✦",
-            image: "/pots/silver.png",
-            title: "2 Silver Pots",
-            description: "People actually use it. HC Staff and community really like it.Solves it for many not just you.",
-            tags: "Community loved"
-        },
-        {
-            id: 4,
             icon: "✦",
             image: "/pots/golden.png",
             title: "1 Gold Pots",
             description: "Well made Project Good storytelling and visible efforts Something which blows up our socks.Not just basic webpage.",
             tags: "Full Stack"
-        },
-        {
-            id: 5,
-            icon: "✦✦✦",
-            image: "/pots/silver.png",
-            title: "3 Silver Pots",
-            description: "30+ logged hours, Qualifies previous silver tiers.",
-            tags: "30 hrs grind",
         },
         {
             id: 6,
