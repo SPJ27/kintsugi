@@ -6,7 +6,7 @@ export default async function page(){
     return(
         <main>
             <h1>You are logged in as an admin Yay</h1>
-            <p>Welcome, {session.user.name}</p>
+            <p>Welcome, {session.name}</p>
             <div className="flex flex-col gap-4">
                 <Link href={'/user'}>Go To User Dash</Link>
                 <Link href={'/reviewer'}>Go To reviewer</Link>

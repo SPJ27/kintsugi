@@ -4,33 +4,82 @@ import { headers } from "next/headers"
 import { cache } from "react";
 import { getHackatimeProjects } from "./hackatime";
 
-const getSession = cache(async ()=> {
-    return auth.api.getSession({headers: await headers()})
-})
+const SLACK_TOKEN = process.env.SLACK_BOT_TOKEN;
 
-export async function requireAuth(){
-    const session = await getSession()
-    
-    if(!session){
-        redirect('/')
-    }
-    return session;
+interface SlackProfile {
+    name: string;
+    image?: string;
 }
 
-export async function requireRole(role : string){
+const getSlackProfile = cache(async (slackUserId: string): Promise<SlackProfile | null> => {
+    if (!slackUserId || !SLACK_TOKEN) return null;
+
+    try {
+        const res = await fetch(
+            `https://slack.com/api/users.profile.get?user=${slackUserId}`,
+            {
+                headers: { Authorization: `Bearer ${SLACK_TOKEN}` },
+                cache: "no-store",
+            }
+        );
+
+        const data = await res.json();
+
+        if (!data.ok) {
+            console.error("Slack profile fetch failed:", data.error);
+            return null;
+        }
+        return {
+            name: data.profile.display_name || data.profile.real_name,
+            image: data.profile.image_192,
+        };
+    } catch (err) {
+        console.error("Slack profile fetch error:", err);
+        return null;
+    }
+});
+
+const getSession = cache(async () => {
+    return auth.api.getSession({ headers: await headers() });
+});
+
+export async function requireAuth() {
+    const session = await getSession();
+
+    if (!session) {
+        redirect('/');
+    }
+    const slackProfile = session.user.slackId
+        ? await getSlackProfile(session.user.slackId)
+        : null;
+    
+    const returnObj = {
+        id: session.user.id,
+        createdAt: session.user.createdAt,
+        verificationStatus: session.user.verificationStatus,
+        pots: session.user.pots,
+        hackatimeLinked: session.user.hackatimeLinked,
+        name: slackProfile?.name,
+        image: slackProfile?.image,
+        role: session.user.role
+    }
+    return returnObj
+}
+
+export async function requireRole(role: string) {
     const session = await requireAuth();
 
-    if(!session.user.role?.includes(role)){
+    if (!session.role?.includes(role)) {
         redirect('/');
     }
 
     return session;
 }
 
-export async function requireAnyRole(roles:string[]) {
+export async function requireAnyRole(roles: string[]) {
     const session = await requireAuth();
-    const hasRole = roles.some((role)=>session.user.role?.includes(role));
-    if(!hasRole){
+    const hasRole = roles.some((role) => session.role?.includes(role));
+    if (!hasRole) {
         redirect('/');
     }
     return session;

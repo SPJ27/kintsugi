@@ -14,7 +14,7 @@ export async function getHackatimeProjects() {
     return { success: false, error: "Unable to fetch Hackatime Data" };
   }
   const res = await fetch(
-    "https://hackatime.hackclub.com/api/v1/authenticated/projects?include_archived=true&projects=&since=&until=&until_date=&start=&end=&start_date=&end_date=",
+    "https://hackatime.hackclub.com/api/v1/authenticated/projects?include_archived=false&projects=&since=&until=&until_date=&start=&end=&start_date=&end_date=",
     {
       headers: {
         Authorization: `Bearer ${hackatimeToken}`,
