@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const session = await requireAuth();
+  const dashboardUrl = new URL("/user", req.url);
 
   const searchParams = req.nextUrl.searchParams;
   const code = searchParams.get("code");
@@ -14,8 +15,9 @@ export async function GET(req: NextRequest) {
   const error = searchParams.get("error");
 
   if (error) {
+    dashboardUrl.searchParams.set("hackatime_error", error);
     return NextResponse.redirect(
-      new URL(`/dashboard?hackatime_error=${error}`, req.url),
+      dashboardUrl,
     );
   }
 
@@ -24,8 +26,9 @@ export async function GET(req: NextRequest) {
   cookieStore.delete("hackatime_oauth_state");
 
   if (!code || !returnedState || returnedState !== savedState) {
+    dashboardUrl.searchParams.set("hackatime_error", "invalid_state");
     return NextResponse.redirect(
-      new URL("/dashboard?hackatime_error=invalid_state", req.url),
+      dashboardUrl,
     );
   }
 
@@ -44,15 +47,17 @@ export async function GET(req: NextRequest) {
   if (!tokenRes.ok) {
     const errText = await tokenRes.text();
     console.log("Token exchange failed:", tokenRes.status, errText);
+    dashboardUrl.searchParams.set("hackatime_error", "token_exchange_failed");
     return NextResponse.redirect(
-      new URL("/dashboard?hackatime_error=token_exchange_failed", req.url),
+      dashboardUrl,
     );
   }
 
   const tokenData = await tokenRes.json();
   if (!tokenData.access_token) {
+    dashboardUrl.searchParams.set("hackatime_error", "missing_token");
     return NextResponse.redirect(
-      new URL("/dashboard?hackatime_error=missing_token", req.url),
+      dashboardUrl,
     );
   }
   await addHackatimeToken(session.id, tokenData.access_token);
@@ -66,5 +71,5 @@ export async function GET(req: NextRequest) {
     userId: session.id,
   });
 
-  return NextResponse.redirect(new URL("/", req.url));
+  return NextResponse.redirect(dashboardUrl);
 }
