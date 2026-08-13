@@ -21,8 +21,12 @@ export async function addHackatimeToken(userId: string, token: string) {
       userId,
       accessToken: token,
     });
-    await db.update(user).set({hackatimeLinked: true}).where(eq(user.id, userId))
   }
+
+  await db
+    .update(user)
+    .set({ hackatimeLinked: true })
+    .where(eq(user.id, userId));
 }
 
 export async function getHackatimeToken(userId: string) {
@@ -31,4 +35,15 @@ export async function getHackatimeToken(userId: string) {
   });
 
   return hackatimeAccount?.accessToken ?? null;
+}
+
+
+export async function getHackatimeStatus(userId: string) {
+  const result = await db.query.user.findFirst({
+    where: eq(user.id, userId),
+    columns: {
+      hackatimeLinked: true,
+    },
+  });
+  return result?.hackatimeLinked ?? false;
 }

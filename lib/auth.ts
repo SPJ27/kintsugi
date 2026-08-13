@@ -11,7 +11,9 @@ export const auth = betterAuth({
     schema,
   }),
 
-  baseURL: process.env.BASE_URL,
+  // Keep Better Auth on the same public origin used by the OAuth callback.
+  // The project configures this as BETTER_AUTH_URL, not BASE_URL.
+  baseURL: process.env.BETTER_AUTH_URL,
 
   user: {
     additionalFields: {
