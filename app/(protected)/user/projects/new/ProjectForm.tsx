@@ -1,10 +1,11 @@
 'use client'
 import { Kalam } from "next/font/google"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { createNewProject } from "@/actions/projects"
 import { Loader2 } from "lucide-react"
+import { getHackatimeProjects } from "@/actions/hackatime"
 
 const kalam = Kalam({
     subsets: ['latin'],
@@ -14,6 +15,24 @@ export default function ProjectForm() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [projects, setProjects] = useState<
+    {
+        name : string; 
+        total_seconds : number; 
+        archived : boolean;
+    }[]
+    >([]);
+    const [projectsLoading, setProjectsLoading] = useState(true);
+    useEffect(()=>{
+        async function loadProjects(){
+            const result = await getHackatimeProjects();
+            if(result.success){
+                setProjects(result.projects);
+            }
+            setProjectsLoading(false);
+        }
+        loadProjects()
+    },[])
     const handleSubmit = async (formData: FormData) => {
         try {
             setLoading(true);
@@ -62,13 +81,21 @@ export default function ProjectForm() {
             </div>
             <div>
                 <label htmlFor="hackatimeProjects">Hackatime</label>
-                <input 
-                id="hackatimeProjects"
-                name="hackatimeProjects"
-                type="select"
-                placeholder="Hackatime Projects"
-                />
-            </div>
+                {projectsLoading ? (
+                    <div>Loading Hackatime projects...</div>
+                ) : projects.length ===0 ?(
+                    <div>No Hackatime projects found.</div>
+                ) : (
+                    <div>
+                        {projects.map((project)=>(
+                            <label key={project.name}>
+                                <input type="checkbox" name="hackatimeProjects" value={project.name} />
+                                <span>{project.name}</span>
+                            </label>
+                        ))}
+                    </div>
+                )}
+                </div>
             <div>
                 <label htmlFor="projectDemo">Demo Url</label>
                 <input
