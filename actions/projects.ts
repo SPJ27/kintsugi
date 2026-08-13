@@ -157,4 +157,3 @@ export async function getProject(projectId: number) {
   const userCreated = session.id === data?.userId;
   return { success: true, project: data, userCreated };
 }
-
