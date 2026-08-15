@@ -4,6 +4,13 @@
   --font-caveat: "Caveat", cursive;
 }
 
+html{
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar{
+  display: none;
+}
 
 .notebook{
   position: fixed;

@@ -9,7 +9,6 @@ export default async function ProtectedLayout({
     await requireAuth();
     return (
     <>
-    
         {children}
     </>
     )
