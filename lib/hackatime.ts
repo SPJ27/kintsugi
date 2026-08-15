@@ -7,7 +7,7 @@ import { getHackatimeToken } from "./db/user";
 export async function getHackatimeProjects() {
 
   const session = await requireAuth();
-  const userId = session.user.id;
+  const userId = session.id;
 
   const hackatimeToken = await getHackatimeToken(userId);
   if (!hackatimeToken) {
