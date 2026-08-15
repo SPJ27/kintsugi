@@ -1,11 +1,12 @@
 'use client'
 import { Kalam } from "next/font/google"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { createNewProject } from "@/actions/projects"
-import { Loader2 } from "lucide-react"
+import { ImageIcon, Loader2, Upload } from "lucide-react"
 import { getHackatimeProjects } from "@/actions/hackatime"
+import { div } from "framer-motion/m"
 
 const kalam = Kalam({
     subsets: ['latin'],
@@ -22,7 +23,24 @@ export default function ProjectForm() {
         archived : boolean;
     }[]
     >([]);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [bannerFile, setBannerFile] = useState<File | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
     const [projectsLoading, setProjectsLoading] = useState(true);
+    const handleFile = (file : File| undefined)=>{
+        if(!file) return;
+        if(!file.type.startsWith("image/")){
+            toast.error("Please select an image file.");
+            return;
+        }
+        setBannerFile(file);
+    }
+    const handleDrop = (e : React.DragEvent<HTMLDivElement>)=>{
+        e.preventDefault();
+        setIsDragging(false);
+        const file = e.dataTransfer.files?.[0];
+        handleFile(file)
+    }
     useEffect(()=>{
         async function loadProjects(){
             const result = await getHackatimeProjects();
@@ -52,17 +70,45 @@ export default function ProjectForm() {
     }
     return (
         <form action={handleSubmit} className="space-y-6">
-            <div>
-                <label htmlFor="bannerFile">
+            <div className="flex flex-col gap-2 text-xl">
+                <label htmlFor="bannerFile" >
                     Project Banner
                 </label>
-                <input 
-                id="bannerFile" 
-                type="file" 
-                accept="image/*" 
-                name="bannerFile" />
+                <div
+                    onClick={()=>fileInputRef.current?.click()}
+                    onDragOver={(e)=>{
+                        e.preventDefault();
+                        setIsDragging(true);
+                    }}
+                    onDragLeave={()=> setIsDragging(false)}
+                    onDrop={handleDrop}
+                    >
+                        {
+                            bannerFile ? (
+                                <div>
+                                    <ImageIcon />
+                                    <p>{bannerFile.name}</p>
+                                    <p>
+                                        Click to choose another image
+                                    </p>
+                                </div>
+                            ) : (
+                                <>
+                                <div>
+                                    <Upload />
+                                </div>
+                                <p>
+                                    Drag and drop a screenshot or a banner for your project
+                                </p>
+                                <p>
+                                    or click to browse your files
+                                </p>
+                                </>
+                            )
+                        }
+                </div>
             </div>
-            <div>
+            <div className="flex flex-col gap-2">
                 <label htmlFor="name">Title</label>
                 <input
                     id="name"
@@ -71,7 +117,7 @@ export default function ProjectForm() {
                     placeholder="My awesome project"
                     required />
             </div>
-            <div>
+            <div className="flex flex-col gap-2">
                 <label htmlFor="desc">Description</label>
                 <textarea
                 id="desc"
@@ -79,7 +125,7 @@ export default function ProjectForm() {
                 placeholder="Tell us about your project"
                 rows={5} />
             </div>
-            <div>
+            <div className="flex flex-col gap-2">
                 <label htmlFor="hackatimeProjects">Hackatime</label>
                 {projectsLoading ? (
                     <div>Loading Hackatime projects...</div>
@@ -96,7 +142,7 @@ export default function ProjectForm() {
                     </div>
                 )}
                 </div>
-            <div>
+            <div className="flex flex-col gap-2">
                 <label htmlFor="projectDemo">Demo Url</label>
                 <input
                 id="projectDemo"
@@ -105,7 +151,7 @@ export default function ProjectForm() {
                 placeholder="https://myproject.vercel.app"
                  />
             </div>
-            <div>
+            <div className="flex flex-col gap-2">
                 <label htmlFor="projectRepo">Repository URL</label>
                 <input
                 id="projectRepo"
