@@ -19,24 +19,6 @@ export const user = pgTable("user", {
   hackatimeLinked: boolean('hackatime_linked').default(false)
 });
 
-export const projects = pgTable(
-  "projects",
-  {
-    id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    name: text("name").notNull(),
-    description: text("description"),
-    shippedHours: integer('shipped_hours').default(0),
-    projectDemo: text("project_demo"),
-    projectRepo: text("project_repo"),
-    bannerUrl: text("banner_url"),
-    hackatimeProjects: text("hackatime_projects").array().default([]).notNull(),
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-  },
-  (table) => [index("projects_userId_idx").on(table.userId)],
-);
 export const logs = pgTable(
   "logs",
   {
@@ -114,18 +96,10 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const projectsRelations = relations(projects, ({ one }) => ({
-  user: one(user, {
-    fields: [projects.userId],
-    references: [user.id],
-  }),
-}));
-
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
   logs: many(logs),
-  projects: many(projects),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -148,4 +122,3 @@ export const logsRelations = relations(logs, ({ one }) => ({
     references: [user.id],
   }),
 }));
-

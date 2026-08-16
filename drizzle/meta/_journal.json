@@ -57,13 +57,6 @@
       "when": 1786118891275,
       "tag": "0007_dashing_bucky",
       "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1786188181104,
-      "tag": "0008_fancy_princess_powerful",
-      "breakpoints": true
     }
   ]
 }

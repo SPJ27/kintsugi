@@ -30,9 +30,7 @@ export const auth = betterAuth({
         defaultValue: ["member"],
       },
       hackatimeLinked: {
-        type: "boolean",
-        defaultValue: false,
-
+        type: "boolean"
       }
     },
   },
