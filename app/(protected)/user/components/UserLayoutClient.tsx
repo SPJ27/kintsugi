@@ -14,10 +14,10 @@ export default function UserLayoutClient({ children, displayName, roles }: UserL
 
     return (
         <main className="max-w-screen min-h-screen flex relative">
-            <div className={`shrink-0 transition-[width] duration-500 ${pinned ? "w-60" : "w-20"}`}>
+            <div className={`shrink-0 transition-[width] duration-500 ${pinned ? "w-56 sm:w-60" : "w-14 sm:w-20"}`}>
                 <SideBar pinned={pinned} setPinned={setPinned} displayName={displayName} roles={roles}/>
             </div>
-            <div className="flex-1 min-w-0 my-10 mx-12">
+            <div className="flex-1 min-w-0 my-6 sm:my-10 mx-3 sm:mx-6 md:mx-12">
                 {children}
             </div>
         </main>
