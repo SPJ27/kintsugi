@@ -16,7 +16,9 @@ export async function GET(req: NextRequest) {
   const error = searchParams.get("error");
 
   if (error) {
-    return NextResponse.redirect(new URL(`/dashboard?hackatime_error=${error}`, req.url));
+    return NextResponse.redirect(
+      new URL(`/dashboard?hackatime_error=${error}`, req.url),
+    );
   }
 
   const cookieStore = await cookies();
@@ -24,7 +26,9 @@ export async function GET(req: NextRequest) {
   cookieStore.delete("hackatime_oauth_state");
 
   if (!code || !returnedState || returnedState !== savedState) {
-    return NextResponse.redirect(new URL("/dashboard?hackatime_error=invalid_state", req.url));
+    return NextResponse.redirect(
+      new URL("/dashboard?hackatime_error=invalid_state", req.url),
+    );
   }
 
   const tokenRes = await fetch("https://hackatime.hackclub.com/oauth/token", {
@@ -42,7 +46,9 @@ export async function GET(req: NextRequest) {
   if (!tokenRes.ok) {
     const errText = await tokenRes.text();
     console.log("Token exchange failed:", tokenRes.status, errText);
-    return NextResponse.redirect(new URL("/dashboard?hackatime_error=token_exchange_failed", req.url));
+    return NextResponse.redirect(
+      new URL("/dashboard?hackatime_error=token_exchange_failed", req.url),
+    );
   }
 
   const tokenData = await tokenRes.json();
