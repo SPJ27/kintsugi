@@ -1,0 +1,1 @@
+ALTER TABLE "projects" ALTER COLUMN "shipped_hours" SET NOT NULL;

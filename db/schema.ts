@@ -27,7 +27,7 @@ export const projects = pgTable(
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     name: text("name").notNull(),
     description: text("description"),
-    shippedHours: integer('shipped_hours').default(0),
+    approvedSeconds: integer('approved_seconds').default(0).notNull(),
     projectDemo: text("project_demo"),
     projectRepo: text("project_repo"),
     bannerUrl: text("banner_url"),
@@ -39,6 +39,7 @@ export const projects = pgTable(
   },
   (table) => [index("projects_userId_idx").on(table.userId)],
 );
+
 export const logs = pgTable(
   "logs",
   {
@@ -122,11 +123,35 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const projectsRelations = relations(projects, ({ one }) => ({
+export const shipEvents = pgTable(
+  "ship_events",
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    projectId: integer("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    approvalStatus: text("approval_status").default("pending").notNull(),
+    shipText: text("ship_text").notNull(),
+    reviewerNote: text("reviewer_note"),
+    auditNote: text("audit_note"),
+    seconds: integer("seconds").default(0).notNull(),
+  },
+  (table) => [
+    index("ship_events_projectId_idx").on(table.projectId),
+    index("ship_events_userId_idx").on(table.userId),
+  ],
+);
+
+export const projectsRelations = relations(projects, ({ one, many }) => ({
   user: one(user, {
     fields: [projects.userId],
     references: [user.id],
   }),
+  shipEvents: many(shipEvents),
 }));
 
 export const userRelations = relations(user, ({ many }) => ({
@@ -134,6 +159,7 @@ export const userRelations = relations(user, ({ many }) => ({
   accounts: many(account),
   logs: many(logs),
   projects: many(projects),
+  shipEvents: many(shipEvents),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -157,3 +183,13 @@ export const logsRelations = relations(logs, ({ one }) => ({
   }),
 }));
 
+export const shipEventsRelations = relations(shipEvents, ({ one }) => ({
+  project: one(projects, {
+    fields: [shipEvents.projectId],
+    references: [projects.id],
+  }),
+  user: one(user, {
+    fields: [shipEvents.userId],
+    references: [user.id],
+  }),
+}));

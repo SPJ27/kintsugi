@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers"
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { getHackatimeProjects } from "./hackatime";
 
 const SLACK_TOKEN = process.env.SLACK_BOT_TOKEN;
@@ -11,33 +12,39 @@ interface SlackProfile {
     image?: string;
 }
 
-const getSlackProfile = cache(async (slackUserId: string): Promise<SlackProfile | null> => {
-    if (!slackUserId || !SLACK_TOKEN) return null;
+const getSlackProfile = unstable_cache(
+    async (slackUserId: string): Promise<SlackProfile | null> => {
+        if (!slackUserId || !SLACK_TOKEN) return null;
 
-    try {
-        const res = await fetch(
-            `https://slack.com/api/users.profile.get?user=${slackUserId}`,
-            {
-                headers: { Authorization: `Bearer ${SLACK_TOKEN}` },
-                cache: "no-store",
+        try {
+            const res = await fetch(
+                `https://slack.com/api/users.profile.get?user=${slackUserId}`,
+                {
+                    headers: { Authorization: `Bearer ${SLACK_TOKEN}` },
+                }
+            );
+
+            const data = await res.json();
+
+            if (!data.ok) {
+                console.error("Slack profile fetch failed:", data.error);
+                return null;
             }
-        );
-
-        const data = await res.json();
-
-        if (!data.ok) {
-            console.error("Slack profile fetch failed:", data.error);
+            return {
+                name: data.profile.display_name || data.profile.real_name,
+                image: data.profile.image_192,
+            };
+        } catch (err) {
+            console.error("Slack profile fetch error:", err);
             return null;
         }
-        return {
-            name: data.profile.display_name || data.profile.real_name,
-            image: data.profile.image_192,
-        };
-    } catch (err) {
-        console.error("Slack profile fetch error:", err);
-        return null;
+    },
+    ["slack-profile"],
+    {
+        revalidate: 3600, 
+        tags: ["slack-profile"],
     }
-});
+);
 
 const getSession = cache(async () => {
     return auth.api.getSession({ headers: await headers() });
@@ -52,7 +59,7 @@ export async function requireAuth() {
     const slackProfile = session.user.slackId
         ? await getSlackProfile(session.user.slackId)
         : null;
-    
+
     const returnObj = {
         id: session.user.id,
         createdAt: session.user.createdAt,

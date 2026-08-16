@@ -1,15 +1,12 @@
-import { requireAuth } from "@/lib/auth-guard"
+import { requireAuth } from "@/lib/auth-guard";
+import UserLayoutClient from "./user/components/UserLayoutClient";
 
+export default async function Layout({ children }: { children: React.ReactNode }) {
+    const session = await requireAuth();
 
-export default async function ProtectedLayout({
-    children
-}: {
-    children: React.ReactNode
-}) {
-    await requireAuth();
     return (
-    <>
-        {children}
-    </>
-    )
+        <UserLayoutClient displayName={session.name ?? "User"} roles={session.role ?? []}>
+            {children}
+        </UserLayoutClient>
+    );
 }

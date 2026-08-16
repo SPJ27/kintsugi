@@ -1,0 +1,1 @@
+ALTER TABLE "projects" RENAME COLUMN "shipped_hours" TO "approved_seconds";

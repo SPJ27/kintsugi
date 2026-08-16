@@ -1,5 +1,5 @@
 'use client'
-import { BadgeDollarSign, FilesIcon, HomeIcon, Pin, ShoppingBasket, Users } from "lucide-react"
+import { BadgeDollarSign, FilesIcon, HomeIcon, Pin, ShoppingBasket, Eye, Users } from "lucide-react"
 import { Kalam } from "next/font/google"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
@@ -13,8 +13,9 @@ interface SideBarProps {
     pinned: boolean;
     setPinned: React.Dispatch<React.SetStateAction<boolean>>;
     displayName : string;
+    roles: string[]
 }
-export default function SideBar({ pinned, setPinned, displayName }: SideBarProps) {
+export default function SideBar({ pinned, setPinned, displayName, roles }: SideBarProps) {
     const pathname = usePathname();
     const router = useRouter();
     return (
@@ -47,10 +48,10 @@ export default function SideBar({ pinned, setPinned, displayName }: SideBarProps
                         <span><ShoppingBasket /></span>
                         <span className={`absolute left-16 translate-x-2 whitespace-nowrap text-2xl opacity-0 transition-all duration-200 ${pinned ? "translate-x-0 opacity-100" : "group-hover:translate-x-0 group-hover:opacity-100"}`}>Shop</span>
                     </Link>
-                    <Link href={'/user/currency'} className={`flex outline-none text-[#F5E4B0] hover:border hover:border-[#c9a030]/60 hover:text-[#c9a030]/80 relative items-center w-14 ${pinned ? "w-46" : "group-hover:w-46"} px-4 py-2 rounded-xl hover:bg-[#3d2a08] transition-all duration-500 hover:border-dashed ${pathname === "/user/currency" ? "border-[#c9a030] border-2 text-[#c9a030] bg-[#3d2a08]" : ""}`}>
-                        <span><BadgeDollarSign /></span>
-                        <span className={`absolute left-16 translate-x-2 whitespace-nowrap text-2xl opacity-0 transition-all duration-200 ${pinned ? "translate-x-0 opacity-100" : "group-hover:translate-x-0 group-hover:opacity-100"}`}>Currency</span>
-                    </Link>
+                    {roles.includes('admin') && <Link href={'/admin'} className={`flex outline-none text-[#F5E4B0] hover:border hover:border-[#c9a030]/60 hover:text-[#c9a030]/80 relative items-center w-14 ${pinned ? "w-46" : "group-hover:w-46"} px-4 py-2 rounded-xl hover:bg-[#3d2a08] transition-all duration-500 hover:border-dashed ${pathname === "/admin" ? "border-[#c9a030] border-2 text-[#c9a030] bg-[#3d2a08]" : ""}`}>
+                        <span><Eye /></span>
+                        <span className={`absolute left-16 translate-x-2 whitespace-nowrap text-2xl opacity-0 transition-all duration-200 ${pinned ? "translate-x-0 opacity-100" : "group-hover:translate-x-0 group-hover:opacity-100"}`}>Admin</span>
+                    </Link>}
                 </div>
             </div>
             <div className="border-t-2 flex-col gap-2 py-4 w-full border-dashed flex justify-center items-center border-[#c9a030]">
