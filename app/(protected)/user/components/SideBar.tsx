@@ -19,7 +19,7 @@ export default function SideBar({ pinned, setPinned, displayName, roles }: SideB
     const pathname = usePathname();
     const router = useRouter();
     return (
-        <aside className={`group select-none z-20 flex h-screen flex-col items-center justify-between gap-4 border-r-2 border-dashed border-[#c9a030] bg-[#2A1A08] py-4 text-center transition-[width] duration-500 ease-out ${kalam.className} ${pinned ? "sticky top-0 w-60" : "sticky top-0 w-20 hover:w-60  absolute top-0 left-0"}`}>
+        <aside className={`group select-none z-20 flex h-screen flex-col items-center justify-between gap-4 border-r-2 border-dashed border-[#c9a030] bg-[#2A1A08] py-4 text-center transition-[width] duration-500 ease-out ${kalam.className} ${pinned ? "sticky top-0 w-56 sm:w-60" : "sticky top-0 w-14 sm:w-20 hover:w-56 sm:hover:w-60 absolute top-0 left-0"}`}>
             <div className="flex flex-col gap-12 w-full">
                 <div className={`w-full delay-200 duration-300 transition-all items-center text-center ${pinned ? "flex justify-between px-3" : "group-hover:flex group-hover:justify-between group-hover:px-3"}`}>
                     <div className={`text-[#AF8937] ${pinned ? "text-xl" : "group-hover:text-xl"} font-bold`}>
