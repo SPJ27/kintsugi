@@ -18,7 +18,6 @@ export default function Hero() {
     const { data: session, isPending, error } = authClient.useSession();
     return (
         <div className="flex  flex-col gap-4  relative min-h-screen justify-center items-center text-center ">
-
             <div className="absolute left-14 pointer-events-none -top-6 z-2 border-1 w-20 h-4 border-[#d2b432] bg-[#FFF4968A]" />
             <div className={`absolute rotate-2 text-[#90782C] select-none -top-4 w-38 items-center text-left font-medium text-lg ${kalam.className} px-4 py-4 bg-[#FFEF6D] border-[#c8aa1e] border-1 shadow-[3px_4px_10px_rgba(0,0,0,0.1)] left-4`}>
                 HACK CLUB YSWS-Program <span className="font-light text-sm">Just ship it</span>
