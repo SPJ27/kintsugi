@@ -40,7 +40,7 @@ rgba(200,160,60,.25) 32px);
 
 .kintsugi-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #F5E4B0 transparent;
+  scrollbar-color: #c9a030 transparent;
 }
 
 .kintsugi-scrollbar::-webkit-scrollbar {
@@ -53,14 +53,14 @@ rgba(200,160,60,.25) 32px);
 }
 
 .kintsugi-scrollbar::-webkit-scrollbar-thumb{
-  background : #F5E4B0;
+  background : #c9a030;
   border: 3px solid transparent;
   background-clip: padding-box;
   border-radius: 999px;
 }
 
 .kintsugi-scrollbar::-webkit-scrollbar-thumb:hover{
-  background : #F5E4B0;
+  background : #c9a030;
   border : 2px solid transparent;
   background-clip: padding-box;
 }

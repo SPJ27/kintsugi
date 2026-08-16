@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { createNewProject } from "@/actions/projects"
-import { Check, ChevronDown, ChevronUp, Circle, CircleCheck, Loader2, TicketCheck, UploadCloud, UploadIcon } from "lucide-react"
+import { Check, ChevronDown, ChevronUp, Circle, CircleCheck, Loader2, TicketCheck, UploadCloud, UploadIcon, X } from "lucide-react"
 import { getHackatimeProjects } from "@/actions/hackatime"
 import Image from "next/image"
 const kalam = Kalam({
@@ -60,6 +60,8 @@ export default function ProjectForm() {
             const result = await getHackatimeProjects();
             if (result.success) {
                 setProjects(result.projects);
+            } else {
+                toast.error(result.error);
             }
             setProjectsLoading(false);
         }
@@ -109,7 +111,7 @@ export default function ProjectForm() {
                     }}
                     onDragLeave={() => setIsDragging(false)}
                     onDrop={handleDrop}
-                    className="flex w-full  justify-center flex-col items-center  border-6 border-[#c9a030]/50 rounded-4xl border-dashed border-["
+                    className="flex w-full cursor-pointer justify-center flex-col items-center  border-6 border-[#c9a030]/50 rounded-4xl border-dashed border-["
                 >
                     <input
                         ref={fileInputRef}
@@ -174,11 +176,31 @@ export default function ProjectForm() {
                 <label htmlFor="hackatimeProjects" className="text-[#2A1A08] text-2xl font-bold ml-4">Hackatime</label>
                 <div ref={hackatimeRef} className="relative mx-4">
                     <button
-                        className={`w-full border-2 border-[#c9a030] flex justify-between text-xl text-[#2a1a08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium text-left  items-center transition-all duration-300 ${hackatimeOpen ? "rounded-t-2xl rounded-b-none" : "rounded-2xl"}`}
+                        className={`w-full border-2 border-[#c9a030] flex items-center text-xl text-[#2a1a08] py-4 px-2 rounded-2xl bg-[#fdf0c2] font-medium text-left transition-all duration-300 ${hackatimeOpen ? "rounded-t-2xl rounded-b-none" : "rounded-2xl"}`}
                         type="button"
                         onClick={() => setHackatimeOpen((prev) => !prev)}>
-                        <div>{selectedHackatimeProjects.length} project{selectedHackatimeProjects.length > 1 ? "s" : ""} selected</div>
-                        <div className="text-2xl transition-all duration-300 ease-out">
+                        <div className="min-w-0 flex-1 overflow-hidden">{selectedHackatimeProjects.length === 0 ? (
+                            <div className="mx-4 translate-y-1">No Projects Selected</div>
+                        ) : (
+                            <div className="flex gap-2 items-center overflow-x-auto kintsugi-scrollbar  px-4 min-w-0 max-w-full whitespace-nowrap ">
+                                {selectedHackatimeProjects.map((project) => (
+                                       <div key={project}>
+                                       <button                  
+                                        type="button"
+                                        onClick={(e)=>{
+                                            e.stopPropagation();
+                                            setSelectedHackatimeProjects((prev)=> prev.filter((name)=> name !== project))
+                                        }}
+                                         className="bg-[#2a1a08] text-[#c9a030] my-2 border-2 border-[#c9a030] rounded-xl flex gap-2 items-center text-center justify-center px-2 py-1 text-sm shrink-0 whitespace-nowrap">
+                                            <span>{project}</span>
+                                            <span><X size={12}   /></span>
+                                        </button>
+                                        </div>
+                                    )
+                                )}
+                            </div>
+                        )}</div>
+                        <div className="text-2xl shrink-0 px-2 transition-all duration-300 ease-out">
                             {hackatimeOpen ? <ChevronUp /> : <ChevronDown />}
                         </div>
                     </button>
@@ -194,7 +216,7 @@ export default function ProjectForm() {
                                     className="w-full border-2 border-[#c9a030]/30 rounded-xl px-4 py-3 text-lg text-[#2a1a08] bg-white/50 outline-none focus:border-[#c9a030]"
                                 />
                             </div>
-                            <div className="max-h-44 overflow-y-auto p-2">
+                            <div className="max-h-44 overflow-y-auto p-2 kintsugi-scrollbar">
                                 {projectsLoading ? (
                                     <div className="p-4 text-center text-[#2a1a08]/70">Loading Hackatime projects...</div>
                                 ) : filteredProjects.length === 0 ? (
@@ -212,7 +234,7 @@ export default function ProjectForm() {
                                                     onClick={() => {
                                                         setSelectedHackatimeProjects((prev) => selected ? prev.filter((name) => name !== project.name) : [...prev, project.name])
                                                     }}
-                                                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-lg transition-all ${selected ? "bg-[#c9a030]/30" : "hover:bg-[#c9a030]/15"}`}
+                                                    className={`w-full cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl text-left text-lg transition-all ${selected ? "bg-[#c9a030]/30" : "hover:bg-[#c9a030]/15"}`}
                                                 >
                                                     <div>
                                                         {selected ? <CircleCheck /> : <Circle />}
@@ -223,17 +245,17 @@ export default function ProjectForm() {
                                         })}
                                     </div>
                                 )}
-                                {selectedHackatimeProjects.map((project) => (
-                                    <input
-                                        key={project}
-                                        type="hidden"
-                                        name="hackatimeProjects"
-                                        value={project}
-                                    />
-                                ))}
                             </div>
                         </div>
                     )}
+                    {selectedHackatimeProjects.map((project) => (
+                        <input
+                            key={project}
+                            type="hidden"
+                            name="hackatimeProjects"
+                            value={project}
+                        />
+                    ))}
                 </div>
             </div>
             <div className="flex flex-col gap-2">
@@ -265,9 +287,9 @@ export default function ProjectForm() {
             <div className="flex w-full items-center  justify-center ">
                 <button
                     type="submit"
-                    className="text-4xl w-full bg-[#2A1A08] py-4 rounded-2xl text-[#fdf0c2] cursor-pointer"
+                    className="text-4xl w-full border-4 border-dashed border-[#c9a030] bg-[#2A1A08] py-4 rounded-2xl text-[#fdf0c2] cursor-pointer"
                     disabled={loading}>
-                    {loading ? <Loader2 /> : "Create Project"}
+                    {loading ? <Loader2 className="animate-spin" size={32} /> : "Create Project"}
                 </button>
             </div>
         </form>
