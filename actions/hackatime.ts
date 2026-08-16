@@ -12,7 +12,9 @@ export async function getHackatimeProjects(){
             projects : [],
         }
     }
-    const response = await fetch(
+    let response: Response;
+    try {
+        response = await fetch(
             "https://hackatime.hackclub.com/api/v1/authenticated/projects",
             {
                 headers : {
@@ -20,7 +22,14 @@ export async function getHackatimeProjects(){
                 },
                 cache : "no-store",
             },
-    );
+        );
+    } catch {
+        return {
+            success: false,
+            error: "Unable to reach Hackatime. Please try again.",
+            projects: [],
+        };
+    }
     if(!response.ok){
         return{
             success : false,
@@ -31,6 +40,6 @@ export async function getHackatimeProjects(){
     const data = await response.json();
     return{
         success : true,
-        projects : data.projects ??[]
+        projects : data.projects ?? []
     }
 }
