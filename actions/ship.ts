@@ -66,7 +66,7 @@ export async function shipProject(projectId: number, shipText: string) {
 }
 
 
-export async function approveProject(shipEventId: number, reviewerNote?: string) {
+export async function approveProject(shipEventId: number, reviewerNote?: string, auditNote?: string) {
     // set the ship event to approved
     // on projects, set the total approved to ship_event_hours + prev
     // add the amount to balance
@@ -83,6 +83,7 @@ export async function approveProject(shipEventId: number, reviewerNote?: string)
             .set({
                 approvalStatus: "approved",
                 reviewerNote: reviewerNote ?? shipEvent.reviewerNote,
+                auditNote
             })
             .where(eq(shipEvents.id, shipEventId))
             .returning()
@@ -98,7 +99,7 @@ export async function approveProject(shipEventId: number, reviewerNote?: string)
         const [updatedUser] = await tx
             .update(user)
             .set({
-                pots: sql`${user.pots} + ${shipEvent.seconds}`,
+                pots: sql`${user.pots} + ${shipEvent.seconds / 720 }`,
             })
             .where(eq(user.id, shipEvent.userId))
             .returning()
@@ -109,6 +110,40 @@ export async function approveProject(shipEventId: number, reviewerNote?: string)
     await addLog({
         title: 'Ship Event Approved',
         description: 'A ship event was approved',
+        location: '/projects/approve',
+        type: 'ship_event_approved',
+        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}`,
+        userId: shipEvent.userId
+    })
+
+    return { success: true, ...result }
+}
+
+export async function rejectProject(shipEventId: number, reviewerNote?: string, auditNote?: string) {
+    // set the ship event to rejected
+    const session = await requireAnyRole(["reviewer"])
+
+    const shipEvent = await db.query.shipEvents.findFirst({ where: eq(shipEvents.id, shipEventId) })
+
+    if (!shipEvent) return { success: false, error: 'ship event not found' }
+    if (shipEvent.approvalStatus === 'rejected') return { success: false, error: 'already rejected' }
+
+    const result = await db.transaction(async (tx) => {
+        const [updatedShipEvent] = await tx
+            .update(shipEvents)
+            .set({
+                approvalStatus: "reject",
+                reviewerNote: reviewerNote ?? shipEvent.reviewerNote,
+                auditNote
+            })
+            .where(eq(shipEvents.id, shipEventId))
+            .returning()
+        return { updatedShipEvent }
+    })
+
+    await addLog({
+        title: 'Ship Event Rejected',
+        description: 'A ship event was rejected',
         location: '/projects/approve',
         type: 'ship_event_approved',
         metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}`,
