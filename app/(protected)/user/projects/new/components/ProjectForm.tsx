@@ -75,7 +75,7 @@ export default function ProjectForm() {
                 setError(result.error);
                 return;
             }
-            router.push(`/projects/${result.project.id}`);
+            router.push(`/user/projects/${result.project.id}`);
         }
         catch (error) {
             toast.error("Failed to create project");
