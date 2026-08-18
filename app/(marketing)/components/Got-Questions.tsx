@@ -44,24 +44,24 @@ export default function GotQuestions() {
         setOpenId(openId === id ? null : id)
     }
     return (
-        <div className="flex min-h-[80vh] flex-col">
-            <div className="flex gap-2 flex-col items-center w-full">
-                <h1 className={`${kalam.className} text-[#2a1a08] text-4xl font-bold`}>Got Questions?</h1>
+        <div className="flex min-h-fit sm:min-h-[80vh] flex-col">
+            <div className="flex gap-2 flex-col items-center w-full text-center">
+                <h1 className={`${kalam.className} text-[#2a1a08] text-3xl sm:text-4xl font-bold`}>Got Questions?</h1>
                 <p className={`text-lg ${kalam.className} text-[#ac9453]`}>Click the Pot to get assisted</p>
             </div>
-            <div className="flex justify-center transition-all duration-300 items-center flex-col gap-4 mx-8">
+            <div className="flex justify-center transition-all duration-300 items-center flex-col gap-4 mx-4 sm:mx-8">
                 {questions.map((question) => {
                     const isOpen = openId === question.id
                     return (
-                        <div key={question.id} onClick={() => toggleQuestion(question.id)} className="bg-[#2A1A08] transition-all duration-300 w-full py-4 border-4 border-dashed border-[#c9a030] px-12 rounded-3xl cursor-pointer hover:-translate-y-[2px]">
-                            <div className="flex items-center gap-4">
-                                <div className="relative w-16 h-12">
+                        <div key={question.id} onClick={() => toggleQuestion(question.id)} className="bg-[#2A1A08] transition-all duration-300 w-full py-4 border-4 border-dashed border-[#c9a030] px-4 sm:px-12 rounded-3xl cursor-pointer hover:-translate-y-[2px]">
+                            <div className="flex items-center gap-3 sm:gap-4">
+                                <div className="relative w-12 h-9 sm:w-16 sm:h-12 shrink-0">
                                     <Image src={'/pots/bronze.png'} alt="bronze-pot" fill className="absolute object-contain" />
                                 </div>
-                                <div className={`${kalam.className}  text-xl text-[#ac9453] font-bold`}>{question.question}</div>
+                                <div className={`${kalam.className}  text-lg sm:text-xl text-[#ac9453] font-bold`}>{question.question}</div>
                             </div>
                             <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? "max-h-40 opacity-100 mt-2" : "max-h-0 opacity-0 mt-0"}`}>
-                                <div className={`text-lg text-[#F5E4B0] font-extralight ${kalam.className} mx-18`}>{question.answer}</div>
+                                <div className={`text-base sm:text-lg text-[#F5E4B0] font-extralight ${kalam.className} mx-2 sm:mx-18`}>{question.answer}</div>
                             </div>
                         </div>
                     )

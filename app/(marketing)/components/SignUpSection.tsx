@@ -17,8 +17,8 @@ export default function SignUpSection() {
     const authDisabled = process.env.NEXT_PUBLIC_AUTH_DISABLED === "true";
     return (
         <div className="flex my-12">
-            <div className="bg-[#2A1A08] relative min-h-60 items-center flex justify-between  py-6  gap-12  border-4 border-dashed border-[#c9a030] w-full mx-8 px-6 rounded-4xl group-hover:scale-102 transition-all duration-300">
-                <div className="flex flex-col gap-4 w-1/2">
+            <div className="bg-[#2A1A08] relative min-h-fit sm:min-h-60 items-center flex flex-col lg:flex-row justify-between py-6 gap-8 lg:gap-12 border-4 border-dashed border-[#c9a030] w-full mx-4 sm:mx-8 px-6 rounded-4xl group-hover:scale-102 transition-all duration-300">
+                <div className="flex flex-col gap-4 w-full lg:w-1/2">
                     <h1 className={`${kalam.className} text-left w-full text-[#c9a030] text-2xl font-bold`}>Login</h1>
                     {!session && !isPending && !authDisabled && (
                         <>
@@ -52,7 +52,7 @@ export default function SignUpSection() {
                         </p>
                     )}
                 </div>
-                <div className="relative">
+                <div className="relative hidden lg:block">
                     <Sticker />
                 </div>
             </div>
