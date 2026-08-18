@@ -4,7 +4,8 @@ import { db } from "@/db";
 import { projects } from "@/db/schema";
 import { requireAuth } from "@/lib/auth-guard";
 import { addLog } from "@/lib/db/logs";
-import { eq } from "drizzle-orm";
+
+import { eq, and } from "drizzle-orm";
 
 type CreateProjectResult =
   | { success: true; project: typeof projects.$inferSelect }
@@ -22,7 +23,7 @@ export async function createNewProject(
   formData: FormData,
 ): Promise<CreateProjectResult> {
   const session = await requireAuth();
-  
+
 
   const userId = session.id;
 
@@ -137,7 +138,7 @@ export async function createNewProject(
 
 export async function getProject(projectId: number) {
   const session = await requireAuth();
-  
+
   let data;
   try {
     data = await db.query.projects.findFirst({
@@ -156,4 +157,51 @@ export async function getProject(projectId: number) {
   }
   const userCreated = session.id === data?.userId;
   return { success: true, project: data, userCreated };
+}
+
+export async function deleteProject(projectId: number) {
+  const session = await requireAuth();
+  try {
+    const [deletedProject] = await db.delete(projects).where(and(eq(projects.id, projectId), eq(projects.userId, session.id))).returning();
+
+    if (!deletedProject) {
+      await safeLog({
+        title: "Project Deletetion Failed",
+        description: "Project not found or user does not own the project",
+        location: "/user/projects",
+        type: "error",
+        metadata: `Project ID : ${projectId}`,
+        userId: session.id
+      });
+      return {
+        success: false,
+        error: "Project not found",
+      };
+    }
+    await safeLog({
+      title: "Project Deleted",
+      description: "A project was deleted",
+      location: "/user/projects",
+      type: "project",
+      metadata: `Project ID: ${projectId}`,
+      userId: session.id,
+    });
+    return {
+      success : true,
+    }
+  } catch (error) {
+    console.error("Failed to delete project", error);
+    await safeLog({
+      title: "Project Deletion Failed",
+      description: "Database deletion Failed",
+      location: "/user/projects",
+      type: "error",
+      metadata: error instanceof Error ? error.message : String(error),
+      userId: session.id
+    })
+    return {
+      success: false,
+      error: "Unable to delete project."
+    }
+  }
 }

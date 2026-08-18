@@ -1,22 +1,28 @@
 import { create } from "zustand";
+import { projects } from '@/db/schema';
+import { Name } from "drizzle-orm";
 
 type DeleteModalStore = {
     isOpen : boolean;
     projectId : number | null;
-    openDeleteModal : (projectId : number)=> void;
+    projectName : string | null;
+    openDeleteModal : (projectId : number, name : string)=> void;
     closeDeleteModal : ()=> void;
 }
 export const useDeleteModalStore = create<DeleteModalStore>((set)=>({
     isOpen : false,
     projectId : null,
-    openDeleteModal : (projectId)=>
+    projectName : null,
+    openDeleteModal : (id, name)=>
         set({
             isOpen : true,
-            projectId,
+            projectId : id,
+            projectName : name
         }),
     closeDeleteModal : ()=>
         set({
             isOpen : false,
             projectId : null,
+            projectName : null
         })
 }))

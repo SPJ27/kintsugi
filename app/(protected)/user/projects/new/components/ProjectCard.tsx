@@ -17,7 +17,7 @@ type ProjectCardProps = {
     hackatimeProjects: any[];
 }
 export default function ProjectCard({ project, hackatimeProjects }: ProjectCardProps) {
-    const { openDeleteModal } = useDeleteModalStore()
+    const { openDeleteModal, projectName } = useDeleteModalStore()
     return (
         <>
             <div
@@ -85,7 +85,7 @@ export default function ProjectCard({ project, hackatimeProjects }: ProjectCardP
                         </div>
                         <div>
 
-                            <button type="button" onClick={() => openDeleteModal(project.id)} className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
+                            <button type="button" onClick={() => openDeleteModal(project.id, project.name)} className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
                                 <TrashIcon />
                             </button>
                         </div>

@@ -9,6 +9,7 @@ import { getHackatimeProjects } from "@/lib/hackatime";
 import { div } from "framer-motion/client";
 import { ArrowRight, Pencil, ShipIcon, TrashIcon } from "lucide-react";
 import ProjectCard from "./new/components/ProjectCard";
+import DeleteProject from "./new/components/DeleteProject";
 
 
 const kalam = Kalam({
@@ -28,6 +29,7 @@ export default async function page() {
     const hackatimeResult = await getHackatimeProjects();
     const hackatimeProjects = hackatimeResult.success ? hackatimeResult.projects : [];
     return (
+        <>
         <div className={`${kalam.className} flex flex-col gap-8`}>
             <div className="relative mb-12">
                 <h1 className={`absolute left-[7px]  top-[1.5px] text-center select-none text-6xl leading-none tracking-[2px] text-[#1a1209] ${rubiks_Wet_Paint.className}`}>MY PROJECTS</h1>
@@ -48,5 +50,7 @@ export default async function page() {
                 ))}
             </div>
         </div>
+        <DeleteProject />
+        </>
     )
 }
