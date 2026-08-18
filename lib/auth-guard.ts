@@ -12,7 +12,7 @@ interface SlackProfile {
     image?: string;
 }
 
-const getSlackProfile = unstable_cache(
+export const getSlackProfile = unstable_cache(
     async (slackUserId: string): Promise<SlackProfile | null> => {
         if (!slackUserId || !SLACK_TOKEN) return null;
 
