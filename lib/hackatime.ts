@@ -1,7 +1,4 @@
-import { db } from "@/db";
 import { requireAuth } from "./auth-guard";
-import { and, eq } from "drizzle-orm";
-import { account } from "@/db/schema";
 import { getHackatimeToken } from "./db/user";
 
 export async function getHackatimeProjects() {
@@ -25,8 +22,14 @@ export async function getHackatimeProjects() {
     console.error(await res.text())
     return { success: false }
   }
-  const projects = await res.json()
-  return { success: true, projects }
+  const data = await res.json();
+  const projects = Array.isArray(data?.projects)
+    ? data.projects
+    : Array.isArray(data)
+      ? data
+      : [];
+
+  return { success: true, projects };
 
 }
 

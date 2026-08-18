@@ -12,6 +12,7 @@ html::-webkit-scrollbar{
   display: none;
 }
 
+
 .notebook{
   position: fixed;
   inset: 0;
@@ -20,8 +21,6 @@ transparent 31px,
 rgba(200,160,60,.25) 31px,
 rgba(200,160,60,.25) 32px);
 }
-
-
 
 .paper-noise{
   position: absolute;
@@ -37,4 +36,31 @@ rgba(200,160,60,.25) 32px);
   border-radius: 50%;
   border: 2px solid rgba(130, 80, 25, .18);
   pointer-events: none;
+}
+
+.kintsugi-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #c9a030 transparent;
+}
+
+.kintsugi-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.kintsugi-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.kintsugi-scrollbar::-webkit-scrollbar-thumb{
+  background : #c9a030;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  border-radius: 999px;
+}
+
+.kintsugi-scrollbar::-webkit-scrollbar-thumb:hover{
+  background : #c9a030;
+  border : 2px solid transparent;
+  background-clip: padding-box;
 }
