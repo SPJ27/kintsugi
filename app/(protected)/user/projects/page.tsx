@@ -4,10 +4,7 @@ import { requireAuth } from "@/lib/auth-guard";
 import { db } from "@/db";
 import { desc, eq } from "drizzle-orm";
 import { projects } from "@/db/schema";
-import Image from "next/image";
 import { getHackatimeProjects } from "@/lib/hackatime";
-import { div } from "framer-motion/client";
-import { ArrowRight, Pencil, ShipIcon, TrashIcon } from "lucide-react";
 import ProjectCard from "./new/components/ProjectCard";
 import DeleteProject from "./new/components/DeleteProject";
 

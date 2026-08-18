@@ -1,6 +1,4 @@
 import { create } from "zustand";
-import { projects } from '@/db/schema';
-import { Name } from "drizzle-orm";
 
 type DeleteModalStore = {
     isOpen : boolean;
