@@ -4,9 +4,12 @@ import { db } from "@/db";
 import { projects } from "@/db/schema";
 import { requireAuth } from "@/lib/auth-guard";
 import { addLog } from "@/lib/db/logs";
-import { eq } from "drizzle-orm";
+import { success } from "better-auth";
+import { error } from "console";
 
-type CreateProjectResult =
+import { eq, and } from "drizzle-orm";
+
+type ProjectActionResult =
   | { success: true; project: typeof projects.$inferSelect }
   | { success: false; error: string };
 
@@ -20,9 +23,9 @@ async function safeLog(params: Parameters<typeof addLog>[0]) {
 
 export async function createNewProject(
   formData: FormData,
-): Promise<CreateProjectResult> {
+): Promise<ProjectActionResult> {
   const session = await requireAuth();
-  
+
 
   const userId = session.id;
 
@@ -137,7 +140,7 @@ export async function createNewProject(
 
 export async function getProject(projectId: number) {
   const session = await requireAuth();
-  
+
   let data;
   try {
     data = await db.query.projects.findFirst({
@@ -156,4 +159,158 @@ export async function getProject(projectId: number) {
   }
   const userCreated = session.id === data?.userId;
   return { success: true, project: data, userCreated };
+}
+
+export async function deleteProject(projectId: number) {
+  const session = await requireAuth();
+  try {
+    const [deletedProject] = await db.delete(projects).where(and(eq(projects.id, projectId), eq(projects.userId, session.id))).returning();
+
+    if (!deletedProject) {
+      await safeLog({
+        title: "Project Deletetion Failed",
+        description: "Project not found or user does not own the project",
+        location: "/user/projects",
+        type: "error",
+        metadata: `Project ID : ${projectId}`,
+        userId: session.id
+      });
+      return {
+        success: false,
+        error: "Project not found",
+      };
+    }
+    await safeLog({
+      title: "Project Deleted",
+      description: "A project was deleted",
+      location: "/user/projects",
+      type: "project",
+      metadata: `Project ID: ${projectId}`,
+      userId: session.id,
+    });
+    return {
+      success: true,
+    }
+  } catch (error) {
+    console.error("Failed to delete project", error);
+    await safeLog({
+      title: "Project Deletion Failed",
+      description: "Database deletion Failed",
+      location: "/user/projects",
+      type: "error",
+      metadata: error instanceof Error ? error.message : String(error),
+      userId: session.id
+    })
+    return {
+      success: false,
+      error: "Unable to delete project."
+    }
+  }
+}
+
+export async function EditProject(projectId: number, formData: FormData) : Promise<ProjectActionResult> {
+  const session = await requireAuth();
+  const name = (formData.get("name") as string)?.trim();
+
+  if (!name) {
+    return {
+      success: false,
+      error: "Project name is required",
+    }
+  }
+  const description = (formData.get("desc") as string)?.trim() || null;
+  const projectDemo = (formData.get("projectDemo") as string)?.trim() || null;
+  const projectRepo = (formData.get("projectRepo") as string)?.trim() || null;
+  const hackatimeProjects = formData.getAll("hackatimeProjects") as string[];
+  const bannerUrlInput = (formData.get("bannerUrl") as string)?.trim() || null;
+  const bannerFile = formData.get("bannerFile") as File | null;
+  let bannerUrl = bannerUrlInput;
+
+  try {
+    const existingProject = await db.query.projects.findFirst({
+      where: and(
+        eq(projects.id, projectId),
+        eq(projects.userId, session.id)
+      ),
+    });
+    if (!existingProject)
+      return {
+        success: false,
+        error: "project not found"
+      }
+    if (bannerFile && bannerFile.size > 0) {
+      const bannerForm = new FormData();
+      bannerForm.append('file', bannerFile);
+      const response = await fetch("https://cdn.hackclub.com/api/v4/upload",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.CDN_KEY}`,
+          },
+          body: bannerForm,
+        }
+      )
+      if (!response.ok) {
+        return {
+          success: false,
+          error: "Unable to upload the banner image."
+        }
+      }
+      const data = await response.json();
+      if (!data.url) {
+        return {
+          success: false,
+          error: "Banner upload returned no URL.",
+        }
+      }
+      bannerUrl = data.url;
+
+    }
+    const [updatedProject] = await db.update(projects).set({
+      name, description, projectDemo, projectRepo, bannerUrl, hackatimeProjects,
+    }).where(
+      and(
+        eq(projects.id, projectId),
+        eq(projects.userId, session.id)
+      )
+    ).returning();
+    if (!updatedProject) {
+      return {
+        success: false,
+        error: "Unable to update project"
+      }
+    }
+
+    await safeLog({
+      title: "Project Updated",
+      description: "A project was updated",
+      location: `/projects/${projectId}/edit`,
+      type: "project",
+      metadata: `Project ID: ${projectId}`,
+      userId: session.id,
+    })
+    return {
+      success: true,
+      project: updatedProject,
+    }
+  }
+  catch (error) {
+    console.error("Failed to update project:", error);
+
+    await safeLog({
+      title: "Project Update Failed",
+      description: "Database update failed",
+      location: `/projects/${projectId}/edit`,
+      type: "error",
+      metadata: error instanceof Error
+        ? error.message
+        : String(error),
+      userId: session.id,
+    });
+
+    return {
+      success: false,
+      error: "Unable to update project.",
+    };
+  }
 }
