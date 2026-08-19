@@ -9,7 +9,7 @@ import { error } from "console";
 
 import { eq, and } from "drizzle-orm";
 
-type CreateProjectResult =
+type ProjectActionResult =
   | { success: true; project: typeof projects.$inferSelect }
   | { success: false; error: string };
 
@@ -23,7 +23,7 @@ async function safeLog(params: Parameters<typeof addLog>[0]) {
 
 export async function createNewProject(
   formData: FormData,
-): Promise<CreateProjectResult> {
+): Promise<ProjectActionResult> {
   const session = await requireAuth();
 
 
@@ -208,7 +208,7 @@ export async function deleteProject(projectId: number) {
   }
 }
 
-export async function EditProject(projectId: number, formData: FormData) {
+export async function EditProject(projectId: number, formData: FormData) : Promise<ProjectActionResult> {
   const session = await requireAuth();
   const name = (formData.get("name") as string)?.trim();
 
@@ -241,7 +241,7 @@ export async function EditProject(projectId: number, formData: FormData) {
     if (bannerFile && bannerFile.size > 0) {
       const bannerForm = new FormData();
       bannerForm.append('file', bannerFile);
-      const response = await fetch("htttps://cdn.hackclub.com/api/v4/upload",
+      const response = await fetch("https://cdn.hackclub.com/api/v4/upload",
         {
           method: "POST",
           headers: {

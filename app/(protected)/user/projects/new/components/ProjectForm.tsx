@@ -3,15 +3,19 @@ import { Kalam } from "next/font/google"
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { createNewProject } from "@/actions/projects"
-import { Check, ChevronDown, ChevronUp, Circle, CircleCheck, Loader2, TicketCheck, UploadCloud, UploadIcon, X } from "lucide-react"
+import { createNewProject, EditProject } from "@/actions/projects"
+import { ChevronDown, ChevronUp, Circle, CircleCheck, Loader2, UploadCloud, UploadIcon, X } from "lucide-react"
 import { getHackatimeProjects } from "@/actions/hackatime"
 import Image from "next/image"
+import { projects } from "@/db/schema"
 const kalam = Kalam({
     subsets: ['latin'],
     weight: ['300', '400', '700']
 })
-export default function ProjectForm() {
+type ProjectFormProps = {
+    project?: typeof projects.$inferSelect;
+}
+export default function ProjectForm({ project }: ProjectFormProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -22,15 +26,18 @@ export default function ProjectForm() {
             archived: boolean;
         }[]
     >([]);
-    const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+    const [bannerPreview, setBannerPreview] = useState<string | null>(project?.bannerUrl ?? null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [bannerFile, setBannerFile] = useState<File | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [loadingImage, setLoadingImage] = useState(false);
     const [hackatimeOpen, setHackatimeOpen] = useState(false);
     const [hackatimeSearch, setHackatimeSearch] = useState('');
-    const [selectedHackatimeProjects, setSelectedHackatimeProjects] = useState<string[]>([]);
+    const [selectedHackatimeProjects, setSelectedHackatimeProjects] = useState<string[]>(project?.hackatimeProjects ?? []);
     const [projectsLoading, setProjectsLoading] = useState(true);
+
+    const isEditing = !!project;
+
     const handleFile = (file: File | undefined) => {
         if (!file) return;
         if (!file.type.startsWith("image/")) {
@@ -70,15 +77,17 @@ export default function ProjectForm() {
     const handleSubmit = async (formData: FormData) => {
         try {
             setLoading(true);
-            const result = await createNewProject(formData);
+            const result = isEditing
+                ? await EditProject(project.id, formData) : await createNewProject(formData);
             if (!result.success) {
                 setError(result.error);
                 return;
             }
             router.push(`/user/projects/${result.project.id}`);
+            router.refresh();
         }
         catch (error) {
-            toast.error("Failed to create project");
+            toast.error( isEditing ? "Failed to update project" : "Failed to create project");
         }
         finally {
             setLoading(false);
@@ -96,6 +105,7 @@ export default function ProjectForm() {
             document.removeEventListener("mousedown", handleClickOutside)
         };
     }, []);
+
     const filteredProjects = projects.filter((project) => project.name.toLowerCase().includes(hackatimeSearch.toLowerCase()));
     return (
         <>
@@ -122,13 +132,22 @@ export default function ProjectForm() {
                             className="hidden"
                             onChange={(e) => handleFile(e.target.files?.[0])}
                         />
+                        {
+                            project?.bannerUrl && (
+                                <input 
+                                type="hidden"
+                                name="bannerUrl"
+                                value={project.bannerUrl}
+                                />
+                            )
+                        }
                         {loadingImage && (
                             <div>Hey I am loading</div>
                         )}
                         {
-                            bannerFile && bannerPreview ? (
+                            bannerPreview ? (
                                 <div className="relative w-full h-77 overflow-hidden rounded-2xl">
-                                    <Image src={bannerPreview} alt={bannerFile.name} fill className="object-contain" />
+                                    <Image src={bannerPreview} alt={project?.name ?? "Project banner"} fill className="object-contain" />
                                 </div>
                             ) : (
                                 <div className="flex flex-col items-center text-center gap-8 py-12">
@@ -159,6 +178,7 @@ export default function ProjectForm() {
                         id="name"
                         name="name"
                         type="text"
+                        defaultValue={project?.name || ""}
                         placeholder="My awesome project"
                         className="ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
                         required />
@@ -169,7 +189,7 @@ export default function ProjectForm() {
                         id="desc"
                         name="desc"
                         className="ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
-
+                        defaultValue={project?.description ?? ""}
                         placeholder="Tell us about your project"
                         rows={5} />
                 </div>
@@ -265,6 +285,7 @@ export default function ProjectForm() {
                         id="projectDemo"
                         name="projectDemo"
                         type="url"
+                        defaultValue={project?.projectDemo || ""}
                         className="ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
 
                         placeholder="https://myproject.vercel.app"
@@ -276,8 +297,8 @@ export default function ProjectForm() {
                         id="projectRepo"
                         name="projectRepo"
                         type="url"
+                        defaultValue={project?.projectRepo || ""}
                         className="ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
-
                         placeholder="https://github.com/username/project"
                     />
                 </div>
@@ -290,10 +311,13 @@ export default function ProjectForm() {
                         type="submit"
                         className="text-4xl w-full border-4 border-dashed border-[#c9a030] bg-[#2A1A08] py-4 rounded-2xl text-[#fdf0c2] cursor-pointer"
                         disabled={loading}>
-                        {loading ? <Loader2 className="animate-spin" size={32} /> : "Create Project"}
+                        {loading ? <Loader2 className="animate-spin" size={32} /> : (
+                            isEditing ? "Save Changes" : "Create Project"
+                        )}
                     </button>
                 </div>
             </form>
+
         </>
     )
 }

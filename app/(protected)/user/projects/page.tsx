@@ -8,7 +8,6 @@ import { getHackatimeProjects } from "@/lib/hackatime";
 import ProjectCard from "./new/components/ProjectCard";
 import DeleteProject from "./new/components/DeleteProject";
 
-
 const kalam = Kalam({
     subsets: ['latin'],
     weight: ['300', '400', '700']

@@ -42,7 +42,7 @@ export default function ProjectCard({ project, hackatimeProjects }: ProjectCardP
                         <h1 className={`absolute select-none text-center text-4xl translate-x-2 leading-none tracking-[2px] text-[#f0c14d] ${rubiks_Wet_Paint.className}  [-webkit-text-stroke:0.7px_#1a1209]`}>{project.name}</h1>
                     </div>
                     <div className="flex items-center  ">
-                        <div>
+                        <div className="flex gap-2 items-center">
                             {project.hackatimeProjects?.map((hackatimeProject: any) => (
                                 hackatimeProject &&
                                 <div
