@@ -64,3 +64,29 @@ rgba(200,160,60,.25) 32px);
   border : 2px solid transparent;
   background-clip: padding-box;
 }
+
+.animate-wiggle{
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+  0%, 100%{
+    transform: rotate(0deg);
+    transform: scale(1);
+  }
+  20%{
+    transform: scaleX(1.15) scaleY(0.85);
+  }
+  25%{
+    transform: rotate(-8deg);
+  }
+  40%{
+    transform: scaleX(0.9) scaleY(1.1);
+  }
+  60%{
+    transform: scaleX(1.08) scale(0.92);
+  }
+  75%{
+    transform: rotate(8deg);
+  }
+}
