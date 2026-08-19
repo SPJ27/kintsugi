@@ -83,7 +83,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                 setError(result.error);
                 return;
             }
-            router.push(`/user/projects/${result.project.id}`);
+            router.push(`/user/projects/view/${result.project.id}`);
             router.refresh();
         }
         catch (error) {
