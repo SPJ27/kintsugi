@@ -326,7 +326,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                 <div className="flex w-full items-center  justify-center ">
                     <button
                         type="submit"
-                        className="text-4xl flex justify-center items-center text-center disabled:cursor-not-allowed  w-full border-4 border-dashed border-[#c9a030] bg-[#2A1A08] py-4 rounded-2xl text-[#fdf0c2] cursor-pointer"
+                        className="text-4xl hover:scale-95 transition-all duration-300 flex justify-center items-center text-center disabled:cursor-not-allowed  w-full border-4 border-dashed border-[#c9a030] bg-[#2A1A08] py-4 rounded-2xl text-[#fdf0c2] cursor-pointer"
                         disabled={loading}>
                         {loading ? <Loader2 className="animate-spin" size={32} /> : (
                             isEditing ? "Save Changes" : "Create Project"

@@ -1,9 +1,11 @@
 "use client"
 import { authClient } from "@/lib/auth-client";
-import { MoveRight } from "lucide-react";
+import { Loader2, MoveRight } from "lucide-react";
 import { Kalam, Rubik_Wet_Paint } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
 const kalam = Kalam({
     subsets: ['latin'],
     weight: ["300", "400", "700"]
@@ -13,9 +15,9 @@ const rubiks_Wet_Paint = Rubik_Wet_Paint({
     weight: "400"
 })
 export default function Hero() {
+    const [isSigningIn, setIsSigningIn] = useState(false);
     const authDisabled = process.env.NEXT_PUBLIC_AUTH_DISABLED === "true";
-
-    const { data: session, isPending, error } = authClient.useSession();
+    const { data: session, isPending } = authClient.useSession();
     return (
         <div className="flex  flex-col gap-4  relative min-h-screen justify-center items-center text-center ">
             <div className="absolute left-14 pointer-events-none -top-6 z-2 border-1 w-20 h-4 border-[#d2b432] bg-[#FFF4968A]" />
@@ -87,19 +89,34 @@ export default function Hero() {
                 <div className="absolute left-80 -rotate-2 pointer-events-none -top-4 z-2 border-1 w-30 h-8 border-[#d2b432] bg-[#FFF4968A]" />
                 {!session && !isPending && !authDisabled && (
                     <>
-                        <input type="text" required placeholder="enter your email..." className={`bg-[#3a3128] border-[1px] rounded-xl px-4 py-4 items-center justify-center text-[#f5e4b0]  outline-none text-xl font-light ${kalam.className} w-full`} />
-
                         <button
+                            disabled={isSigningIn}
                             onClick={async () => {
-                                await authClient.signIn.oauth2({
-                                    providerId: "hackclub",
-                                    callbackURL: "/auth/callback",
-                                });
-                            }} className={`${kalam.className} text-center items-center justify-center flex gap-2 text-[#2a1a08] cursor-pointer hover:-translate-y-1 transition-all duration-300 ease-in border-[2px] border-[#1a1209] bg-[#e8dfa0] h-full py-4 px-4 rounded-xl text-lg`}>
-                            <span>Start</span>
-                            <span>
-                                <MoveRight size={24} strokeWidth={1} />
+                                try {
+                                    setIsSigningIn(true);
+                                    await authClient.signIn.oauth2({
+                                        providerId: "hackclub",
+                                        callbackURL: "/auth/callback",
+                                    });
+                                } catch (error) {
+                                    toast.error("Sign in Failed");
+                                    setIsSigningIn(false)
+                                }
+                            }} className={`${kalam.className} group hover:scale-95 tracking-widest cursor-pointer transition-all duration-300 w-full text-3xl py-2 font-semibold uppercase rounded-2xl border-4 border-dashed border-[#1a1209] text-center items-center justify-center flex gap-2 text-[#2a1a08] bg-[#e8dfa0] `}>
+                          {isSigningIn ? (
+                            <>
+                            <span className="flex justify-center items-center w-full h-full text-center">
+                                <Loader2 className="animate-spin" size={48} strokeWidth={2.5} />
                             </span>
+                            </>
+                          ) : (
+                          <>
+                            <span className="translate-y-[0.5px]">Start</span>
+                            <span>
+                                <MoveRight className="group-hover:translate-x-1 transition-all duration-300" size={40} strokeWidth={2.5} />
+                            </span>
+                        </>
+                        )}
                         </button>
                     </>
                 )}
