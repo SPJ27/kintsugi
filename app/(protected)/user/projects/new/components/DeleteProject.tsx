@@ -2,7 +2,7 @@
 import { deleteProject } from "@/actions/projects";
 import { useDeleteModalStore } from "@/app/store/DeleteModalStore";
 import { AnimatePresence, motion } from "framer-motion";
-import { TrashIcon } from "lucide-react";
+import { Loader2, TrashIcon } from "lucide-react";
 import { Kalam } from "next/font/google";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -15,8 +15,6 @@ export default function DeleteProject() {
     const { isOpen, closeDeleteModal, projectName, projectId } = useDeleteModalStore();
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-
-    if (!isOpen) return null;
     const handleDelete = async () => {
         if (!projectId) return;
         try {
@@ -45,8 +43,8 @@ export default function DeleteProject() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    onClick={closeDeleteModal}
-                    className={`fixed z-40 min-w-screen flex items-center inset-0 justify-center bg-black/20 backdrop-blur-xs ${kalam.className}`}>
+                    onClick={() => { if (!loading) closeDeleteModal(); }}
+                    className={`fixed z-40 disabled:cursor-not-allowed min-w-screen flex items-center inset-0 justify-center bg-black/20 backdrop-blur-xs ${kalam.className}`}>
                     <motion.div
                         onClick={(e) => e.stopPropagation()}
                         className="relative w-[450px] flex flex-col gap-4 items-center text-center rounded-3xl border-4 border-[#2A1A08] border-dashed bg-[#fdf0c2] p-8 shadow-[2px_2px_0_rgba(26,18,9,0.25)]">
@@ -56,7 +54,7 @@ export default function DeleteProject() {
                         <div className="text-md">Are you sure you want to delete <span className="font-bold">&quot;{projectName}&quot;</span>?</div>
                         <div className="w-full flex gap-6 items-center justify-center text-center">
                             <button type="button" disabled={loading} onClick={closeDeleteModal} className="bg-[#c7a653]/30 text-[#2A1A08] border-[#2A1A08] text-xl font-bold w-1/2 py-2 border-2 border-dashed rounded-2xl cursor-pointer hover:scale-[95%] transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60">Cancel</button>
-                            <button type="button" disabled={loading} onClick={handleDelete} className="bg-[#c7a653] text-[#2A1A08] border-[#2A1A08] text-xl font-bold w-1/2 py-2 border-2 border-dashed rounded-2xl cursor-pointer hover:scale-[95%] transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60">{loading ? "Deleting..." : "Yes"}</button>
+                            <button type="button" disabled={loading} onClick={handleDelete} className="bg-[#c7a653] text-[#2A1A08] border-[#2A1A08] text-xl font-bold w-1/2 py-2 border-2 border-dashed rounded-2xl cursor-pointer hover:scale-[95%] transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 flex justify-center items-center text-center">{loading ? <Loader2 className="animate-spin duration-300 transition-all" /> : "Yes"}</button>
                         </div>
                     </motion.div>
                 </motion.div>

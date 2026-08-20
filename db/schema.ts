@@ -25,6 +25,7 @@ export const projects = pgTable(
   "projects",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    creationKey : text("creation_key").unique(),
     name: text("name").notNull(),
     description: text("description"),
     approvedSeconds: integer('approved_seconds').default(0).notNull(),

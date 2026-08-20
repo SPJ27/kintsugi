@@ -4,25 +4,25 @@
   --font-caveat: "Caveat", cursive;
 }
 
-html{
+html {
   scrollbar-width: none;
 }
 
-html::-webkit-scrollbar{
+html::-webkit-scrollbar {
   display: none;
 }
 
 
-.notebook{
+.notebook {
   position: fixed;
   inset: 0;
   background-image: repeating-linear-gradient(transparent 0px,
-transparent 31px,
-rgba(200,160,60,.25) 31px,
-rgba(200,160,60,.25) 32px);
+      transparent 31px,
+      rgba(200, 160, 60, .25) 31px,
+      rgba(200, 160, 60, .25) 32px);
 }
 
-.paper-noise{
+.paper-noise {
   position: absolute;
   inset: 0;
   background-image: url('/images/paper-noise.png');
@@ -31,7 +31,7 @@ rgba(200,160,60,.25) 32px);
   pointer-events: none;
 }
 
-.coffee-ring{
+.coffee-ring {
   position: absolute;
   border-radius: 50%;
   border: 2px solid rgba(130, 80, 25, .18);
@@ -52,41 +52,54 @@ rgba(200,160,60,.25) 32px);
   background: transparent;
 }
 
-.kintsugi-scrollbar::-webkit-scrollbar-thumb{
-  background : #c9a030;
+.kintsugi-scrollbar::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.kintsugi-scrollbar::-webkit-scrollbar-thumb {
+  background: #c9a030;
   border: 3px solid transparent;
   background-clip: padding-box;
   border-radius: 999px;
 }
 
-.kintsugi-scrollbar::-webkit-scrollbar-thumb:hover{
-  background : #c9a030;
-  border : 2px solid transparent;
+.kintsugi-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #c9a030;
+  border: 2px solid transparent;
   background-clip: padding-box;
 }
 
-.animate-wiggle{
+.animate-wiggle {
   animation: wiggle 2s ease-in-out infinite;
 }
 
 @keyframes wiggle {
-  0%, 100%{
+
+  0%,
+  100% {
     transform: rotate(0deg);
     transform: scale(1);
   }
-  20%{
+
+  20% {
     transform: scaleX(1.15) scaleY(0.85);
   }
-  25%{
+
+  25% {
     transform: rotate(-8deg);
   }
-  40%{
+
+  40% {
     transform: scaleX(0.9) scaleY(1.1);
   }
-  60%{
+
+  60% {
     transform: scaleX(1.08) scale(0.92);
   }
-  75%{
+
+  75% {
     transform: rotate(8deg);
   }
 }

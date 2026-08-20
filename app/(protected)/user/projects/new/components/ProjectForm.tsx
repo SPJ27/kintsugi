@@ -8,6 +8,7 @@ import { ChevronDown, ChevronUp, Circle, CircleCheck, Loader2, UploadCloud, Uplo
 import { getHackatimeProjects } from "@/actions/hackatime"
 import Image from "next/image"
 import { projects } from "@/db/schema"
+import { s } from "framer-motion/client"
 const kalam = Kalam({
     subsets: ['latin'],
     weight: ['300', '400', '700']
@@ -74,22 +75,32 @@ export default function ProjectForm({ project }: ProjectFormProps) {
         }
         loadProjects()
     }, [])
+    const submittingRef = useRef(false);
+    const creationKey = useRef(crypto.randomUUID());
+
     const handleSubmit = async (formData: FormData) => {
+        if (submittingRef.current) return;
+        submittingRef.current = true;
+        setLoading(true)
         try {
-            setLoading(true);
             const result = isEditing
-                ? await EditProject(project.id, formData) : await createNewProject(formData);
+                ? await EditProject(project.id, formData)
+                : await createNewProject(formData);
             if (!result.success) {
                 setError(result.error);
+                submittingRef.current = false;
+                setLoading(false);
                 return;
             }
-            router.push(`/user/projects/view/${result.project.id}`);
-            router.refresh();
+            await router.push(`/user/projects/view/${result.project.id}`);
         }
         catch (error) {
-            toast.error( isEditing ? "Failed to update project" : "Failed to create project");
-        }
-        finally {
+            toast.error(
+                isEditing
+                    ? "Failed to update project"
+                    : "Failed to create project"
+            );
+            submittingRef.current = false
             setLoading(false);
         }
     }
@@ -109,7 +120,15 @@ export default function ProjectForm({ project }: ProjectFormProps) {
     const filteredProjects = projects.filter((project) => project.name.toLowerCase().includes(hackatimeSearch.toLowerCase()));
     return (
         <>
-            <form action={handleSubmit} className="space-y-6">
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    if (submittingRef.current) return;
+                    const formData = new FormData(e.currentTarget);
+                    handleSubmit(formData);
+                }}
+                className="space-y-6">
+                <input type="hidden" name="creationKey" value={creationKey.current} />
                 <div className="flex flex-col gap-2">
                     <label htmlFor="bannerFile" className="text-[#2A1A08] text-2xl font-bold ml-4" >
                         Project Banner
@@ -134,10 +153,10 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                         />
                         {
                             project?.bannerUrl && (
-                                <input 
-                                type="hidden"
-                                name="bannerUrl"
-                                value={project.bannerUrl}
+                                <input
+                                    type="hidden"
+                                    name="bannerUrl"
+                                    value={project.bannerUrl}
                                 />
                             )
                         }
@@ -196,9 +215,8 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                 <div className="flex flex-col gap-2">
                     <label htmlFor="hackatimeProjects" className="text-[#2A1A08] text-2xl font-bold ml-4">Hackatime</label>
                     <div ref={hackatimeRef} className="relative mx-4">
-                        <button
+                        <div
                             className={`w-full border-2 border-[#c9a030] flex items-center text-xl text-[#2a1a08] py-4 px-2 rounded-2xl bg-[#fdf0c2] font-medium text-left transition-all duration-300 ${hackatimeOpen ? "rounded-t-2xl rounded-b-none" : "rounded-2xl"}`}
-                            type="button"
                             onClick={() => setHackatimeOpen((prev) => !prev)}>
                             <div className="min-w-0 flex-1 overflow-hidden">{selectedHackatimeProjects.length === 0 ? (
                                 <div className="mx-4 translate-y-1">No Projects Selected</div>
@@ -224,7 +242,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                             <div className="text-2xl shrink-0 px-2 transition-all duration-300 ease-out">
                                 {hackatimeOpen ? <ChevronUp /> : <ChevronDown />}
                             </div>
-                        </button>
+                        </div>
                         {hackatimeOpen && (
                             <div className="absolute  z-50  w-full rounded-b-2xl border-x-2 border-b-2 border-[#c9a030]  bg-[#fdf0c2] shadow-xl overflow-hidden">
                                 <div className="p-3 border-b-2 border-[#c9a030]/30">
@@ -249,9 +267,8 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                                                 const selected = selectedHackatimeProjects.includes(project.name);
                                                 return (
 
-                                                    <button
+                                                    <div
                                                         key={project.name}
-                                                        type="button"
                                                         onClick={() => {
                                                             setSelectedHackatimeProjects((prev) => selected ? prev.filter((name) => name !== project.name) : [...prev, project.name])
                                                         }}
@@ -261,7 +278,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                                                             {selected ? <CircleCheck /> : <Circle />}
                                                         </div>
                                                         <span className="truncate">{project.name}</span>
-                                                    </button>
+                                                    </div>
                                                 )
                                             })}
                                         </div>
@@ -309,7 +326,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                 <div className="flex w-full items-center  justify-center ">
                     <button
                         type="submit"
-                        className="text-4xl w-full border-4 border-dashed border-[#c9a030] bg-[#2A1A08] py-4 rounded-2xl text-[#fdf0c2] cursor-pointer"
+                        className="text-4xl flex justify-center items-center text-center disabled:cursor-not-allowed  w-full border-4 border-dashed border-[#c9a030] bg-[#2A1A08] py-4 rounded-2xl text-[#fdf0c2] cursor-pointer"
                         disabled={loading}>
                         {loading ? <Loader2 className="animate-spin" size={32} /> : (
                             isEditing ? "Save Changes" : "Create Project"

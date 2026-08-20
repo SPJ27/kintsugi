@@ -28,7 +28,13 @@ export async function createNewProject(
 
 
   const userId = session.id;
-
+  const creationKey = formData.get("creationKey") as string;
+  if(!creationKey){
+    return{
+      success : false,
+      error : "Invalid project submission."
+    }
+  }
   const name = formData.get("name") as string;
   if (!name?.trim()) {
     await safeLog({
@@ -48,7 +54,18 @@ export async function createNewProject(
   const bannerUrlInput = (formData.get("bannerUrl") as string) || null;
   const bannerFile = (formData.get("bannerFile") as File) || null;
   const hackatimeProjects = formData.getAll("hackatimeProjects") as string[];
-
+  const existingProject = await db.query.projects.findFirst({
+    where : and(
+      eq(projects.creationKey, creationKey),
+      eq(projects.userId, userId),
+    )
+  })
+  if(existingProject){
+    return{
+      success : true,
+      project : existingProject
+    }
+  }
   let bannerUrl: string | null = bannerUrlInput;
 
   if (bannerFile && bannerFile.size > 0) {
@@ -108,8 +125,31 @@ export async function createNewProject(
         bannerUrl,
         hackatimeProjects,
         userId,
+        creationKey
       })
-      .returning();
+      .onConflictDoNothing({
+        target : projects.creationKey
+      })
+      .returning();;
+
+      if(!newProject){
+        const existingProject = await db.query.projects.findFirst({
+          where : and(
+            eq(projects.creationKey, creationKey),
+            eq(projects.userId, userId)
+          )
+        })
+        if(!existingProject){
+          return{
+            success : false,
+            error : "Unable to create project"
+          }
+        }
+        return{
+          success : true,
+          project : existingProject
+        }
+      }
   } catch (err) {
     console.error("Failed to insert project:", err);
     await safeLog({

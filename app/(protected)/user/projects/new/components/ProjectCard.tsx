@@ -17,7 +17,7 @@ type ProjectCardProps = {
     hackatimeProjects: any[];
 }
 export default function ProjectCard({ project, hackatimeProjects }: ProjectCardProps) {
-    const { openDeleteModal, projectName } = useDeleteModalStore()
+    const { openDeleteModal } = useDeleteModalStore()
     return (
         <>
             <div
@@ -41,64 +41,62 @@ export default function ProjectCard({ project, hackatimeProjects }: ProjectCardP
                         <h1 className={`absolute left-[7px]  top-[4px] text-center select-none text-4xl leading-none tracking-[2px] text-[#1a1209] ${rubiks_Wet_Paint.className}`}>{project.name}</h1>
                         <h1 className={`absolute select-none text-center text-4xl translate-x-2 leading-none tracking-[2px] text-[#f0c14d] ${rubiks_Wet_Paint.className}  [-webkit-text-stroke:0.7px_#1a1209]`}>{project.name}</h1>
                     </div>
-                    <div className="flex items-center  ">
-                        <div className="flex gap-2 items-center">
+                    <div className="flex kintsugi-scrollbar w-full overflow-x-auto overflow-y-hidden">
+                        <div className="flex w-max gap-2 items-center">
                             {project.hackatimeProjects?.map((hackatimeProject: any) => (
                                 hackatimeProject &&
                                 <div
                                     key={hackatimeProject}
-                                    className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
+                                    className=" shrink-0 whitespace-nowrap py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
                                     {hackatimeProject}
                                 </div>
                             ))}
-                        </div>
+                            <div>{(() => {
+                                const totalSeconds = project.hackatimeProjects.reduce(
+                                    (total: any, projectName: any) => {
+                                        const hackatimeProject = hackatimeProjects.find(
+                                            (p: { name: string; total_seconds?: number }) => p.name === projectName
+                                        );
+                                        return total + (hackatimeProject?.total_seconds ?? 0);
+                                    },
+                                    0
+                                )
+                                const hours = Math.floor(totalSeconds / 3600);
+                                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                                return <div className="whitespace-nowrap shrink-0 py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">{hours}h {minutes}m</div>
+                            })()}</div>
+                            <div>
+                                {project.projectDemo && (
+                                    <a href={project.projectDemo} target="_blank" rel="noopener noreferrer" className="shrink-0 py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">Demo</a>
+                                )}
+                            </div>
+                            <div>
+                                {project.projectRepo && (
+                                    <a href={project.projectRepo} target="_blank" rel="noopener noreferrer" className="shrink-0 py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">Repo</a>
+                                )}
+                            </div>
+                            <div>
+                                <Link href={`projects/view/${project.id}`} className="shrink-0 py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
+                                    <Eye />
+                                </Link>
+                            </div>
+                            <div>
+                                <Link href={`projects/edit/${project.id}`} className="shrink-0 py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
+                                    <Pencil />
+                                </Link>
+                            </div>
+                            <div>
 
-                        <div>{(() => {
-                            const totalSeconds = project.hackatimeProjects.reduce(
-                                (total: any, projectName: any) => {
-                                    const hackatimeProject = hackatimeProjects.find(
-                                        (p: { name: string; total_seconds?: number }) => p.name === projectName
-                                    );
-                                    return total + (hackatimeProject?.total_seconds ?? 0);
-                                },
-                                0
-                            )
-                            const hours = Math.floor(totalSeconds / 3600);
-                            const minutes = Math.floor((totalSeconds % 3600) / 60);
-                            return <div className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">{hours}h {minutes}m</div>
-                        })()}</div>
-                        <div>
-                            {project.projectDemo && (
-                                <a href={project.projectDemo} target="_blank" rel="noopener noreferrer" className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">Demo</a>
-                            )}
-                        </div>
-                        <div>
-                            {project.projectRepo && (
-                                <a href={project.projectRepo} target="_blank" rel="noopener noreferrer" className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">Repo</a>
-                            )}
-                        </div>
-                        <div>
-                            <Link href={`projects/view/${project.id}`} className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
-                                <Eye />
-                            </Link>
-                        </div>
-                        <div>
-                            <Link href={`projects/edit/${project.id}`} className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
-                                <Pencil />
-                            </Link>
-                        </div>
-                        <div>
-
-                            <button type="button" onClick={() => openDeleteModal(project.id, project.name)} className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
-                                <TrashIcon />
-                            </button>
+                                <button type="button" onClick={() => openDeleteModal(project.id, project.name)} className="shrink-0 py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
+                                    <TrashIcon />
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="ml-2 row-span-2 text-lg truncate">
-                        {project.description || "No Description added yet."}
-                    </div>
-
+                        <div className="ml-2 my-1 row-span-2 text-lg truncate">
+                            {project.description || "No Description added yet."}
+                        </div>
                 </div>
             </div>
 

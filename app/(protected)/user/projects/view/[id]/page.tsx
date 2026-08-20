@@ -82,25 +82,20 @@ export default async function page({ params }: { params: Promise<{ id: string }>
                             )
                             const hours = Math.floor(totalSeconds / 3600);
                             const minutes = Math.floor((totalSeconds % 3600) / 60);
-                            return <div className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">{hours}h {minutes}m</div>
+                            return <div className="whitespace-nowrap py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">{hours}h {minutes}m</div>
                         })()}</div>
                         <div>
-                            {project.hackatimeProjects?.length > 0 && (
-                                <div className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">{project.hackatimeProjects}</div>
-                            )}
-                        </div>
-                        <div>
                             {project.projectDemo && (
-                                <a href={project.projectDemo} target="_blank" rel="noopener noreferrer" className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">Demo</a>
+                                <a href={project.projectDemo} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">Demo</a>
                             )}
                         </div>
                         <div>
                             {project.projectRepo && (
-                                <a href={project.projectRepo} target="_blank" rel="noopener noreferrer" className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">Repo</a>
+                                <a href={project.projectRepo} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">Repo</a>
                             )}
                         </div>
                         <div>
-                            <Link href={`/user/projects/edit/${project.id}`} className=" py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
+                            <Link href={`/user/projects/edit/${project.id}`} className="whitespace-nowrap py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
                                 <Pencil />
                             </Link>
                         </div>
