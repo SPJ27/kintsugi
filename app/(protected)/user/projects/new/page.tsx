@@ -16,7 +16,7 @@ export default function page() {
 
       <div className="relative h-full overflow-y-auto w-full scrollbar-none px-12 py-12 rounded-[45px] border-[3px] bg-[#fff9e8] border-[#24221C] ">
         <div className="relative">
-          <h1 className={`absolute left-[7px]  top-[4px] text-center select-none text-4xl leading-none tracking-[2px] text-[#1a1209] ${rubiks_Wet_Paint.className}`}>CREATE PROJECT</h1>
+          <h1 className={`absolute left-[7px]  top-[4px] text-center select-none text-4xl leading-none tracking-[2px] text-[#24221C] ${rubiks_Wet_Paint.className}`}>CREATE PROJECT</h1>
           <h1 className={`absolute select-none text-center text-4xl translate-x-2 leading-none tracking-[2px] text-[#f0c14d] ${rubiks_Wet_Paint.className}  [-webkit-text-stroke:0.7px_#1a1209]`}>CREATE PROJECT</h1>
         </div>
         <p className="text-[#c7a653] mb-14 translate-y-11 mx-2 text-xl font-medium">Add Your Project Details here</p>

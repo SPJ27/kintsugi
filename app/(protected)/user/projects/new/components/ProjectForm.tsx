@@ -161,7 +161,9 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                             )
                         }
                         {loadingImage && (
-                            <div>Hey I am loading</div>
+                            <div>
+                                <Loader2 className="animate-spin text-2xl" size={48} />
+                            </div>
                         )}
                         {
                             bannerPreview ? (
