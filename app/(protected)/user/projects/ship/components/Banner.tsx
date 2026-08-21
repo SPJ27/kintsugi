@@ -1,9 +1,10 @@
-import { Loader2, Upload, UploadCloud, UploadIcon } from "lucide-react";
+import { ChevronLeft, Loader2, Upload, UploadCloud, UploadIcon } from "lucide-react";
 import { useState, useRef } from "react";
 import { toast } from "sonner";
 import Image from "next/image"
+import Link from "next/link";
 export default function BannerStep({
-    project, onNext
+    project, onNext,
 }: {
     project: any; onNext: () => void;
 }) {
@@ -37,15 +38,18 @@ export default function BannerStep({
         handleFile(file)
     }
     return (
-        <div className="mx-6">
+        <div className="mx-6 relative">           
+         <Link href={`/user/projects/view/${project.id}`} className="absolute hover:scale-90 transition-all duration-300 cursor-pointer -top-40 -left-12 bg-[#24221C] border-3 cursor-pointer  text-[#c9a030] px-1 py-1 rounded-xl border-[#c9a030]">
+                <ChevronLeft />
+            </Link>
             <div className="flex justify-between items-center">
                 <div>
-                <h2 className="text-2xl text-[#24221C] font-bold">Let's review your Banner</h2>
-                <p className="text-md text-[#f0c14d]">Make sure your project looks good before sending it for review.</p>
-            </div>
-            <div>
-                <button className="text-2xl font-bold bg-[#24221C] px-4 py-1 rounded-xl border-3 border-dashed border-[#c9a030] text-[#c9a030] cursor-pointer hover:scale-90 transition-all duration-300" onClick={onNext}><span className="-translate-y-4 w-full h-full">Next</span></button>
-            </div>
+                    <h2 className="text-2xl text-[#24221C] font-bold">Let's review your Banner</h2>
+                    <p className="text-md text-[#f0c14d]">Make sure your project looks good before sending it for review.</p>
+                </div>
+                <div>
+                    <button className="text-2xl font-bold bg-[#24221C] px-4 py-1 rounded-xl border-3 border-dashed border-[#c9a030] text-[#c9a030] cursor-pointer hover:scale-90 transition-all duration-300" onClick={onNext}><span className="-translate-y-4 w-full h-full">Next</span></button>
+                </div>
             </div>
             <div
                 onClick={() => bannerInputRef.current?.click()}
