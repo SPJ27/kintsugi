@@ -38,7 +38,7 @@ export default async function page({ params }: { params: Promise<{ id: string }>
                         <h1 className={`absolute left-[7px]  top-[4px] text-center select-none text-6xl leading-none tracking-[2px] text-[#1a1209] ${rubik_Wet_Paint.className}`}>{project.name}</h1>
                         <h1 className={`absolute select-none text-center text-6xl translate-x-2 leading-none tracking-[2px] text-[#f0c14d] ${rubik_Wet_Paint.className}  [-webkit-text-stroke:0.7px_#1a1209]`}>{project.name}</h1>
                     </div>
-                    <Link href={`/ship/${id}`} className="absolute  right-4 border-[#c9a030] border-3 rounded-xl top-4 bg-[#2A1A08] py-2 px-4">
+                    <Link href={`/user/projects/ship/${id}`} className="absolute  right-4 border-[#c9a030] border-3 rounded-xl top-4 bg-[#2A1A08] py-2 px-4">
                         <Ship size={24} className='text-[#c9a030]' strokeWidth={2.5}  />
                     </Link>
                     <div className="relative  w-full h-100 shrink-0 overflow-hidden rounded-3xl border-4">

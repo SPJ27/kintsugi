@@ -9,7 +9,7 @@ export default function Loading() {
         },[])
     return (
         <div className="flex flex-col min-h-screen w-full items-center justify-center text-center">
-            <video src={'/images/loading.webm'} ref={videoRef} autoPlay loop muted playsInline />
+            <video src={'/videos/loading.mp4'} className="w-60 rounded-2xl" ref={videoRef} autoPlay loop muted playsInline />
 
         </div>
     )

@@ -2,7 +2,7 @@ export default function page(){
     return(
         <div className="flex flex-col relative justify-center items-center h-screen">
             <div>
-                <video src={'/images/loading.webm'} autoPlay loop muted playsInline />
+                <video src={'/videos/loading.mp4'} className="rounded-2xl" autoPlay loop muted playsInline />
             </div>
             <div className={`absolute text-9xl font-bold [text-stroke:4px_black] [-webkit-text-stroke:4px_black] text-[#c9a030] animate-wiggle`}> 404</div>
             <div>

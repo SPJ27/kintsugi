@@ -10,7 +10,7 @@ export default function Loading(){
     },[])
     return(
     <div className="flex justify-center items-center h-screen ">
-        <video src={'/images/loading.webm'} ref={videoRef} autoPlay loop muted playsInline/>
+        <video src={'/videos/loading.mp4'} ref={videoRef} autoPlay loop muted playsInline/>
     </div>
 
 )}
