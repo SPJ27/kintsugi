@@ -32,7 +32,7 @@ export default async function page() {
                 <h1 className={`absolute select-none text-center text-6xl translate-x-1 leading-none tracking-[2px] text-[#f0c14d] ${rubiks_Wet_Paint.className}  [-webkit-text-stroke:0.7px_#1a1209]`}>MY PROJECTS</h1>
             </div>
             <div className="w-full flex justify-center items-center">
-                <Link href={'/user/projects/new'} className="w-[940px] mt-4 shadow-[3px_5px_0_rgba(26,18,9,0.18)] gap-4 py-4 flex cursor-pointer border-[#c9a030] font-medium justify-center text-[#c9a030] items-center bg-[#2A1A08] border-4 border-dashed rounded-2xl uppercase text-4xl">
+                <Link href={'/user/projects/new'} className="hover:scale-95 transition-all duration-300 w-[940px] mt-4 shadow-[3px_5px_0_rgba(26,18,9,0.18)] gap-4 py-4 flex cursor-pointer border-[#c9a030] font-medium justify-center text-[#c9a030] items-center bg-[#2A1A08] border-4 border-dashed rounded-2xl uppercase text-4xl">
                     <span className="text-5xl">+</span> Create Project
                 </Link>
             </div>

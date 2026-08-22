@@ -1,6 +1,6 @@
 'use client'
 import { useDeleteModalStore } from "@/app/store/DeleteModalStore";
-import { Eye, Pencil, TrashIcon } from "lucide-react";
+import { Eye, Pencil, Ship, TrashIcon } from "lucide-react";
 import { Kalam, Rubik_Wet_Paint } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
