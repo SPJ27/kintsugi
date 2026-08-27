@@ -3,6 +3,7 @@ import { requireAuth, requireRole } from "@/lib/auth-guard";
 import { getHackatimeStatus } from "@/lib/db/user";
 import { Kalam, Rubik_Wet_Paint } from "next/font/google";
 import { toast } from "sonner";
+import Button from "../components/Button";
 const kalamFont = Kalam({
     subsets: ['latin'],
     weight: ['300', '400', '700']
@@ -44,8 +45,7 @@ export default async function page() {
                     <p className={`text-3xl ${session.verificationStatus === "verified" ? "text-[#7CAE73]" : "text-red-500"}`}>{session.verificationStatus === "verified" ? "Eligible" : "Not Eligible"}</p>
                 </div>
                 <div className="py-4 px-4 h-30 w-full md:w-1/2 flex flex-col gap-2 rounded-xl border-2 border-dashed border-[#c9a030] bg-[#2A1A08]">
-                    <h2 onClick={()=>toast.error("This is currently not functionable")} className="text-xl text-[#69583C]">DOCS AND GUIDES</h2>
-                    <p onClick={()=>toast.error("This is currently not functionable")} className="text-2xl md:text-3xl hover:text-[#7d6114] text-[#c9a030] duration-300 transition-all cursor-pointer">PLEASE READ GUIDE!</p>
+                    <Button />
                 </div>
             </div>
         </div>
