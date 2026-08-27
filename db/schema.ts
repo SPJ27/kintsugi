@@ -129,7 +129,7 @@ export const shipEvents = pgTable(
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    withdrawnAt : timestamp("withdrawn_at"),
+    withdrawnAt: timestamp("withdrawn_at"),
     projectId: integer("project_id")
       .notNull()
       .references(() => projects.id, { onDelete: "cascade" }),
@@ -141,10 +141,15 @@ export const shipEvents = pgTable(
     reviewerNote: text("reviewer_note"),
     auditNote: text("audit_note"),
     seconds: integer("seconds").default(0).notNull(),
+    reviewedBy: text("reviewed_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    reviewedOn: timestamp("reviewed_on"),
   },
   (table) => [
     index("ship_events_projectId_idx").on(table.projectId),
     index("ship_events_userId_idx").on(table.userId),
+    index("ship_events_reviewedBy_idx").on(table.reviewedBy),
   ],
 );
 
@@ -162,8 +167,8 @@ export const userRelations = relations(user, ({ many }) => ({
   logs: many(logs),
   projects: many(projects),
   shipEvents: many(shipEvents),
+  reviewedShipEvents: many(shipEvents, { relationName: "reviewer" }),
 }));
-
 export const sessionRelations = relations(session, ({ one }) => ({
   user: one(user, {
     fields: [session.userId],
@@ -193,5 +198,10 @@ export const shipEventsRelations = relations(shipEvents, ({ one }) => ({
   user: one(user, {
     fields: [shipEvents.userId],
     references: [user.id],
+  }),
+  reviewer: one(user, {
+    fields: [shipEvents.reviewedBy],
+    references: [user.id],
+    relationName: "reviewer",
   }),
 }));

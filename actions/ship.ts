@@ -97,7 +97,9 @@ export async function approveProject(shipEventId: number, reviewerNote?: string,
             .set({
                 approvalStatus: "approved",
                 reviewerNote: reviewerNote ?? shipEvent.reviewerNote,
-                auditNote
+                auditNote,
+                reviewedBy: session.id,
+                reviewedOn: new Date()
             })
             .where(eq(shipEvents.id, shipEventId))
             .returning()
@@ -148,7 +150,9 @@ export async function rejectProject(shipEventId: number, reviewerNote?: string, 
             .set({
                 approvalStatus: "rejected",
                 reviewerNote: reviewerNote ?? shipEvent.reviewerNote,
-                auditNote
+                auditNote,
+                reviewedBy: session.id,
+                reviewedOn: new Date()
             })
             .where(eq(shipEvents.id, shipEventId))
             .returning()
