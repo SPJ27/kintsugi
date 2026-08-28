@@ -5,7 +5,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
     const session = await requireAuth();
 
     return (
-        <UserLayoutClient displayName={session.name ?? "User"} roles={session.role ?? []}>
+        <UserLayoutClient displayName={session.name ?? "User"} roles={session.role ?? []} image={session.image ?? null}>
             {children}
         </UserLayoutClient>
     );

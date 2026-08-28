@@ -35,9 +35,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
     const [hackatimeSearch, setHackatimeSearch] = useState('');
     const [selectedHackatimeProjects, setSelectedHackatimeProjects] = useState<string[]>(project?.hackatimeProjects ?? []);
     const [projectsLoading, setProjectsLoading] = useState(true);
-
     const isEditing = !!project;
-
     const handleFile = (file: File | undefined) => {
         if (!file) return;
         if (!file.type.startsWith("image/")) {
@@ -129,7 +127,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                 className="space-y-6">
                 <input type="hidden" name="creationKey" value={creationKey.current} />
                 <div className="flex flex-col gap-2">
-                    <label htmlFor="bannerFile" className="text-[#2A1A08] text-2xl font-bold ml-4" >
+                    <label htmlFor="bannerFile" className="text-[#2A1A08] text-2xl font-bold sm:ml-4" >
                         Project Banner
                     </label>
                     <div
@@ -180,10 +178,10 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                                         )}
                                     </div>
                                     <div className="flex gap-2 flex-col">
-                                        <p className="text-2xl font-bold text-[#B88900]">
+                                        <p className="text-xl sm:text-2xl font-bold text-[#B88900]">
                                             Drag and drop a banner for your project
                                         </p>
-                                        <p className="text-xl font-semibold text-[#B88900]/80" >
+                                        <p className="text-lg sm:text-xl font-semibold text-[#B88900]/80" >
                                             or click to browse your files
                                         </p>
                                     </div>
@@ -193,28 +191,28 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                     </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <label htmlFor="name" className="text-[#2A1A08] text-2xl font-bold ml-4">Title</label>
+                    <label htmlFor="name" className="text-[#2A1A08] text-2xl font-bold sm:ml-4">Title</label>
                     <input
                         id="name"
                         name="name"
                         type="text"
                         defaultValue={project?.name || ""}
                         placeholder="My awesome project"
-                        className="ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
+                        className="sm:ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
                         required />
                 </div>
                 <div className="flex flex-col gap-2">
-                    <label htmlFor="desc" className="text-[#2A1A08] text-2xl font-bold ml-4">Description</label>
+                    <label htmlFor="desc" className="text-[#2A1A08] text-2xl font-bold sm:ml-4">Description</label>
                     <textarea
                         id="desc"
                         name="desc"
-                        className="ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
+                        className="sm:ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
                         defaultValue={project?.description ?? ""}
                         placeholder="Tell us about your project"
                         rows={5} />
                 </div>
                 <div className="flex flex-col gap-2">
-                    <label htmlFor="hackatimeProjects" className="text-[#2A1A08] text-2xl font-bold ml-4">Hackatime</label>
+                    <label htmlFor="hackatimeProjects" className="text-[#2A1A08] text-2xl font-bold sm:ml-4">Hackatime</label>
                     <div ref={hackatimeRef} className="relative mx-4">
                         <div
                             className={`w-full border-2 border-[#c9a030] flex items-center text-xl text-[#2a1a08] py-4 px-2 rounded-2xl bg-[#fdf0c2] font-medium text-left transition-all duration-300 ${hackatimeOpen ? "rounded-t-2xl rounded-b-none" : "rounded-2xl"}`}
@@ -298,36 +296,35 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                     </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <label htmlFor="projectDemo" className="text-[#2A1A08] text-2xl font-bold ml-4">Demo Url</label>
+                    <label htmlFor="projectDemo" className="text-[#2A1A08] text-2xl font-bold sm:ml-4">Demo Url</label>
                     <input
                         id="projectDemo"
                         name="projectDemo"
                         type="url"
                         defaultValue={project?.projectDemo || ""}
-                        className="ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
+                        className="sm:ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
 
                         placeholder="https://myproject.vercel.app"
                     />
                 </div>
                 <div className="flex flex-col gap-2">
-                    <label htmlFor="projectRepo" className="text-[#2A1A08] text-2xl font-bold ml-4">Repository URL</label>
+                    <label htmlFor="projectRepo" className="text-[#2A1A08] text-2xl font-bold sm:ml-4">Repository URL</label>
                     <input
                         id="projectRepo"
                         name="projectRepo"
                         type="url"
                         defaultValue={project?.projectRepo || ""}
-                        className="ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
+                        className="sm:ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
                         placeholder="https://github.com/username/project"
                     />
                 </div>
                 {error && (
                     <div>{error}</div>
                 )}
-
                 <div className="flex w-full items-center  justify-center ">
                     <button
                         type="submit"
-                        className="text-4xl hover:scale-95 transition-all duration-300 flex justify-center items-center text-center disabled:cursor-not-allowed  w-full border-4 border-dashed border-[#c9a030] bg-[#2A1A08] py-4 rounded-2xl text-[#fdf0c2] cursor-pointer"
+                        className="text-2xl md:text-4xl hover:scale-95 transition-all duration-300 flex justify-center items-center text-center disabled:cursor-not-allowed  w-full border-4 border-dashed border-[#c9a030] bg-[#2A1A08] py-4 rounded-2xl text-[#fdf0c2] cursor-pointer"
                         disabled={loading}>
                         {loading ? <Loader2 className="animate-spin" size={32} /> : (
                             isEditing ? "Save Changes" : "Create Project"
@@ -335,7 +332,6 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                     </button>
                 </div>
             </form>
-
         </>
     )
 }

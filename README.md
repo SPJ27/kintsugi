@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kintsugi 
+ 金継ぎ - break it. fix it. ship it.
 
-##  Getting Started
+## Description
+Its a website made for ysws which is still in draft named as `kintsugi`. Kintsugi is Japanese art of reparing broken pottery by mending the cracks.
 
-First, run the development server:
+## Features
+- Create Project
+- Read Project
+- Update Project
+- Delete Project
+- Ship Project
+- Edit Project
+- Time Tracking using hackatime
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+## Tech Stack
+- Next JS
+- HC Auth
+- Hackatime 
+- Neon 
+- TailwindCSS
+- Framer Motion
+- Drizzle
+- PostgreSql
+- Lucide Icons
+- GIT
+- GITHUB 
+
+## Installation
+
+1. Clone the Repository
+```
+git clone https://github.com/akshansh-kakkkar/kintsugi.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install the dependencies
+```
+bun install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Add the Env
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
 
-## Learn More
+DATABASE_URL=
 
-To learn more about Next.js, take a look at the following resources:
+HACKCLUB_CLIENT_ID =
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+HACKCLUB_CLIENT_SECRET = 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+BETTER_AUTH_SECRET = 
 
-## Deploy on Vercel
+BETTER_AUTH_URL = 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+HACKATIME_CLIENT_ID =
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+HACKATIME_CLIENT_SECRET = 
+
+HACKATIME_REDIRECT_URI = 
+
+SLACK_BOT_TOKEN=
+
+CDN_KEY=
+
+```
+
+
+4. Run the server
+
+```
+bun run dev
+```
+
+Link
+###### https://kintsugi-chi.vercel.app/
+
+`AI Note : AI was used minimally during development. primarily for research and debugging or fixing occasional bugs.`

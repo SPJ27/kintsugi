@@ -7,6 +7,7 @@ import Link from "next/link";
 import { getShipStatusLabel } from '@/lib/ship-status';
 import HideDeleteButton from "../../view/components/HideDeleteButton";
 import HideEditButton from "../../view/components/HideEditButton";
+import { shipEvents } from '../../../../../../db/schema';
 const kalam = Kalam({
     subsets: ['latin'],
     weight: ['300', '400', '700']
@@ -21,8 +22,8 @@ type ProjectCardProps = {
 }
 export default function ProjectCard({ project, hackatimeProjects }: ProjectCardProps) {
     const { openDeleteModal } = useDeleteModalStore();
-    const latestShipEvent = project.shipEvents?.[0];
-    const shipStatus = latestShipEvent?.approvalStatus;;
+    const activeShipEvent = project.shipEvents?.find((event : any)=>event.withdrawnAt === null)
+    const shipStatus = activeShipEvent?.approvalStatus;
     const ShipStatusLabel = shipStatus ? getShipStatusLabel(shipStatus) : {
         label: "NOT SHIPPED",
         className: "bg-[#fff9e8] text-[#6b5a32]  border-[#c9a030]"
@@ -31,11 +32,11 @@ export default function ProjectCard({ project, hackatimeProjects }: ProjectCardP
         <>
             <div
                 key={project.id}
-                className={`${kalam.className} w-[940px] h-135 shadow-[3px_5px_0_rgba(26,18,9,0.18)]  flex flex-col  rounded-4xl border-[4px] shadow-[3px_5px_0_rgba(26,18,9,0.18)] border-[#24221C] bg-[#e8b93f] p-4`}
+                className={`${kalam.className} w-full md:w-[740px] lg:w-[940px] h-135 shadow-[3px_5px_0_rgba(26,18,9,0.18)]  flex flex-col  rounded-4xl border-[4px] shadow-[3px_5px_0_rgba(26,18,9,0.18)] border-[#24221C] bg-[#e8b93f] p-4`}
             >
-                <div className="h-full overflow-y-auto w-[900px] scrollbar-none px-6 py-6 rounded-4xl border-[3px] gap-2 bg-[#fff9e8] border-[#24221C] flex flex-col">
+                <div className="h-full overflow-y-auto w-full md:w-[700px] lg:w-[900px] scrollbar-none px-6 py-6 rounded-4xl border-[3px] gap-2 bg-[#fff9e8] border-[#24221C] flex flex-col">
                     <div className="flex justify-center items-center">
-                        <div className="relative  w-[500px] h-64 shrink-0 overflow-hidden rounded-3xl border-4">
+                        <div className="relative w-[200px] sm:w-[300px] md:w-[500px] h-64 shrink-0 overflow-hidden rounded-3xl border-4">
                             {
                                 project.bannerUrl ? (
                                     <Image src={project.bannerUrl} alt={project.name} fill className="absolute object-cover" />
@@ -47,8 +48,8 @@ export default function ProjectCard({ project, hackatimeProjects }: ProjectCardP
                         </div>
                     </div>
                     <div className="relative h-10 mb-2">
-                        <h1 className={`absolute left-[7px]  top-[4px] text-center select-none text-4xl leading-none tracking-[2px] text-[#1a1209] ${rubiks_Wet_Paint.className}`}>{project.name}</h1>
-                        <h1 className={`absolute select-none text-center text-4xl translate-x-2 leading-none tracking-[2px] text-[#f0c14d] ${rubiks_Wet_Paint.className}  [-webkit-text-stroke:0.7px_#1a1209]`}>{project.name}</h1>
+                        <h1 className={`absolute left-[7px]  top-[4px] text-center text-2xl select-none md:text-4xl leading-none tracking-[2px] text-[#1a1209] ${rubiks_Wet_Paint.className}`}>{project.name}</h1>
+                        <h1 className={`absolute select-none text-center md:text-4xl text-2xl translate-x-2 leading-none tracking-[2px] text-[#f0c14d] ${rubiks_Wet_Paint.className}  [-webkit-text-stroke:0.7px_#1a1209]`}>{project.name}</h1>
                     </div>
                     <div className="flex kintsugi-scrollbar w-full overflow-x-auto overflow-y-hidden">
                         <div className="flex w-max gap-2 items-center">
@@ -92,10 +93,10 @@ export default function ProjectCard({ project, hackatimeProjects }: ProjectCardP
                             <div>
                                 {shipStatus === "pending" || shipStatus === "permanently_rejected" ? (
                                     <HideEditButton />
-                                ):(
-                                <Link href={`projects/edit/${project.id}`} className="shrink-0 py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
-                                    <Pencil />
-                                </Link>
+                                ) : (
+                                    <Link href={`projects/edit/${project.id}`} className="shrink-0 py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
+                                        <Pencil />
+                                    </Link>
                                 )}
 
                             </div>

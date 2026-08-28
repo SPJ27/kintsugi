@@ -6,7 +6,12 @@ const nextConfig: NextConfig = {
         remotePatterns : [
             {
                 protocol : "https",
-                hostname : "cdn.hackclub.com"
+                hostname : "cdn.hackclub.com", 
+                
+            },
+            {
+                protocol : "https",
+                hostname : "avatars.slack-edge.com",
             }
         ]
     }

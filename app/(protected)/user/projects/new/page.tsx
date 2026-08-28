@@ -14,10 +14,10 @@ export default function page() {
     <main className={`${kalam.className} w-full h-[89vh] shadow-[3px_5px_0_rgba(26,18,9,0.18)]  flex flex-col  rounded-[55px] border-[4px] shadow-[3px_5px_0_rgba(26,18,9,0.18)] border-[#24221C] bg-[#e8b93f] p-4`}>
       <div className="absolute left-40 -rotate-12 pointer-events-none top-12 z-2 border-1 w-30 h-8 border-[#d2b432] bg-[#FFF4968A]" />
 
-      <div className="relative h-full overflow-y-auto w-full scrollbar-none px-12 py-12 rounded-[45px] border-[3px] bg-[#fff9e8] border-[#24221C] ">
-        <div className="relative">
-          <h1 className={`absolute left-[7px]  top-[4px] text-center select-none text-4xl leading-none tracking-[2px] text-[#24221C] ${rubiks_Wet_Paint.className}`}>CREATE PROJECT</h1>
-          <h1 className={`absolute select-none text-center text-4xl translate-x-2 leading-none tracking-[2px] text-[#f0c14d] ${rubiks_Wet_Paint.className}  [-webkit-text-stroke:0.7px_#1a1209]`}>CREATE PROJECT</h1>
+      <div className="relative h-full overflow-y-auto w-full scrollbar-none px-4 md:px-12 py-12 rounded-[45px] border-[3px] bg-[#fff9e8] border-[#24221C] ">
+        <div className="relative h-4 sm:h-0">
+          <h1 className={`absolute left-[7px]  top-[4px] text-center select-none text-2xl sm:text-4xl leading-none tracking-[2px] text-[#24221C] ${rubiks_Wet_Paint.className}`}>CREATE PROJECT</h1>
+          <h1 className={`absolute select-none text-center text-2xl sm:text-4xl translate-x-2 leading-none tracking-[2px] text-[#f0c14d] ${rubiks_Wet_Paint.className}  [-webkit-text-stroke:0.7px_#1a1209]`}>CREATE PROJECT</h1>
         </div>
         <p className="text-[#c7a653] mb-14 translate-y-11 mx-2 text-xl font-medium">Add Your Project Details here</p>
         <div className="mt-4 flex flex-col">

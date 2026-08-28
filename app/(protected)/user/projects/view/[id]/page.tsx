@@ -37,27 +37,23 @@ export default async function page({ params }: { params: Promise<{ id: string }>
     const hackatimeResult = await getHackatimeProjects()
     const hackatimeProjects = hackatimeResult.success ? hackatimeResult.projects : []
     const latestShipEvent = project.shipEvents?.[0];
-    const shipStatus = latestShipEvent?.approvalStatus;;
+    const activeShipEvent = project.shipEvents.find(
+        (event) => event.withdrawnAt === null
+    )
+    const shipStatus = activeShipEvent?.approvalStatus;
+    const isShipped = activeShipEvent?.approvalStatus === "pending"
     const ShipStatusLabel = shipStatus ? getShipStatusLabel(shipStatus as ShipStatus) : {
         label: "NOT SHIPPED",
         className: "bg-[#fff9e8] text-[#6b5a32]  border-[#c9a030]"
     };
-    const activeShipEvent = project.shipEvents.find(
-        (event) => event.withdrawnAt === null &&
-            event.approvalStatus === "pending"
-    )
-    const isShipped = !!activeShipEvent
-    const editDisabled = () => {
-        return toast.error("You can't edit your project when shipped or rejected")
-    }
     return (
         <>
             <div className={`${kalam.className} w-full h-[89vh] shadow-[3px_5px_0_rgba(26,18,9,0.18)]  flex flex-col  rounded-[55px] border-[4px] shadow-[3px_5px_0_rgba(26,18,9,0.18)] border-[#24221C] bg-[#e8b93f] p-4`}>
                 <div className="absolute left-40 -rotate-12 pointer-events-none top-12 z-2 border-1 w-30 h-8 border-[#d2b432] bg-[#FFF4968A]" />
                 <div className="relative h-full overflow-y-auto w-full scrollbar-none px-12 py-12 rounded-[45px] border-[3px] bg-[#fff9e8] border-[#24221C] ">
                     <div className="relative h-24">
-                        <h1 className={`absolute left-[7px]  top-[4px] text-center select-none text-6xl leading-none tracking-[2px] text-[#1a1209] ${rubik_Wet_Paint.className}`}>{project.name}</h1>
-                        <h1 className={`absolute select-none text-center text-6xl translate-x-2 leading-none tracking-[2px] text-[#f0c14d] ${rubik_Wet_Paint.className}  [-webkit-text-stroke:0.7px_#1a1209]`}>{project.name}</h1>
+                        <h1 className={`absolute left-[7px]  top-[4px] text-center select-none text-4xl sm:text-6xl leading-none tracking-[2px] text-[#1a1209] ${rubik_Wet_Paint.className}`}>{project.name}</h1>
+                        <h1 className={`absolute select-none text-center text-4xl md:text-6xl translate-x-2 leading-none tracking-[2px] text-[#f0c14d] ${rubik_Wet_Paint.className}  [-webkit-text-stroke:0.7px_#1a1209]`}>{project.name}</h1>
                     </div>
                     {isShipped ? (
                         <UnShipButton projectId={project.id} />
@@ -83,7 +79,7 @@ export default async function page({ params }: { params: Promise<{ id: string }>
                     <div className="my-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none">
                         {project.description || "No Description added yet"}
                     </div>
-                    <div className='flex items-center text-center'>
+                    <div className='flex overflow-x-auto items-center text-center'>
                         <div className="flex gap-2 items-center">
                             {project.hackatimeProjects?.map((hackatimeProject: any) => (
                                 hackatimeProject &&
@@ -143,7 +139,7 @@ export default async function page({ params }: { params: Promise<{ id: string }>
                         )}
 
                     </div>
-                    <div>
+                    <div className='sm:block hidden'>
                         <ReviewTimeLine events={project.shipEvents} />
                     </div>
                 </div>

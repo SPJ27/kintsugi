@@ -361,3 +361,22 @@ export async function EditProject(projectId: number, formData: FormData) : Promi
     };
   }
 }
+
+export async function GetPublicProjects(){
+ const projects = await db.query.projects.findMany({
+  with : {
+    user : true,
+    shipEvents : {
+      orderBy : (shipEvents, {desc})=>[
+      ],
+    },
+  },
+  orderBy : (projects , {desc})=>[
+    desc(projects.createdAt),
+  ]
+ });
+ return projects.filter(project=> project.shipEvents.some(
+  event =>event.withdrawnAt ===  null &&
+  event.approvalStatus === "approved"
+ )) 
+}
