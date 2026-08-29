@@ -33,7 +33,7 @@ export async function getHackatimeProjects() {
 
 }
 
-export async function getHackatimeHours(hackatimeProjects: string[]) {
+export async function getHackatimeHours(hackatimeProjects: string[], from? : string, to?: string) {
 
   const session = await requireAuth();
   const userId = session.id;
@@ -44,7 +44,7 @@ export async function getHackatimeHours(hackatimeProjects: string[]) {
     return { success: false, error: "Unable to fetch Hackatime Data" };
   }
   const res = await fetch(
-    "https://hackatime.hackclub.com/api/v1/authenticated/projects?include_archived=false&projects=&since=&until=&until_date=&start=&end=&start_date=&end_date=",
+    `https://hackatime.hackclub.com/api/v1/authenticated/projects?include_archived=false&projects=&since=&until=&until_date=&start=&end=&start_date=${from}&end_date=${to}`,
     {
       headers: {
         Authorization: `Bearer ${hackatimeToken}`,
@@ -63,7 +63,6 @@ export async function getHackatimeHours(hackatimeProjects: string[]) {
   const filteredProjects = allProjects.filter((project) =>
     hackatimeProjects.includes(project.name)
   );
-
   const totalSeconds = filteredProjects.reduce(
     (sum, project) => sum + (project.total_seconds ?? 0),
     0

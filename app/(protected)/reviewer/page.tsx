@@ -3,6 +3,7 @@ import { shipEvents } from "@/db/schema";
 import { getSlackProfile, requireRole } from "@/lib/auth-guard";
 import { eq } from "drizzle-orm";
 import { Kalam } from "next/font/google";
+import Link from "next/link";
 
 const kalamFont = Kalam({
   subsets: ["latin"],
@@ -19,12 +20,14 @@ export default async function Page() {
 
   const slackProfiles = await Promise.all(
     shippedProjects.map((ship) =>
-      ship.user?.slackId ? getSlackProfile(ship.user.slackId) : Promise.resolve(null)
-    )
+      ship.user?.slackId
+        ? getSlackProfile(ship.user.slackId)
+        : Promise.resolve(null),
+    ),
   );
 
   const profileByShipId = new Map(
-    shippedProjects.map((ship, i) => [ship.id, slackProfiles[i]])
+    shippedProjects.map((ship, i) => [ship.id, slackProfiles[i]]),
   );
 
   return (
@@ -49,7 +52,8 @@ export default async function Page() {
             {shippedProjects.map((ship) => {
               const profile = profileByShipId.get(ship.id);
               return (
-                <div
+                <Link
+                  href={`/reviewer/${ship.id}`}
                   key={ship.id}
                   className="rounded-sm border-2 border-dashed border-[#c9a030] bg-[#2A1A08] px-6 py-5 shadow-sm transition-colors hover:bg-[#3A2C10]"
                 >
@@ -70,11 +74,15 @@ export default async function Page() {
                               className="h-6 w-6 rounded-full border border-[#453416]"
                             />
                           )}
-                          <span className="text-sm text-[#C4B282]">{profile.name}</span>
+                          <span className="text-sm text-[#C4B282]">
+                            {profile.name}
+                          </span>
                         </div>
                       ) : (
                         ship.user?.slackId && (
-                          <span className="text-sm text-[#69583C]">{ship.user.slackId}</span>
+                          <span className="text-sm text-[#69583C]">
+                            {ship.user.slackId}
+                          </span>
                         )
                       )}
                     </div>
@@ -93,33 +101,11 @@ export default async function Page() {
                   )}
 
                   <div className="flex flex-wrap items-center justify-between gap-3 border-t border-dashed border-[#453416] pt-3">
-                    <div className="flex flex-wrap gap-4 text-sm text-[#69583C]">
-                      {ship.project?.projectDemo && (
-                        <a
-                          href={ship.project.projectDemo}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline decoration-dashed underline-offset-4 hover:text-[#F5E4B0]"
-                        >
-                          Demo
-                        </a>
-                      )}
-                      {ship.project?.projectRepo && (
-                        <a
-                          href={ship.project.projectRepo}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline decoration-dashed underline-offset-4 hover:text-[#F5E4B0]"
-                        >
-                          Repo
-                        </a>
-                      )}
-                    </div>
                     <span className="text-sm text-[#69583C]">
                       Shipped {ship.createdAt.toLocaleDateString()}
                     </span>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>
