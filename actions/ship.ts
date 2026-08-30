@@ -81,7 +81,7 @@ export async function shipProject(projectId: number, shipText: string, selectedP
 
 
 export async function approveProject(shipEventId: number, reviewerNote?: string, auditNote?: string) {
-    // set the ship event to approved
+    // set the ship event to approved (no shit sherlock)
     // on projects, set the total approved to ship_event_hours + prev
     // add the amount to balance
     const session = await requireAnyRole(["reviewer"])
