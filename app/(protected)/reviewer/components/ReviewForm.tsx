@@ -93,7 +93,7 @@ interface ShipEventUser {
   id: string
   name: string
   image?: string | null
-  slackId: string
+  slackId: string | null
 }
 
 interface ShipEvent {
