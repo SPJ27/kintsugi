@@ -36,12 +36,12 @@ export default async function page({ params }: { params: Promise<{ id: string }>
     const project = result.project;
     const hackatimeResult = await getHackatimeProjects()
     const hackatimeProjects = hackatimeResult.success ? hackatimeResult.projects : []
-    const latestShipEvent = project.shipEvents?.[0];
+    const latestShipEvent = project.shipEvents?.[-1];
     const activeShipEvent = project.shipEvents.find(
         (event) => event.withdrawnAt === null
     )
-    const shipStatus = activeShipEvent?.approvalStatus;
-    const isShipped = activeShipEvent?.approvalStatus === "pending"
+    const shipStatus = project?.recentShipStatus;
+    const isShipped = shipStatus === "pending" || shipStatus === "rejected"
     const ShipStatusLabel = shipStatus ? getShipStatusLabel(shipStatus as ShipStatus) : {
         label: "NOT SHIPPED",
         className: "bg-[#fff9e8] text-[#6b5a32]  border-[#c9a030]"
@@ -117,7 +117,7 @@ export default async function page({ params }: { params: Promise<{ id: string }>
                             )}
                         </div>
                         <div>
-                            {shipStatus === "pending" || shipStatus === "permanently_rejected" ? (
+                            {shipStatus === "pending" || shipStatus === "rejected" ? (
                                 <HideEditButton />
                             ) : (
                                 <Link href={`/u>ser/projects/edit/${project.id}`} className="whitespace-nowrap py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
@@ -126,7 +126,7 @@ export default async function page({ params }: { params: Promise<{ id: string }>
                             )}
 
                         </div>
-                        {shipStatus === "pending" ? (
+                        {shipStatus === "pending" || shipStatus === "rejected" ? (
                             <HideDeleteButton />
                         ) : (
                             <DeleteButton projectId={project.id} projectName={project.name} />

@@ -1,3 +1,4 @@
+import { string } from "better-auth";
 import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, boolean, index, integer } from "drizzle-orm/pg-core";
 
@@ -37,6 +38,8 @@ export const projects = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    recentShipStatus: text('recent_ship_status').default('draft')
+    // Possible statuses: draft, approved, changes_requested, rejected
   },
   (table) => [index("projects_userId_idx").on(table.userId)],
 );

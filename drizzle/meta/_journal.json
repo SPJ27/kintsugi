@@ -120,6 +120,13 @@
       "when": 1787836099713,
       "tag": "0016_curved_sphinx",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1788164062985,
+      "tag": "0017_harsh_ego",
+      "breakpoints": true
     }
   ]
 }

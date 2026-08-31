@@ -1,4 +1,3 @@
-import { user } from "@/db/schema";
 import { requireAuth, requireRole } from "@/lib/auth-guard";
 import { getHackatimeStatus } from "@/lib/db/user";
 import { Kalam, Rubik_Wet_Paint } from "next/font/google";

@@ -1,0 +1,1 @@
+ALTER TABLE "projects" ADD COLUMN "recent_ship_status" text DEFAULT 'draft';

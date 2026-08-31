@@ -2,7 +2,7 @@
 import { db } from "@/db";
 import { requireAnyRole, requireAuth } from "@/lib/auth-guard";
 import { projects, shipEvents, user } from "@/db/schema";
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, eq, isNull, or, sql } from "drizzle-orm";
 import { getHackatimeHours } from "@/lib/hackatime";
 import { addLog } from "@/lib/db/logs";
 
@@ -21,15 +21,10 @@ export async function shipProject(projectId: number, shipText: string, selectedP
         where: and(
             eq(shipEvents.projectId, projectId),
             eq(shipEvents.userId, session.id),
-            eq(shipEvents.approvalStatus, "pending"),
+            or(eq(shipEvents.approvalStatus, "pending"), eq(shipEvents.approvalStatus, "rejected")),
             isNull(shipEvents.withdrawnAt)
         ),
     })
-
-    if (existingPending) {
-        return { success: false, error: 'You already have a pending ship event for this project' }
-    }
-
 
     const totalTime = await getHackatimeHours(selectedProjects)
 
@@ -52,6 +47,7 @@ export async function shipProject(projectId: number, shipText: string, selectedP
             error: "Please select at least one Hackatime proejct"
         }
     }
+
     if (newSeconds <= 0) {
         return { success: false, error: 'No new tracked time since last ship' }
     }
@@ -65,6 +61,14 @@ export async function shipProject(projectId: number, shipText: string, selectedP
             seconds: newSeconds,
             approvalStatus: "pending",
         })
+        .returning()
+
+    const [updatedProject] = await db
+        .update(projects)
+        .set({
+            recentShipStatus: 'pending'
+        })
+        .where(eq(projects.id, projectId))
         .returning()
 
     await addLog({
@@ -108,6 +112,7 @@ export async function approveProject(shipEventId: number, reviewerNote?: string,
             .update(projects)
             .set({
                 approvedSeconds: sql`${projects.approvedSeconds} + ${shipEvent.seconds}`,
+                recentShipStatus: 'approved'
             })
             .where(eq(projects.id, shipEvent.projectId))
             .returning()
@@ -157,7 +162,17 @@ export async function rejectProject(shipEventId: number, reviewerNote?: string, 
             .where(eq(shipEvents.id, shipEventId))
             .returning()
         return { updatedShipEvent }
+
+
     })
+
+    const [updatedProject] = await db
+        .update(projects)
+        .set({
+            recentShipStatus: 'rejected'
+        })
+        .where(eq(projects.id, shipEvent.projectId))
+        .returning()
 
     await addLog({
         title: 'Ship Event Rejected',

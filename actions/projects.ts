@@ -211,7 +211,45 @@ export async function getProject(projectId: number) {
 export async function deleteProject(projectId: number) {
   const session = await requireAuth();
   try {
-    const [deletedProject] = await db.delete(projects).where(and(eq(projects.id, projectId), eq(projects.userId, session.id))).returning();
+    const existingProject = await db.query.projects.findFirst({
+      where: and(eq(projects.id, projectId), eq(projects.userId, session.id)),
+      with: {
+        shipEvents: {
+          orderBy: (shipEvents, { desc }) => [desc(shipEvents.createdAt)],
+        },
+      },
+    });
+
+    if (!existingProject) {
+      return {
+        success: false,
+        error: "Project not found",
+      };
+    }
+
+    const activeShipEvent = existingProject.shipEvents.find(
+      (event) => event.withdrawnAt === null
+    );
+
+    if (activeShipEvent?.approvalStatus === "pending") {
+      await safeLog({
+        title: "Project Deletion Blocked",
+        description: "Attempted to delete a project with a pending ship event",
+        location: "/user/projects",
+        type: "error",
+        metadata: `Project ID: ${projectId}`,
+        userId: session.id,
+      });
+      return {
+        success: false,
+        error: "Cannot delete a project while it has a pending ship review.",
+      };
+    }
+
+    const [deletedProject] = await db
+      .delete(projects)
+      .where(and(eq(projects.id, projectId), eq(projects.userId, session.id)))
+      .returning();
 
     if (!deletedProject) {
       await safeLog({
@@ -279,12 +317,29 @@ export async function EditProject(projectId: number, formData: FormData) : Promi
         eq(projects.id, projectId),
         eq(projects.userId, session.id)
       ),
+      with: {
+        shipEvents: {
+          orderBy: (shipEvents, { desc }) => [desc(shipEvents.createdAt)],
+        },
+      },
     });
     if (!existingProject)
       return {
         success: false,
         error: "project not found"
       }
+
+    const activeShipEvent = existingProject.shipEvents.find(
+      (event) => event.withdrawnAt === null
+    );
+
+    if (activeShipEvent?.approvalStatus === "pending") {
+      return {
+        success: false,
+        error: "Cannot edit a project while it has a pending ship review.",
+      }
+    }
+
     if (bannerFile && bannerFile.size > 0) {
       const bannerForm = new FormData();
       bannerForm.append('file', bannerFile);
