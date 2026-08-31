@@ -2,7 +2,7 @@ export const SHIP_STATUS = {
     PENDING: "pending",
     APPROVED: "approved",
     REJECTED: "rejected",
-    PERMANENTLY_REJECTED: "permanently_rejected"
+    PERM_REJECTED: "perm_rejected"
 } as const;
 
 export type ShipStatus = (typeof SHIP_STATUS)[keyof typeof SHIP_STATUS];
@@ -25,7 +25,7 @@ export function getShipStatusLabel(status: ShipStatus) {
                 className: "bg-[#f8d7d7] text-[#8b2525] border-[#8b2525]"
 
             }
-        case SHIP_STATUS.PERMANENTLY_REJECTED:
+        case SHIP_STATUS.PERM_REJECTED:
             return {
                 label: "PERMANENTLY REJECTED",
                 className: "bg-[#e5caca] text-[#5c1616] border-[#5c1616]"

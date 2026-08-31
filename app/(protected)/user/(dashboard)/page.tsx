@@ -16,8 +16,9 @@ export default async function page() {
     const hackatimeConnected = await getHackatimeStatus(session.id);
     return (
         <div className={`flex flex-col gap-6 ${kalamFont.className} overflow-hidden`}>
-            <div className={`bg-[#2A1A08] shadow-[3px_5px_0_rgba(26,18,9,0.18)] flex flex-col gap-4 border-2 border-dashed border-[#c9a030] py-8 px-6 rounded-2xl ${kalamFont.className}}`}>
+            <div className={`bg-[#2A1A08] shadow-[3px_5px_0_rgba(26,18,9,0.18)] flex flex-col gap-2 border-2 border-dashed border-[#c9a030] py-8 px-6 rounded-2xl ${kalamFont.className}}`}>
                 <div className={`${kalamFont.className} text-2xl text-[#F5E4B0]`}>0hrs logged</div>
+                <div className={`${kalamFont.className} text-lg text-[#f5e4b0be]`}>{session.pots} Pots Earned Till Now</div>
                 <div className="w-full h-6 bg-[#3A2C10] border-4 border-[#453416] rounded-full">
                     <div />
                 </div>

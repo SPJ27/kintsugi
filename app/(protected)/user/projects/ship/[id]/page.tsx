@@ -22,7 +22,7 @@ export default async function page({
     if (!result.userCreated) {
         notFound();
     }
-    if (result.project.recentShipStatus == 'pending' || result.project.recentShipStatus == 'rejected') return <>Cant ship</>
+    if (result.project.recentShipStatus == 'pending' || result.project.recentShipStatus == 'perm_rejected') return <>Cant ship</>
     // @akshansh-kakkkar edit this later on, just very simple blocking for now
     const hackatimeResult = await getHackatimeProjects();
 
