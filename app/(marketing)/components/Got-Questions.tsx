@@ -11,12 +11,12 @@ export default function GotQuestions() {
         {
             id: 1,
             question: 'What is Kintsugi?',
-            answer: "A Hack Club YSWS where you fix a real problem you ran into-Broken tool, Bad UI/UX,Nonsense workflow- and ship it open source."
+            answer: "A Hack Club YSWS with an Irl Hackathon where you have to ship 50 hours to get a Hackathon ticket to Japan"
         },
         {
             id: 2,
             question: "What do I get?",
-            answer: "Once your Project gets reviewed and approved, You can trade your pots for a real kintsugi repair kit - Gold powder,resin,and a broken ceramic bowl or other cute kintsugi stuffs. 金継ぎ for real.",
+            answer: "Once your Project gets reviewed and approved, You can trade your pots for a Hackathon Ticket, real kintsugi repair kit - Gold powder,resin,and a broken ceramic bowl or other cute kintsugi stuffs. 金継ぎ for real.",
         },
         {
             id: 3,
