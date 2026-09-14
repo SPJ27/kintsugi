@@ -11,7 +11,7 @@ export default function homePage(){
         <Hero />
         <HowKintsugiWorks />
         <PotTiers />
-        <PreviousHackathon />
+        {/* <PreviousHackathon /> */}
         <GotQuestions />
         <SignUpSection />
     </ main>
