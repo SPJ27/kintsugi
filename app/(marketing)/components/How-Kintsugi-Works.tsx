@@ -10,14 +10,14 @@ export default function HowKintsugiWorks() {
             id: 1,
             icon: "✎",
             title: "Find It",
-            description: "Find some broken things, fix them and SHIP it. Every SHIP Counts.",
+            description: "Find a Project idea that solves a problem and  SHIP that Project ",
             tag: "bugs + issues"
         },
         {
             id: 2,
             icon: "✐",
             title: "Fix It",
-            description: "Patch up them Beautifully. Make it better than it was ever that's the KINTSUGI way, One ship = 1 Pot Fix.",
+            description: "Patch up them Beautifully. Make it better than it was ever that's the KINTSUGI way, One Hour= 1 Pot Fix.",
             tag: "Code+hours+commits"
         },
         {
@@ -31,7 +31,7 @@ export default function HowKintsugiWorks() {
             id: 4,
             icon: "★",
             title: "Grind & Earn",
-            description: "Stack shiny pots by shipping and reedeem them for rewards and EVENT TICKETthen show off. 金継ぎ forever.",
+            description: "Stack shiny pots by shipping and reedeem them for rewards , flight stipends and Event ticket. 金継ぎ forever.",
             tag: "Pots and Prizes"
         }
     ]

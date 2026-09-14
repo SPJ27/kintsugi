@@ -11,25 +11,25 @@ export default function PotTiers() {
             id: 1,
             icon: "✦",
             image: "/pots/silver.png",
-            title: "1 Silver Pots",
-            description: "Work on a real problem for 10+ hours.. Log em properly.Commit regularly.",
-            tags: "10hrs"
+            title: "1 Silver Pot",
+            description: "You get 1 Pot per hour logged and approved on your projects.",
+            tags: "1hour"
         },
         {
             id: 2,
             icon: "✦",
             image: '/pots/bronze.png',
             title: "1 Bronze Pots",
-            description: "Work on a general project for any amount of hours. Get one pot for each hour you code.",
-            tags: "general"
+            description: "Work on something other than shipping such as referrals and sidequests.",
+            tags: "Contribute"
         },
         {
             id: 3,
             icon: "✦",
             image: "/pots/golden.png",
             title: "1 Gold Pots",
-            description: "Well made Project Good storytelling and visible efforts Something which blows up our socks.Not just basic webpage.",
-            tags: "Full Stack"
+            description: "Well made Project , Good storytelling and it solves a real problem.",
+            tags: "Exceptional"
         },
         {
             id: 6,
