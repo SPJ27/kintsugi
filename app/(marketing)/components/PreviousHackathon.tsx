@@ -16,7 +16,7 @@ export default function PreviousHackathon() {
                         This hackathon will be organised by <span className="underline decoration-2 underline-offset-4 decoration-dashed text-[#c9a030]">Hack Club</span>, A US bases 501(c)(3) nonprofit and network of 100,000 teens across the world.
                     </div>
                     <div className="text-xl md:text-2xl text-[#F5E4B0] font-light">
-                        The whole hackathon including food ,accomodation ,activity etc. will be <span className="font-bold text-[#B88900]">free of cost</span> for all the attendees.Travel and flight stipend would be availaible for free too!
+                        The whole hackathon including food ,accomodation ,activity etc. will be <span className="font-bold text-[#B88900]">free of cost</span> for all the attendees.
                     </div>
                     <div className="text-sm md:text-xl text-[#A3926D] font-extralight">
                         Photos from a hc hackathon held in Singapore
