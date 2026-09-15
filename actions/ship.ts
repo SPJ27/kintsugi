@@ -91,24 +91,159 @@ export async function shipProject(projectId: number, shipText: string, selectedP
     return { success: true, shipEvent }
 }
 
+/*
+When first check is done - change first pass approval status, first pass reviewer note, first pass audit note
+When second check is done - replace approval status, reviewer note and audit note with ^^
+Also, set recvent ship status to approval status, award pots
+*/
 
-export async function approveProject(shipEventId: number, reviewerNote?: string, auditNote?: string) {
+async function assertFirstPassEligible(shipEvent: typeof shipEvents.$inferSelect) {
+    if (shipEvent.approvalStatus !== 'pending') {
+        return 'this ship event has already been finalized'
+    }
+    if (shipEvent.firstPassApprovalStatus !== 'pending') {
+        return 'first pass review has already been completed for this ship event'
+    }
+    return null
+}
+
+export async function firstPassApprove(shipEventId: number, reviewerNote?: string, auditNote?: string) {
     const session = await requireAnyRole(["reviewer"])
+    const shipEvent = await db.query.shipEvents.findFirst({ where: eq(shipEvents.id, shipEventId) })
+    if (!shipEvent) return { success: false, error: 'ship event not found' }
 
+    const err = await assertFirstPassEligible(shipEvent)
+    if (err) return { success: false, error: err }
+
+    const [updated] = await db
+        .update(shipEvents)
+        .set({
+            firstPassApprovalStatus: "approved",
+            firstPassReviewerNote: reviewerNote,
+            firstPassAuditNote: auditNote,
+            firstPassReviewedBy: session.id,
+            firstPassReviewedOn: new Date(),
+        })
+        .where(eq(shipEvents.id, shipEventId))
+        .returning()
+
+    await addLog({
+        title: 'Ship Event First Pass: Approved',
+        description: 'First pass review marked this ship event as approved, pending confirmation',
+        location: '/projects/approve',
+        type: 'ship_event_first_pass_approved',
+        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}`,
+        userId: shipEvent.userId
+    })
+
+    return { success: true, shipEvent: updated }
+}
+
+export async function firstPassRequestChanges(shipEventId: number, reviewerNote?: string, auditNote?: string) {
+    const session = await requireAnyRole(["reviewer"])
+    const shipEvent = await db.query.shipEvents.findFirst({ where: eq(shipEvents.id, shipEventId) })
+    if (!shipEvent) return { success: false, error: 'ship event not found' }
+
+    const err = await assertFirstPassEligible(shipEvent)
+    if (err) return { success: false, error: err }
+
+    const [updated] = await db
+        .update(shipEvents)
+        .set({
+            firstPassApprovalStatus: "changes_requested",
+            firstPassReviewerNote: reviewerNote,
+            firstPassAuditNote: auditNote,
+            firstPassReviewedBy: session.id,
+            firstPassReviewedOn: new Date(),
+        })
+        .where(eq(shipEvents.id, shipEventId))
+        .returning()
+
+    await addLog({
+        title: 'Ship Event First Pass: Changes Requested',
+        description: 'First pass review requested changes, pending confirmation',
+        location: '/projects/approve',
+        type: 'ship_event_first_pass_changes_requested',
+        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}`,
+        userId: shipEvent.userId
+    })
+
+    return { success: true, shipEvent: updated }
+}
+
+export async function firstPassPermReject(shipEventId: number, reviewerNote?: string, auditNote?: string) {
+    const session = await requireAnyRole(["reviewer"])
+    const shipEvent = await db.query.shipEvents.findFirst({ where: eq(shipEvents.id, shipEventId) })
+    if (!shipEvent) return { success: false, error: 'ship event not found' }
+
+    const err = await assertFirstPassEligible(shipEvent)
+    if (err) return { success: false, error: err }
+
+    const [updated] = await db
+        .update(shipEvents)
+        .set({
+            firstPassApprovalStatus: "perm_rejected",
+            firstPassReviewerNote: reviewerNote,
+            firstPassAuditNote: auditNote,
+            firstPassReviewedBy: session.id,
+            firstPassReviewedOn: new Date(),
+        })
+        .where(eq(shipEvents.id, shipEventId))
+        .returning()
+
+    await addLog({
+        title: 'Ship Event First Pass: Perm Rejected',
+        description: 'First pass review marked this ship event as permanently rejected, pending confirmation',
+        location: '/projects/approve',
+        type: 'ship_event_first_pass_perm_rejected',
+        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}`,
+        userId: shipEvent.userId
+    })
+
+    return { success: true, shipEvent: updated }
+}
+
+/**
+ * Second pass. Copies the first-pass decision into the final fields and
+ * applies the real side effects (approvedSeconds, pots, project status).
+ * Must be a different reviewer than whoever did the first pass.
+ */
+type ReviewDecision = 'approved' | 'changes_requested' | 'perm_rejected'
+
+export async function confirmReview(
+    shipEventId: number,
+    decision: ReviewDecision,
+    reviewerNote?: string,
+    auditNote?: string
+) {
+    const session = await requireAnyRole(["reviewer"])
     const shipEvent = await db.query.shipEvents.findFirst({ where: eq(shipEvents.id, shipEventId) })
 
     if (!shipEvent) return { success: false, error: 'ship event not found' }
-    if (shipEvent.approvalStatus === 'approved') return { success: false, error: 'already approved' }
+    if (shipEvent.approvalStatus !== 'pending') return { success: false, error: 'already finalized' }
+    if (shipEvent.firstPassApprovalStatus === 'pending') {
+        return { success: false, error: 'first pass review has not been completed yet' }
+    }
+    // if (shipEvent.firstPassReviewedBy === session.id) {
+    //     return { success: false, error: 'second pass must be completed by a different reviewer than the first pass' }
+    // }
+    if (shipEvent.firstPassApprovalStatus === 'perm_rejected' && decision !== 'perm_rejected') {
+        return { success: false, error: 'permanent rejection cannot be reversed' }
+    }
+
+    const potsToAward = decision === 'approved' ? Math.floor(shipEvent.seconds / 720) : 0
+    const bumpsApprovedSeconds = decision === 'approved' || decision === 'perm_rejected'
 
     const result = await db.transaction(async (tx) => {
         const [updatedShipEvent] = await tx
             .update(shipEvents)
             .set({
-                approvalStatus: "approved",
-                reviewerNote: reviewerNote ?? shipEvent.reviewerNote,
+                approvalStatus: decision,
+                reviewerNote,
                 auditNote,
                 reviewedBy: session.id,
-                reviewedOn: new Date()
+                reviewedOn: new Date(),
+                potsAwarded: potsToAward,
             })
             .where(eq(shipEvents.id, shipEventId))
             .returning()
@@ -116,179 +251,34 @@ export async function approveProject(shipEventId: number, reviewerNote?: string,
         const [updatedProject] = await tx
             .update(projects)
             .set({
-                approvedSeconds: sql`${projects.approvedSeconds} + ${shipEvent.seconds}`,
-                recentShipStatus: 'approved'
+                recentShipStatus: decision,
+                ...(bumpsApprovedSeconds
+                    ? { approvedSeconds: sql`${projects.approvedSeconds} + ${shipEvent.seconds}` }
+                    : {}),
             })
             .where(eq(projects.id, shipEvent.projectId))
             .returning()
 
-        const [updatedUser] = await tx
-            .update(user)
-            .set({
-                pots: sql`${user.pots} + ${shipEvent.seconds / 720}`,
-            })
-            .where(eq(user.id, shipEvent.userId))
-            .returning()
+        let updatedUser
+        if (potsToAward > 0) {
+            [updatedUser] = await tx
+                .update(user)
+                .set({ pots: sql`${user.pots} + ${potsToAward}` })
+                .where(eq(user.id, shipEvent.userId))
+                .returning()
+        }
 
         return { updatedShipEvent, updatedProject, updatedUser }
     })
 
     await addLog({
-        title: 'Ship Event Approved',
-        description: 'A ship event was approved',
+        title:
+            `Ship Event Confirmed: ${decision}`,
+        description:
+            'Second pass review confirmed the first pass decision as-is',
         location: '/projects/approve',
-        type: 'ship_event_approved',
-        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}`,
-        userId: shipEvent.userId
-    })
-
-    return { success: true, ...result }
-}
-
-
-/**
- * "Request changes": submitter can reship. approvedSeconds is NOT bumped,
- * so these hours stay unspent and count toward the next ship attempt.
- */
-export async function requestChanges(shipEventId: number, reviewerNote?: string, auditNote?: string) {
-    const session = await requireAnyRole(["reviewer"])
-
-    const shipEvent = await db.query.shipEvents.findFirst({ where: eq(shipEvents.id, shipEventId) })
-
-    if (!shipEvent) return { success: false, error: 'ship event not found' }
-    if (shipEvent.approvalStatus === 'changes_requested') return { success: false, error: 'changes already requested' }
-    if (shipEvent.approvalStatus === 'perm_rejected') return { success: false, error: 'this ship event was permanently rejected' }
-    if (shipEvent.approvalStatus === 'approved') return { success: false, error: 'already approved' }
-
-    const result = await db.transaction(async (tx) => {
-        const [updatedShipEvent] = await tx
-            .update(shipEvents)
-            .set({
-                approvalStatus: "changes_requested",
-                reviewerNote: reviewerNote ?? shipEvent.reviewerNote,
-                auditNote,
-                reviewedBy: session.id,
-                reviewedOn: new Date()
-            })
-            .where(eq(shipEvents.id, shipEventId))
-            .returning()
-
-        const [updatedProject] = await tx
-            .update(projects)
-            .set({
-                recentShipStatus: 'changes_requested'
-            })
-            .where(eq(projects.id, shipEvent.projectId))
-            .returning()
-
-        return { updatedShipEvent, updatedProject }
-    })
-
-    await addLog({
-        title: 'Ship Event Changes Requested',
-        description: 'Changes were requested; submitter may reship for the same hours',
-        location: '/projects/approve',
-        type: 'ship_event_changes_requested',
-        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}`,
-        userId: shipEvent.userId
-    })
-
-    return { success: true, ...result }
-}
-
-/**
- * "Reject": submitter can reship, but only for time worked BEYOND this batch.
- * approvedSeconds IS bumped — no pots for this batch, hours are spent.
- */
-export async function rejectProject(shipEventId: number, reviewerNote?: string, auditNote?: string) {
-    const session = await requireAnyRole(["reviewer"])
-
-    const shipEvent = await db.query.shipEvents.findFirst({ where: eq(shipEvents.id, shipEventId) })
-
-    if (!shipEvent) return { success: false, error: 'ship event not found' }
-    if (shipEvent.approvalStatus === 'rejected') return { success: false, error: 'already rejected' }
-    if (shipEvent.approvalStatus === 'perm_rejected') return { success: false, error: 'already permanently rejected' }
-
-    const result = await db.transaction(async (tx) => {
-        const [updatedShipEvent] = await tx
-            .update(shipEvents)
-            .set({
-                approvalStatus: "rejected",
-                reviewerNote: reviewerNote ?? shipEvent.reviewerNote,
-                auditNote,
-                reviewedBy: session.id,
-                reviewedOn: new Date()
-            })
-            .where(eq(shipEvents.id, shipEventId))
-            .returning()
-
-        const [updatedProject] = await tx
-            .update(projects)
-            .set({
-                approvedSeconds: sql`${projects.approvedSeconds} + ${shipEvent.seconds}`,
-                recentShipStatus: 'rejected'
-            })
-            .where(eq(projects.id, shipEvent.projectId))
-            .returning()
-
-        return { updatedShipEvent, updatedProject }
-    })
-
-    await addLog({
-        title: 'Ship Event Rejected',
-        description: 'A ship event was rejected; hours spent, no pots awarded',
-        location: '/projects/approve',
-        type: 'ship_event_rejected',
-        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}`,
-        userId: shipEvent.userId
-    })
-
-    return { success: true, ...result }
-}
-
-/**
- * Permanent rejection: the project can never be shipped again. approvedSeconds
- * is bumped since there's no future ship event that could "reclaim" these hours.
- */
-export async function permRejectProject(shipEventId: number, reviewerNote?: string, auditNote?: string) {
-    const session = await requireAnyRole(["reviewer"])
-
-    const shipEvent = await db.query.shipEvents.findFirst({ where: eq(shipEvents.id, shipEventId) })
-
-    if (!shipEvent) return { success: false, error: 'ship event not found' }
-    if (shipEvent.approvalStatus === 'perm_rejected') return { success: false, error: 'already permanently rejected' }
-
-    const result = await db.transaction(async (tx) => {
-        const [updatedShipEvent] = await tx
-            .update(shipEvents)
-            .set({
-                approvalStatus: "perm_rejected",
-                reviewerNote: reviewerNote ?? shipEvent.reviewerNote,
-                auditNote,
-                reviewedBy: session.id,
-                reviewedOn: new Date()
-            })
-            .where(eq(shipEvents.id, shipEventId))
-            .returning()
-
-        const [updatedProject] = await tx
-            .update(projects)
-            .set({
-                approvedSeconds: sql`${projects.approvedSeconds} + ${shipEvent.seconds}`,
-                recentShipStatus: 'perm_rejected'
-            })
-            .where(eq(projects.id, shipEvent.projectId))
-            .returning()
-
-        return { updatedShipEvent, updatedProject }
-    })
-
-    await addLog({
-        title: 'Ship Event Permanently Rejected',
-        description: 'A ship event was permanently rejected; project can no longer be shipped',
-        location: '/projects/approve',
-        type: 'ship_event_perm_rejected',
-        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}`,
+        type: 'ship_event_confirmed',
+        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}, decision: ${decision}, firstPassDecision: ${shipEvent.firstPassApprovalStatus}`,
         userId: shipEvent.userId
     })
 

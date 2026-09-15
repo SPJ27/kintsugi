@@ -47,37 +47,5 @@ export async function GET(request: NextRequest) {
         );
     }
 
-    const id = request.nextUrl.searchParams.get("id") ?? "";
-
-    if (!id) {
-        return NextResponse.json(
-            { success: false, error: "Missing id parameter" },
-            { status: 400 }
-        );
-    }
-
-    let userData
-
-    const SLACK_ID_REGEX = /^[UW][A-Z0-9]{8,10}$/;
-
-    if (SLACK_ID_REGEX.test(id)) {
-        userData = await db.query.user.findFirst({ where: eq(user.slackId, id) });
-    }
-    else {
-        userData = await db.query.user.findFirst({ where: eq(user.id, id) });
-    }
-    if (!userData) {
-        return NextResponse.json(
-            { success: false, error: "User not found" },
-            { status: 404 }
-        );
-    }
-
-    if (userData.slackId) {
-        const slackProfile = await getSlackProfile(userData.slackId);
-        userData.name = slackProfile?.name ?? '';
-        userData.image = slackProfile?.image ?? '';
-    }
-
-    return NextResponse.json({ success: true, userData });
+    
 }

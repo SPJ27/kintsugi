@@ -22,7 +22,6 @@ const Page = () => {
     getUsers().then((all) => setAllCount(all.length));
   }, []);
 
-  // Refetch (filtered) whenever the query changes, debounced
   useEffect(() => {
     const timeout = setTimeout(() => {
       startTransition(() => {
@@ -159,7 +158,7 @@ const Page = () => {
                       <Box as="td" sx={{ py: 3, px: 3, borderBottom: isLast ? "none" : "1px solid", borderColor: "border", verticalAlign: "middle" }}>
                         <Button
                           as="a"
-                          href={`/admin/users/${row.id}`}
+                          onClick={()=>{`/admin/users/${row.id}`}}
                           sx={{ fontSize: 0, px: 3, py: 1, borderRadius: "full", fontWeight: "bold" }}
                         >
                           View

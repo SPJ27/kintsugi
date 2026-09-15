@@ -9,7 +9,7 @@ export const user = pgTable("user", {
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  slug : text('slug').unique(),
+  slug: text('slug').unique(),
   verificationStatus: text("verification_status"),
   slackId: text("slack_id"),
   pots: integer("pots").default(0).notNull(),
@@ -26,7 +26,7 @@ export const projects = pgTable(
   "projects",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    creationKey : text("creation_key").unique(),
+    creationKey: text("creation_key").unique(),
     name: text("name").notNull(),
     description: text("description"),
     approvedSeconds: integer('approved_seconds').default(0).notNull(),
@@ -148,6 +148,14 @@ export const shipEvents = pgTable(
       onDelete: "set null",
     }),
     reviewedOn: timestamp("reviewed_on"),
+    firstPassApprovalStatus: text("first_pass_approval_status").default("pending").notNull(),
+    firstPassReviewerNote: text("first_pass_reviewer_note"),
+    firstPassAuditNote: text("first_pass_audit_note"),
+    firstPassReviewedBy: text("first_pass_reviewed_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    firstPassReviewedOn: timestamp("first_pass_reviewed_on"),
+    potsAwarded: integer('pots_awarded').default(0)
   },
   (table) => [
     index("ship_events_projectId_idx").on(table.projectId),

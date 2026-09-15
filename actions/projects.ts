@@ -190,7 +190,8 @@ export async function getProject(projectId: number) {
           orderBy : (shipEvents, {desc})=> [
             desc(shipEvents.createdAt),
           ]
-        }
+        },
+        user: true
       }
     });
   } catch (err) {
@@ -231,7 +232,7 @@ export async function deleteProject(projectId: number) {
       (event) => event.withdrawnAt === null
     );
 
-    if (activeShipEvent?.approvalStatus === "pending") {
+    if (existingProject.recentShipStatus !== 'draft') {
       await safeLog({
         title: "Project Deletion Blocked",
         description: "Attempted to delete a project with a pending ship event",

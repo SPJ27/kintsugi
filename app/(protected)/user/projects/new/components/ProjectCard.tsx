@@ -7,7 +7,7 @@ import Link from "next/link";
 import { getShipStatusLabel } from '@/lib/ship-status';
 import HideDeleteButton from "../../view/components/HideDeleteButton";
 import HideEditButton from "../../view/components/HideEditButton";
-import { shipEvents } from '../../../../../../db/schema';
+
 const kalam = Kalam({
     subsets: ['latin'],
     weight: ['300', '400', '700']
@@ -28,6 +28,7 @@ export default function ProjectCard({ project, hackatimeProjects }: ProjectCardP
         label: "NOT SHIPPED",
         className: "bg-[#fff9e8] text-[#6b5a32]  border-[#c9a030]"
     };
+    
     return (
         <>
             <div

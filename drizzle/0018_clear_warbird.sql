@@ -1,0 +1,1 @@
+ALTER TABLE "ship_events" ADD COLUMN "pots_awarded" integer DEFAULT 0;

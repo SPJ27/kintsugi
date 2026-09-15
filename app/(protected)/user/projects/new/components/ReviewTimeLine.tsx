@@ -7,7 +7,8 @@ type ShipEvent = {
     reviewerNote: string | null;
     auditNote: string | null;
     withdrawnAt: Date | null;
-    seconds: number
+    seconds: number;
+    potsAwarded: number;
 }
 type Props = {
     events: ShipEvent[]
@@ -53,7 +54,7 @@ function TimelineEvent({
         icon = <Check size={20} />;
         title = "APPROVED";
         iconClass = "bg-[#d9f2c7] text-[#315b24]";
-    } else if (event.approvalStatus === "rejected") {
+    } else if (event.approvalStatus === "perm_rejected") {
         icon = <X size={20} />;
         title = "REJECTED";
         iconClass = "bg-[#f8d7d7] text-[#8b2525]";
@@ -70,24 +71,14 @@ function TimelineEvent({
             </div>
             <div className="flex-1 border-2 border-[#c9a030] rounded-2xl bg-[#fd0c2] p-4">
                 <div className="flex items-center justify-between gap-4">
-                    <h3 className="text-xl font-bold text-[#2a1a08]">{title}</h3>
+                    <h3 className="text-xl font-bold text-[#2a1a08]">{title} </h3>
+                    <span className="text-sm text-[#6b4a32]">{event.approvalStatus == 'approved' && `${ Math.floor(event.seconds / 3600)}h ${Math.floor((event.seconds % 3600) / 60)}m - ${event.potsAwarded} pots`}</span>
                     <span className="text-sm text-[#6b4a32]">{formatDate(event.createdAt)}</span>
                 </div>
                 {event.reviewerNote && (
                     <div className="mt-3">
                         <p className="text-sm font-bold text-[#6b5a32]">Reviewer Note</p>
                         <p className="text-lg text-[2a1a08]">{event.reviewerNote}</p>
-                    </div>
-                )}
-                {event.auditNote && (
-                    <div className="mt-3">
-                        <p className="text-sm font-bold text-[#6b5a32]">
-                            Audit Note
-                        </p>
-
-                        <p className="text-lg text-[#2a1a08]">
-                            {event.auditNote}
-                        </p>
                     </div>
                 )}
                 {withdrawn && event.withdrawnAt && (

@@ -3,7 +3,7 @@ import { getCommits } from '@/lib/github'
 import { shipEvents } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
-import ReviewForm from '../components/ReviewForm'
+import {ReviewPanel} from '../components/ReviewForm'
 
 const page = async ({ params }: { params: Promise<{ id: number }> }) => {
   const { id } = await params
@@ -21,7 +21,7 @@ const page = async ({ params }: { params: Promise<{ id: number }> }) => {
   console.log(shipEvent)
 
   return (
-    <ReviewForm project={project} repoUrl={repoUrl} demoUrl={demoUrl} commits={commits} shipEvent={shipEvent}/>
+    <ReviewPanel shipEvent={shipEvent}/>
     )
 }
 
