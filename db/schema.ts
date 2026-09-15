@@ -144,6 +144,7 @@ export const shipEvents = pgTable(
     reviewerNote: text("reviewer_note"),
     auditNote: text("audit_note"),
     seconds: integer("seconds").default(0).notNull(),
+    approvedSeconds: integer("approved_seconds").default(0).notNull(),
     reviewedBy: text("reviewed_by").references(() => user.id, {
       onDelete: "set null",
     }),
@@ -154,8 +155,12 @@ export const shipEvents = pgTable(
     firstPassReviewedBy: text("first_pass_reviewed_by").references(() => user.id, {
       onDelete: "set null",
     }),
+    secondPassReviewedBy: text("second_pass_reviewed_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
     firstPassReviewedOn: timestamp("first_pass_reviewed_on"),
-    potsAwarded: integer('pots_awarded').default(0)
+    potsAwarded: integer('pots_awarded').default(0),
+    needsSecondPass: boolean('needs_second_pass').default(false)
   },
   (table) => [
     index("ship_events_projectId_idx").on(table.projectId),

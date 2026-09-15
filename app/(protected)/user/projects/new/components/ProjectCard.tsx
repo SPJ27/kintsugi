@@ -54,14 +54,7 @@ export default function ProjectCard({ project, hackatimeProjects }: ProjectCardP
                     </div>
                     <div className="flex kintsugi-scrollbar w-full overflow-x-auto overflow-y-hidden">
                         <div className="flex w-max gap-2 items-center">
-                            {project.hackatimeProjects?.map((hackatimeProject: any) => (
-                                hackatimeProject &&
-                                <div
-                                    key={hackatimeProject}
-                                    className=" shrink-0 whitespace-nowrap py-1 mx-2 bg-[#2A1A08] text-xl px-4 h-12 items-center text-center justify-center flex  rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]">
-                                    {hackatimeProject}
-                                </div>
-                            ))}
+                            
                             <div>{(() => {
                                 const totalSeconds = project.hackatimeProjects.reduce(
                                     (total: any, projectName: any) => {

@@ -12,7 +12,7 @@ import UnShipButton from "../components/UnShipButon";
 import HideEditButton from "../components/HideEditButton";
 import HideDeleteButton from "../components/HideDeleteButton";
 import ReviewTimeLine from "../../new/components/ReviewTimeLine";
-import { requireAuth } from "@/lib/auth-guard";
+import { getSlackProfile, requireAuth } from "@/lib/auth-guard";
 
 const rubik_Wet_Paint = Rubik_Wet_Paint({
   subsets: ["latin"],
@@ -65,7 +65,8 @@ export default async function page({
         label: "NOT SHIPPED",
         className: "bg-[#fff9e8] text-[#6b5a32] border-[#c9a030]",
       };
-
+  const projectCreatedBy = await getSlackProfile(project?.user?.slackId || "");
+  console.log("p", projectCreatedBy);
   return (
     <>
       <div
@@ -96,22 +97,14 @@ export default async function page({
                 className="absolute right-4 top-4 cursor-not-allowed rounded-xl border-3 border-[#c9a030] bg-[#2A1A08] px-4 py-2 opacity-50"
                 title="This project has been permanently rejected and cannot be shipped"
               >
-                <Ship
-                  size={24}
-                  className="text-[#c9a030]"
-                  strokeWidth={2.5}
-                />
+                <Ship size={24} className="text-[#c9a030]" strokeWidth={2.5} />
               </div>
             ) : (
               <Link
                 href={`/user/projects/ship/${id}`}
                 className="absolute right-4 top-4 rounded-xl border-3 border-[#c9a030] bg-[#2A1A08] px-4 py-2"
               >
-                <Ship
-                  size={24}
-                  className="text-[#c9a030]"
-                  strokeWidth={2.5}
-                />
+                <Ship size={24} className="text-[#c9a030]" strokeWidth={2.5} />
               </Link>
             ))}
 
@@ -137,10 +130,19 @@ export default async function page({
           <div className="my-4 rounded-2xl border-2 border-[#c9a030] bg-[#fdf0c2] px-4 py-4 text-xl font-medium text-[#2A1A08] outline-none transition-all duration-300 ease-out">
             {project.description || "No Description added yet"}
           </div>
-
+          <div className="mt-3 text-lg font-bold flex gap-2 text-[#161008] mb-3">
+            <Image
+              alt="Profile Picture"
+              src={projectCreatedBy?.image || ""}
+              width={30}
+              height={10}
+              className="rounded-full border-2 border-[#c9a030]"
+            />
+            by {projectCreatedBy?.name}
+          </div>
           <div className="flex items-center overflow-x-auto text-center">
             <div className="flex items-center gap-2">
-              {project.hackatimeProjects?.map(
+              {/* {project.hackatimeProjects?.map(
                 (hackatimeProject: any) =>
                   hackatimeProject && (
                     <div
@@ -150,7 +152,7 @@ export default async function page({
                       {hackatimeProject}
                     </div>
                   ),
-              )}
+              )} */}
             </div>
 
             {isCurrentUsers && (
@@ -159,10 +161,8 @@ export default async function page({
                   const totalSeconds = project.hackatimeProjects.reduce(
                     (total: number, projectName: string) => {
                       const hackatimeProject = hackatimeProjects.find(
-                        (p: {
-                          name: string;
-                          total_seconds?: number;
-                        }) => p.name === projectName,
+                        (p: { name: string; total_seconds?: number }) =>
+                          p.name === projectName,
                       );
 
                       return total + (hackatimeProject?.total_seconds ?? 0);

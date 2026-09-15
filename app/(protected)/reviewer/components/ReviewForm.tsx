@@ -161,7 +161,7 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
     const runFirstPass = (fn: typeof firstPassApprove) => {
       setError(null)
       startTransition(async () => {
-        const res = await fn(shipEvent.id, reviewerNote || undefined, auditNote || undefined)
+        const res = await fn(shipEvent.id, 500, reviewerNote || undefined, auditNote || undefined)
         if (!res.success) setError(res.error ?? 'Something went wrong')
         else setDone(true)
       })
@@ -212,7 +212,6 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
     )
   }
 
-  // ---- SECOND PASS: first pass exists, confirm/edit and finalize ----
   const submitConfirm = () => {
     setError(null)
     startTransition(async () => {

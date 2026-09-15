@@ -1,0 +1,1 @@
+ALTER TABLE "ship_events" ADD COLUMN "needs_second_pass" boolean DEFAULT false;

@@ -68,6 +68,7 @@ export async function shipProject(projectId: number, shipText: string, selectedP
                 shipText,
                 seconds: newSeconds,
                 approvalStatus: "pending",
+                
             })
             .returning()
 
@@ -91,6 +92,11 @@ export async function shipProject(projectId: number, shipText: string, selectedP
     return { success: true, shipEvent }
 }
 
+async function awardPots(userId: string | null, pots: number) {
+    if (!userId || pots <= 0) return
+    await db.update(user).set({ pots: sql`${user.pots} + ${pots}` }).where(eq(user.id, userId))
+}
+
 /*
 When first check is done - change first pass approval status, first pass reviewer note, first pass audit note
 When second check is done - replace approval status, reviewer note and audit note with ^^
@@ -107,7 +113,7 @@ async function assertFirstPassEligible(shipEvent: typeof shipEvents.$inferSelect
     return null
 }
 
-export async function firstPassApprove(shipEventId: number, reviewerNote?: string, auditNote?: string) {
+export async function firstPassApprove(shipEventId: number, approvedSeconds: number, reviewerNote?: string, auditNote?: string, ) {
     const session = await requireAnyRole(["reviewer"])
     const shipEvent = await db.query.shipEvents.findFirst({ where: eq(shipEvents.id, shipEventId) })
     if (!shipEvent) return { success: false, error: 'ship event not found' }
@@ -118,11 +124,13 @@ export async function firstPassApprove(shipEventId: number, reviewerNote?: strin
     const [updated] = await db
         .update(shipEvents)
         .set({
+            approvedSeconds,
             firstPassApprovalStatus: "approved",
             firstPassReviewerNote: reviewerNote,
             firstPassAuditNote: auditNote,
             firstPassReviewedBy: session.id,
             firstPassReviewedOn: new Date(),
+            needsSecondPass: true
         })
         .where(eq(shipEvents.id, shipEventId))
         .returning()
@@ -155,6 +163,8 @@ export async function firstPassRequestChanges(shipEventId: number, reviewerNote?
             firstPassAuditNote: auditNote,
             firstPassReviewedBy: session.id,
             firstPassReviewedOn: new Date(),
+                        needsSecondPass: true
+
         })
         .where(eq(shipEvents.id, shipEventId))
         .returning()
@@ -186,7 +196,8 @@ export async function firstPassPermReject(shipEventId: number, reviewerNote?: st
             firstPassReviewerNote: reviewerNote,
             firstPassAuditNote: auditNote,
             firstPassReviewedBy: session.id,
-            firstPassReviewedOn: new Date(),
+            firstPassReviewedOn: new Date(),            needsSecondPass: true
+
         })
         .where(eq(shipEvents.id, shipEventId))
         .returning()
@@ -216,7 +227,7 @@ export async function confirmReview(
     reviewerNote?: string,
     auditNote?: string
 ) {
-    const session = await requireAnyRole(["reviewer"])
+    const session = await requireAnyRole(["admin"])
     const shipEvent = await db.query.shipEvents.findFirst({ where: eq(shipEvents.id, shipEventId) })
 
     if (!shipEvent) return { success: false, error: 'ship event not found' }
@@ -231,7 +242,7 @@ export async function confirmReview(
         return { success: false, error: 'permanent rejection cannot be reversed' }
     }
 
-    const potsToAward = decision === 'approved' ? Math.floor(shipEvent.seconds / 720) : 0
+    const potsToAward = decision === 'approved' ? Math.floor(shipEvent.approvedSeconds / 720) : 0
     const bumpsApprovedSeconds = decision === 'approved' || decision === 'perm_rejected'
 
     const result = await db.transaction(async (tx) => {
@@ -240,10 +251,12 @@ export async function confirmReview(
             .set({
                 approvalStatus: decision,
                 reviewerNote,
+                reviewedBy: shipEvent.firstPassReviewedBy,
                 auditNote,
-                reviewedBy: session.id,
                 reviewedOn: new Date(),
                 potsAwarded: potsToAward,
+                secondPassReviewedBy: session.id,
+                            needsSecondPass: false
             })
             .where(eq(shipEvents.id, shipEventId))
             .returning()
@@ -281,6 +294,7 @@ export async function confirmReview(
         metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}, decision: ${decision}, firstPassDecision: ${shipEvent.firstPassApprovalStatus}`,
         userId: shipEvent.userId
     })
-
+   await awardPots(session.id, 1)
+    await awardPots(shipEvent.firstPassReviewedBy, 1)
     return { success: true, ...result }
 }

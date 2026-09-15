@@ -1,0 +1,1 @@
+ALTER TABLE "ship_events" ADD COLUMN "approved_seconds" integer DEFAULT 0 NOT NULL;

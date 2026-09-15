@@ -9,6 +9,7 @@ type ShipEvent = {
     withdrawnAt: Date | null;
     seconds: number;
     potsAwarded: number;
+    approvedSeconds: number
 }
 type Props = {
     events: ShipEvent[]
@@ -20,7 +21,7 @@ export default function ReviewTimeLine({ events }: Props) {
     const timeLine = [...events].reverse();
     return (
         <div className="mt-8">
-            <h2 className="text-3xl font-bold text-[#2a1a08]">Review Tiemline</h2>
+            <h2 className="text-3xl font-bold text-[#2a1a08]">Review Timeline</h2>
             <div className="relative ml-4">
                 <div className="absolute left-5 top-3 bottom-3 w-[3px] bg-[#c9a030]" />
                 <div className="flex flex-col gap-6">
@@ -62,6 +63,11 @@ function TimelineEvent({
         icon = <Clock size={20} />;
         title = "SHIPPED";
         iconClass = "bg-[#fdf0c2] text-[#8a6812]";
+    
+    } else if (event.approvalStatus === "changes_requested") {
+        icon = <Clock size={20} />;
+        title = "CHANGED REQUESTED";
+        iconClass = "bg-[#fdf0c2] text-[#8a6812]";
     }
 
      return(
@@ -72,7 +78,7 @@ function TimelineEvent({
             <div className="flex-1 border-2 border-[#c9a030] rounded-2xl bg-[#fd0c2] p-4">
                 <div className="flex items-center justify-between gap-4">
                     <h3 className="text-xl font-bold text-[#2a1a08]">{title} </h3>
-                    <span className="text-sm text-[#6b4a32]">{event.approvalStatus == 'approved' && `${ Math.floor(event.seconds / 3600)}h ${Math.floor((event.seconds % 3600) / 60)}m - ${event.potsAwarded} pots`}</span>
+                    <span className="text-sm text-[#6b4a32]">{event.approvalStatus == 'approved' && `${ Math.floor(event.seconds / 3600)}h ${Math.floor((event.seconds % 3600) / 60)}m shipped - ${ Math.floor(event.approvedSeconds / 3600)}h ${Math.floor((event.approvedSeconds % 3600) / 60)}m approved - ${event.potsAwarded} pots`}</span>
                     <span className="text-sm text-[#6b4a32]">{formatDate(event.createdAt)}</span>
                 </div>
                 {event.reviewerNote && (
