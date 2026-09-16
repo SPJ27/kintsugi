@@ -14,7 +14,7 @@ export default async function Page() {
   await requireRole("reviewer");
 
   const shippedProjects = await db.query.shipEvents.findMany({
-    where: and( eq(shipEvents.approvalStatus, "pending"), ),
+    where: and( eq(shipEvents.approvalStatus, "pending"), eq(shipEvents.needsSecondPass, false)),
     with: { project: true, user: true },
   });
 

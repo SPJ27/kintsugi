@@ -307,7 +307,7 @@ export async function confirmReview(
             'Second pass review confirmed the first pass decision as-is',
         location: '/projects/approve',
         type: 'ship_event_confirmed',
-        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}, decision: ${decision}, firstPassDecision: ${shipEvent.firstPassApprovalStatus}`,
+        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}, decision: ${decision}, firstPassDecision: ${shipEvent.firstPassApprovalStatus}, pots: ${potsToAward}`,
         userId: shipEvent.userId
     })
     await awardPots(session.id, 1)

@@ -82,11 +82,17 @@ export default async function page({
               {project.name}
             </h1>
 
-            <h1
-              className={`absolute translate-x-2 text-center select-none text-4xl md:text-6xl leading-none tracking-[2px] text-[#f0c14d] ${rubik_Wet_Paint.className} [-webkit-text-stroke:0.7px_#1a1209]`}
+            <div
+              className={`absolute flex gap-2 items-center translate-x-2 text-center select-none text-4xl md:text-6xl leading-none tracking-[2px] text-[#f0c14d] ${rubik_Wet_Paint.className} [-webkit-text-stroke:0.7px_#1a1209]`}
             >
               {project.name}
-            </h1>
+              {session.role.includes("admin") && (
+                <Link href={`/admin/projects/${project.id}`}>
+                  {" "}
+                  <Hammer className="border-[#c9a030] text-black border bg-[#fdf0c2] p-1" />
+                </Link>
+              )}
+            </div>
           </div>
 
           {isCurrentUsers &&
@@ -139,22 +145,44 @@ export default async function page({
               className="rounded-full border-2 border-[#c9a030]"
             />
             by {projectCreatedBy?.name}
-            {session.role.includes('admin') &&  <Link href={`/admin/users/${project.user.slackId}`}> <Hammer className="border-[#c9a030] border bg-[#fdf0c2] p-1"/></Link>}
+            {session.role.includes("admin") && (
+              <Link href={`/admin/users/${project.user.slackId}`}>
+                {" "}
+                <Hammer className="border-[#c9a030] border bg-[#fdf0c2] p-1" />
+              </Link>
+            )}
           </div>
+          {isCurrentUsers &&
+            (() => {
+              const totalSeconds = project.hackatimeProjects.reduce(
+                (total: number, projectName: string) => {
+                  const hackatimeProject = hackatimeProjects.find(
+                    (p: { name: string; total_seconds?: number }) =>
+                      p.name === projectName,
+                  );
+
+                  return total + (hackatimeProject?.total_seconds ?? 0);
+                },
+                0,
+              );
+
+              const unshippedSeconds = totalSeconds - project.approvedSeconds;
+              const unshippedHours = Math.floor(unshippedSeconds / 3600);
+              const unshippedMinutes = Math.floor(
+                (unshippedSeconds % 3600) / 60,
+              );
+
+              const estimatedPoints = unshippedHours * 5;
+
+              return (
+                <div className="mb-1 flex h-12 w-fit items-center justify-center whitespace-nowrap rounded-2xl text-neutral-600 text-md ">
+                  {unshippedHours}h {unshippedMinutes}m since last ship ~{" "}
+                  {estimatedPoints} estimated pots
+                </div>
+              );
+            })()}
           <div className="flex items-center overflow-x-auto text-center">
-            <div className="flex items-center gap-2">
-              {/* {project.hackatimeProjects?.map(
-                (hackatimeProject: any) =>
-                  hackatimeProject && (
-                    <div
-                      key={hackatimeProject}
-                      className="mx-2 flex h-12 items-center justify-center rounded-2xl border-2 border-[#f0c14d] bg-[#2A1A08] px-4 py-1 text-center text-xl text-[#f0c14d]"
-                    >
-                      {hackatimeProject}
-                    </div>
-                  ),
-              )} */}
-            </div>
+            <div className="flex items-center gap-2"></div>
 
             {isCurrentUsers && (
               <div>
@@ -175,8 +203,10 @@ export default async function page({
                   const minutes = Math.floor((totalSeconds % 3600) / 60);
 
                   return (
-                    <div className="mx-2 flex h-12 items-center justify-center whitespace-nowrap rounded-2xl border-2 border-[#f0c14d] bg-[#2A1A08] px-4 py-1 text-xl text-[#f0c14d]">
-                      {hours}h {minutes}m
+                    <div className="flex">
+                      <div className="mx-2 flex h-12 items-center justify-center whitespace-nowrap rounded-2xl border-2 border-[#f0c14d] bg-[#2A1A08] px-4 py-1 text-xl text-[#f0c14d]">
+                        {hours}h {minutes}m
+                      </div>
                     </div>
                   );
                 })()}
@@ -230,21 +260,23 @@ export default async function page({
                     projectName={project.name}
                   />
                 )}
-
-                
               </>
             )}
-            {ShipStatusLabel && (
-                  <div
-                    className={`mx-2 flex h-12 shrink-0 items-center justify-center rounded-2xl border-2 px-4 py-1 text-md font-bold ${ShipStatusLabel.className}`}
-                  >
-                    {ShipStatusLabel.label}
-                  </div>
-                )}
+            {isCurrentUsers && ShipStatusLabel && (
+              <div
+                className={`mx-2 flex h-12 shrink-0 items-center justify-center rounded-2xl border-2 px-4 py-1 text-md font-bold ${ShipStatusLabel.className}`}
+              >
+                {ShipStatusLabel.label}
+              </div>
+            )}
           </div>
 
           <div className="hidden sm:block">
-            <ReviewTimeLine events={project.shipEvents} isCurrentUsers={isCurrentUsers}/>
+            <ReviewTimeLine
+              events={project.shipEvents}
+              isCurrentUsers={isCurrentUsers}
+              isCurrentUserAdmin={session.role.includes("admin")}
+            />
           </div>
         </div>
       </div>
@@ -253,3 +285,7 @@ export default async function page({
     </>
   );
 }
+
+export const metadata = {
+  title: "View Project",
+};
