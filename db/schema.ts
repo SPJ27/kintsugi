@@ -62,6 +62,22 @@ export const logs = pgTable(
   (table) => [index("logs_userId_idx").on(table.userId)],
 );
 
+export const transactions = pgTable(
+  "transactions",
+  {
+    id: text("id").primaryKey(),
+    title: text("title").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    type: text("type").notNull(),
+    potsAwarded: integer("pots_awarded").default(0),
+    metadata: text("metadata"),
+  },
+  (table) => [index("transactions_userId_idx").on(table.userId)], // renamed
+);
+
 export const session = pgTable(
   "session",
   {
@@ -127,6 +143,8 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+
+
 export const shipEvents = pgTable(
   "ship_events",
   {
@@ -181,10 +199,12 @@ export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
   logs: many(logs),
+  transactions: many(transactions),
   projects: many(projects),
   shipEvents: many(shipEvents),
   reviewedShipEvents: many(shipEvents, { relationName: "reviewer" }),
 }));
+
 export const sessionRelations = relations(session, ({ one }) => ({
   user: one(user, {
     fields: [session.userId],
@@ -202,6 +222,13 @@ export const accountRelations = relations(account, ({ one }) => ({
 export const logsRelations = relations(logs, ({ one }) => ({
   user: one(user, {
     fields: [logs.userId],
+    references: [user.id],
+  }),
+}));
+
+export const transactionsRelations = relations(transactions, ({ one }) => ({
+  user: one(user, {
+    fields: [transactions.userId],
     references: [user.id],
   }),
 }));

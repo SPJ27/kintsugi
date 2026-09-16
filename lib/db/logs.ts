@@ -19,7 +19,7 @@ export async function addLog({
   location,
   type,
   metadata='',
-  userId
+  userId,
 }: newLog) {
 
   await db.insert(logs).values({

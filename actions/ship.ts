@@ -5,6 +5,7 @@ import { projects, shipEvents, user } from "@/db/schema";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { getHackatimeHours } from "@/lib/hackatime";
 import { addLog } from "@/lib/db/logs";
+import { awardPots } from "@/lib/pots";
 
 export async function shipProject(
     projectId: number,
@@ -103,11 +104,6 @@ export async function shipProject(
     })
 
     return { success: true, shipEvent }
-}
-
-async function awardPots(userId: string | null, pots: number) {
-    if (!userId || pots <= 0) return
-    await db.update(user).set({ pots: sql`${user.pots} + ${pots}` }).where(eq(user.id, userId))
 }
 
 /*
@@ -228,9 +224,13 @@ export async function firstPassPermReject(shipEventId: number, reviewerNote?: st
 }
 
 /**
- * Second pass. Copies the first-pass decision into the final fields and
- * applies the real side effects (approvedSeconds, pots, project status).
- * Must be a different reviewer than whoever did the first pass.
+ ts for 2nd pass
+ - only admins can do ts
+ - need to pass shipeventid
+ - for the approved seconds, 
+  - in ship events table -> approved seconds get the payout
+  - in users table -> the user gets paid out for the number of approved hours
+  ***- in porjects table -> the ship event total seconds are added to project's approvedHours, so that we would not award pots for previous decisions 
  */
 type ReviewDecision = 'approved' | 'changes_requested' | 'perm_rejected'
 
@@ -290,12 +290,15 @@ export async function confirmReview(
 
         let updatedUser
         if (potsToAward > 0) {
-            [updatedUser] = await tx
-                .update(user)
-                .set({ pots: sql`${user.pots} + ${potsToAward}` })
-                .where(eq(user.id, shipEvent.userId))
-                .returning()
-        }
+        await awardPots(
+            tx,
+            shipEvent.userId,
+            potsToAward,
+            'Ship Approved: Pots Awarded',
+            'ship_event_pots_awarded',
+            `shipEventId: ${shipEvent.id}`
+        )
+    }
 
         return { updatedShipEvent, updatedProject, updatedUser }
     })
@@ -310,7 +313,21 @@ export async function confirmReview(
         metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}, decision: ${decision}, firstPassDecision: ${shipEvent.firstPassApprovalStatus}, pots: ${potsToAward}`,
         userId: shipEvent.userId
     })
-    await awardPots(session.id, 1)
-    await awardPots(shipEvent.firstPassReviewedBy, 1)
+    await awardPots(
+    db,
+    session.id,
+    1,
+    'Second Pass Review Bonus',
+    'review_bonus',
+    `shipEventId: ${shipEvent.id}`
+)
+await awardPots(
+    db,
+    shipEvent.firstPassReviewedBy,
+    1,
+    'First Pass Review Bonus',
+    'review_bonus',
+    `shipEventId: ${shipEvent.id}`
+)
     return { success: true, ...result }
 }

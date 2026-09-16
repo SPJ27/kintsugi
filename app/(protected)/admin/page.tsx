@@ -11,7 +11,9 @@ export default async function page() {
             'Users': '/users',
             'Projects': '/projects',
             'Ship Events': '/shipevents',
-            'Logs': '/logs'
+            'Logs': '/logs',
+            'Second Pass Reviews': '/review',
+            'Transactions': '/transactions'
         }
     };
 

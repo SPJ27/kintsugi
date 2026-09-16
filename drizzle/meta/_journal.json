@@ -162,6 +162,20 @@
       "when": 1789489650580,
       "tag": "0022_purple_siren",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1789566487410,
+      "tag": "0023_round_paladin",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1789566521551,
+      "tag": "0024_violet_shriek",
+      "breakpoints": true
     }
   ]
 }
