@@ -14,6 +14,7 @@ const rubiks_Wet_Paint = Rubik_Wet_Paint({
 export default async function page() {
     const session = await requireAuth();
     const hackatimeConnected = await getHackatimeStatus(session.id);
+    // const projects = a
     return (
         <div className={`flex flex-col gap-6 ${kalamFont.className} overflow-hidden`}>
             <div className={`bg-[#2A1A08] shadow-[3px_5px_0_rgba(26,18,9,0.18)] flex flex-col gap-2 border-2 border-dashed border-[#c9a030] py-8 px-6 rounded-2xl ${kalamFont.className}}`}>

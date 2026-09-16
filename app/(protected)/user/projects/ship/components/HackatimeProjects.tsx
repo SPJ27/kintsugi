@@ -4,16 +4,25 @@ import { Check, ChevronDown, ChevronLeft, ChevronUp, Circle, CircleCheck, Loader
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+
 type HackatimeProject = {
     name: string;
     total_seconds?: number;
 }
+type FormData = {
+    name: string;
+    description: string;
+    shipText: string;
+    projectRepo: string;
+    projectDemo: string;
+}
 type FinalShipProps = {
     project: any;
     hackatimeProjects: HackatimeProject[];
+    formData: FormData;
     onBack: () => void
 }
-export default function FinalShip({ project, hackatimeProjects, onBack }: FinalShipProps) {
+export default function FinalShip({ project, hackatimeProjects, formData, onBack }: FinalShipProps) {
     const router = useRouter();
     const [hackatimeOpen, setHackatimeOpen] = useState(false);
     const [search, setSearch] = useState("");
@@ -37,9 +46,9 @@ export default function FinalShip({ project, hackatimeProjects, onBack }: FinalS
         },
         0
     )
-
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const approvedSeconds = project.approvedSeconds
+    const hours = Math.floor((totalSeconds - approvedSeconds) / 3600);
+    const minutes = Math.floor(((totalSeconds - approvedSeconds) % 3600) / 60);
     const canShip = selectedProjects.length > 0 && aiDeclaration && fraudDeclaration && !shipping;
     const handleShip = async () => {
         if (!canShip) return;
@@ -47,7 +56,14 @@ export default function FinalShip({ project, hackatimeProjects, onBack }: FinalS
             setShipping(true);
             const result = await submitShipProject(
                 project.id,
-                selectedProjects
+                formData.shipText,
+                selectedProjects,
+                {
+                    name: formData.name,
+                    description: formData.description,
+                    projectRepo: formData.projectRepo,
+                    projectDemo: formData.projectDemo,
+                }
             );
             if (!result.success) {
                 toast.error(result.error);
@@ -201,32 +217,32 @@ export default function FinalShip({ project, hackatimeProjects, onBack }: FinalS
                         </button>
                     </div>
                 </div>
-                
+
                 <div className="mt-5 flex items-center justify-between gap-4">
                     <div className="text-[#24221C]">
                         <p className="text-lg font-bold">Ready to ship?</p>
                         <p className="text-sm text-[#2a1a08]/70">
-                        {hours}h {minutes}m of tracked time selecte
+                            {hours}h {minutes}m of tracked time will be shipped
                         </p>
                     </div>
                     <button
-                    type="button"
-                    disabled={!canShip}
-                    onClick={handleShip}
-                    className={`px-8 py-3 rounded-2xl border-3 border-dashed text-xl font-bold transition-all duration-200 ${canShip ? "bg-[#24221C] text-[#c9a030] border-[#c9a030] cursor-pointer hover:scale-95 hover:shadow-shadow-[3px_3px_0_#c9a030]" : "bg-[#b9b1a0] text-[#746f63] border-[#746f63] cursor-not-allowed opacity-60"}`}>
+                        type="button"
+                        disabled={!canShip}
+                        onClick={handleShip}
+                        className={`px-8 py-3 rounded-2xl border-3 border-dashed text-xl font-bold transition-all duration-200 ${canShip ? "bg-[#24221C] text-[#c9a030] border-[#c9a030] cursor-pointer hover:scale-95 hover:shadow-shadow-[3px_3px_0_#c9a030]" : "bg-[#b9b1a0] text-[#746f63] border-[#746f63] cursor-not-allowed opacity-60"}`}>
                         {
-                            shipping ? 
-                            <span className="flex flex-col justify-center items-center text-center w-full">
-                                <Loader2 className="animate-spin" />
-                            </span> : 
-                            <span className="flex w-full gap-2">
-                                <span>
-                                    Ship Project
+                            shipping ?
+                                <span className="flex flex-col justify-center items-center text-center w-full">
+                                    <Loader2 className="animate-spin" />
+                                </span> :
+                                <span className="flex w-full gap-2">
+                                    <span>
+                                        Ship Project
+                                    </span>
+                                    <span>
+                                        <ShipIcon />
+                                    </span>
                                 </span>
-                                <span>
-                                    <ShipIcon />
-                                </span>
-                            </span>
                         }
                     </button>
                 </div>

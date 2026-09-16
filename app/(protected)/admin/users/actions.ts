@@ -33,6 +33,7 @@ export async function getUsers(query?: string) {
       role: user.role,
       slackName: profile?.name ?? null,
       slackImage: profile?.image ?? null,
+      pots: user.pots
     };
   });
 

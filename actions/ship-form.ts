@@ -6,9 +6,22 @@ import { db } from "@/db";
 import { and, desc, eq, isNull } from "drizzle-orm";
 import { projects, shipEvents } from "@/db/schema";
 
-export async function submitShipProject(projectId: number, selectedProjects: string[]) {
+export async function submitShipProject(
+    projectId: number,
+    shipText: string,
+    selectedProjects: string[],
+    projectDetails: {
+        name: string;
+        description: string;
+        projectRepo: string;
+        projectDemo: string;
+    }
+) {
     return await shipProject(
-        projectId, "", selectedProjects
+        projectId,
+        shipText,
+        selectedProjects,
+        projectDetails
     )
 }
 
@@ -42,7 +55,7 @@ export async function getProjectBack(projectId: number) {
             }
         }
         await db.update(shipEvents).set({
-            withdrawnAt: new Date
+            withdrawnAt: new Date()
         }).where(eq(shipEvents.id, latestShipEvent.id));
 
         return {

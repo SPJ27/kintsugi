@@ -29,10 +29,30 @@ type ShipProjectFormProps = {
 
 type Step = 1 | 2 | 3
 
+type FormData = {
+    name: string;
+    description: string;
+    shipText: string;
+    projectRepo: string;
+    projectDemo: string;
+}
+
 export default function ShipProjectForm({
     project, hackatimeProjects
 }: ShipProjectFormProps) {
     const [step, setStep] = useState<Step>(1);
+
+    const [formData, setFormData] = useState<FormData>({
+        name: project?.name ?? "",
+        description: project?.description ?? "",
+        shipText: "",
+        projectRepo: project?.projectRepo ?? "",
+        projectDemo: project?.projectDemo ?? "",
+    });
+
+    const updateFormData = (patch: Partial<FormData>) => {
+        setFormData((prev) => ({ ...prev, ...patch }));
+    };
 
     return (
         <div className={`${kalam.className}  mx-auto`}>
@@ -68,7 +88,13 @@ export default function ShipProjectForm({
                         exit={{ opacity: 0, x: -40 }}
                         transition={{ duration: 0.25 }}
                     >
-                        <ProjectDetailsStep onBack={() => setStep(1)} project={project} onNext={() => setStep(3)} />
+                        <ProjectDetailsStep
+                            project={project}
+                            values={formData}
+                            onChange={updateFormData}
+                            onBack={() => setStep(1)}
+                            onNext={() => setStep(3)}
+                        />
                     </motion.div>
                 )}
                 {step === 3 && (
@@ -79,7 +105,12 @@ export default function ShipProjectForm({
                         exit={{ opacity: 0, x: -40 }}
                         transition={{ duration: 0.25 }}
                     >
-                        <FinalShip onBack={() => setStep(2)} project={project} hackatimeProjects={hackatimeProjects} />
+                        <FinalShip
+                            onBack={() => setStep(2)}
+                            project={project}
+                            hackatimeProjects={hackatimeProjects}
+                            formData={formData}
+                        />
                     </motion.div>
                 )}
             </AnimatePresence>

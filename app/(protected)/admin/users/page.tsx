@@ -17,7 +17,6 @@ const Page = () => {
   const [rows, setRows] = useState<UserRow[]>([]);
   const [isPending, startTransition] = useTransition();
 
-  // Load the unfiltered count once, up front
   useEffect(() => {
     getUsers().then((all) => setAllCount(all.length));
   }, []);

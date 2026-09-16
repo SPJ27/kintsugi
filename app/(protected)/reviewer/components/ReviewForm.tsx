@@ -6,134 +6,27 @@ import {
   firstPassPermReject,
   confirmReview,
 } from '@/actions/ship'
-import { ExternalLink, GitCommit } from 'lucide-react'
-import { Kalam, Rubik_Wet_Paint } from 'next/font/google'
-import Image from 'next/image'
+
+type Decision = 'approved' | 'changes_requested' | 'perm_rejected'
+
+interface ShipEvent {
+  id: number
+  seconds: number                 // originally tracked, read-only ceiling
+  approvedSeconds?: number | null // first-pass reviewer's chosen value
+  approvalStatus: string
+  firstPassApprovalStatus: string
+  firstPassReviewerNote?: string | null
+  firstPassAuditNote?: string | null
+}
 
 function formatSeconds(totalSeconds: number) {
   const totalMinutes = Math.round(totalSeconds / 60)
   const hours = Math.floor(totalMinutes / 60)
   const minutes = totalMinutes % 60
-
   if (hours === 0) return `${minutes}m`
   if (minutes === 0) return `${hours}h`
   return `${hours}h ${minutes}m`
 }
-
-const MONTH_NAMES = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-]
-
-// Manual time formatting instead of toLocaleTimeString: Intl output for the
-// AM/PM marker (e.g. "AM" vs "am") can differ between the server's Node/ICU
-// build and the browser's, which causes a hydration mismatch even though the
-// underlying Date is identical. Formatting by hand guarantees the same
-// string on server and client.
-function formatTime(date: Date) {
-  let hours = date.getHours()
-  const minutes = date.getMinutes()
-  const period = hours >= 12 ? 'PM' : 'AM'
-
-  hours = hours % 12
-  if (hours === 0) hours = 12
-
-  const paddedMinutes = minutes.toString().padStart(2, '0')
-  return `${hours}:${paddedMinutes} ${period}`
-}
-
-function formatRelativeDate(dateStr: string) {
-  const date = new Date(dateStr)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-
-  const time = formatTime(date)
-
-  if (diffDays === 0) return `Today, ${time}`
-  if (diffDays === 1) return `Yesterday, ${time}`
-  if (diffDays < 7) return `${diffDays}d ago, ${time}`
-
-  return `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}, ${time}`
-}
-
-const kalam = Kalam({
-  subsets: ['latin'],
-  weight: ['300', '400', '700'],
-})
-const rubiksWetPaint = Rubik_Wet_Paint({
-  subsets: ['latin'],
-  weight: '400',
-})
-
-interface Project {
-  name?: string
-  description?: string | null
-  bannerUrl?: string | null
-}
-
-interface CommitAuthorUser {
-  login?: string | null
-  avatarUrl?: string | null
-}
-
-interface CommitAuthor {
-  name: string
-  user?: CommitAuthorUser | null
-}
-
-interface CommitHours {
-  totalSeconds?: number
-}
-
-interface Commit {
-  oid: string
-  message: string
-  committedDate: string
-  additions: number
-  deletions: number
-  author: CommitAuthor
-  hours?: CommitHours | null
-}
-
-interface ShipEventUser {
-  id: string
-  name: string
-  image?: string | null
-  slackId: string | null
-}
-
-interface ShipEvent {
-  id: number
-  seconds: number
-  createdAt: string | Date
-  shipText?: string | null
-  reviewerNote?: string | null
-  user?: ShipEventUser | null
-}
-
-interface ReviewFormProps {
-  project?: Project | null
-  repoUrl?: string | null
-  demoUrl?: string | null
-  commits: Commit[] | null
-  shipEvent: ShipEvent
-}
-
-interface ShipEvent {
-  id: number
-  seconds: number
-  createdAt: string | Date
-  shipText?: string | null
-  reviewerNote?: string | null
-  approvalStatus: string
-  firstPassApprovalStatus: string
-  firstPassReviewerNote?: string | null
-  firstPassAuditNote?: string | null
-  user?: ShipEventUser | null
-}
-
-type Decision = 'approved' | 'changes_requested' | 'perm_rejected'
 
 export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
   const [isPending, startTransition] = useTransition()
@@ -146,6 +39,10 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
   const [reviewerNote, setReviewerNote] = useState(shipEvent.firstPassReviewerNote ?? '')
   const [auditNote, setAuditNote] = useState(shipEvent.firstPassAuditNote ?? '')
 
+ const [approvedSecondsStr, setApprovedSecondsStr] = useState(
+  String(Math.round(((shipEvent.approvedSeconds ?? shipEvent.seconds) / 3600) * 100) / 100)
+)
+
   const boxClass = 'w-full rounded-xl border-2 border-[#c9a030]/40 bg-[#fdf0c2] p-3 text-base text-[#2A1A08]'
   const btnBase = 'px-5 py-2 rounded-xl border-2 border-[#24221C] font-semibold transition-colors disabled:opacity-50'
 
@@ -157,11 +54,49 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
     )
   }
 
+  const parsedSeconds = Math.round(Number(approvedSecondsStr) * 3600) 
+  const secondsValid = Number.isFinite(parsedSeconds) && parsedSeconds >= 0 && parsedSeconds <= shipEvent.seconds
+
+  const HoursOverrideInput = (
+    <div>
+      <label className="ml-1 text-sm text-[#69583C] block mb-1">
+        Approved hours (tracked: {formatSeconds(shipEvent.seconds)})
+      </label>
+      <input
+        type="number"
+        step="0.1"
+        min={0}
+        max={shipEvent.seconds / 3600}
+        className={boxClass}
+        value={approvedSecondsStr}
+        onChange={(e) => setApprovedSecondsStr(e.target.value)}
+      />
+      {!secondsValid && (
+        <p className="text-red-600 text-sm mt-1">
+          Must be between 0 and {(shipEvent.seconds / 3600).toFixed(2)}h
+        </p>
+      )}
+    </div>
+  )
+
   if (shipEvent.firstPassApprovalStatus === 'pending') {
-    const runFirstPass = (fn: typeof firstPassApprove) => {
+    const runFirstPass = (kind: Decision) => {
       setError(null)
+
+      if (kind === 'approved' && !secondsValid) {
+        setError('Enter a valid approved-hours amount before approving')
+        return
+      }
+
       startTransition(async () => {
-        const res = await fn(shipEvent.id, 500, reviewerNote || undefined, auditNote || undefined)
+        let res
+        if (kind === 'approved') {
+          res = await firstPassApprove(shipEvent.id, parsedSeconds, reviewerNote || undefined, auditNote || undefined)
+        } else if (kind === 'changes_requested') {
+          res = await firstPassRequestChanges(shipEvent.id, reviewerNote || undefined, auditNote || undefined)
+        } else {
+          res = await firstPassPermReject(shipEvent.id, reviewerNote || undefined, auditNote || undefined)
+        }
         if (!res.success) setError(res.error ?? 'Something went wrong')
         else setDone(true)
       })
@@ -170,6 +105,9 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
     return (
       <div className="ml-2 mt-4 flex flex-col gap-3">
         <h3 className="text-xl font-bold text-[#2A1A08]">First pass review</h3>
+
+        {HoursOverrideInput}
+
         <textarea
           className={boxClass}
           placeholder="Reviewer note (visible to submitter)"
@@ -185,25 +123,13 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
           rows={2}
         />
         <div className="flex gap-3 flex-wrap">
-          <button
-            className={`${btnBase} bg-emerald-200 hover:bg-emerald-300`}
-            disabled={isPending}
-            onClick={() => runFirstPass(firstPassApprove)}
-          >
+          <button className={`${btnBase} bg-emerald-200 hover:bg-emerald-300`} disabled={isPending} onClick={() => runFirstPass('approved')}>
             Approve
           </button>
-          <button
-            className={`${btnBase} bg-amber-200 hover:bg-amber-300`}
-            disabled={isPending}
-            onClick={() => runFirstPass(firstPassRequestChanges)}
-          >
+          <button className={`${btnBase} bg-amber-200 hover:bg-amber-300`} disabled={isPending} onClick={() => runFirstPass('changes_requested')}>
             Request Changes
           </button>
-          <button
-            className={`${btnBase} bg-red-200 hover:bg-red-300`}
-            disabled={isPending}
-            onClick={() => runFirstPass(firstPassPermReject)}
-          >
+          <button className={`${btnBase} bg-red-200 hover:bg-red-300`} disabled={isPending} onClick={() => runFirstPass('perm_rejected')}>
             Permanently Reject
           </button>
         </div>
@@ -214,8 +140,20 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
 
   const submitConfirm = () => {
     setError(null)
+
+    if (decision === 'approved' && !secondsValid) {
+      setError('Enter a valid approved-hours amount before confirming an approval')
+      return
+    }
+
     startTransition(async () => {
-      const res = await confirmReview(shipEvent.id, decision, reviewerNote || undefined, auditNote || undefined)
+      const res = await confirmReview(
+        shipEvent.id,
+        decision,
+        decision === 'approved' ? parsedSeconds : 0,
+        reviewerNote || undefined,
+        auditNote || undefined
+      )
       if (!res.success) setError(res.error ?? 'Something went wrong')
       else setDone(true)
     })
@@ -225,19 +163,18 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
     <div className="ml-2 mt-4 flex flex-col gap-3">
       <h3 className="text-xl font-bold text-[#2A1A08]">Confirm review</h3>
       <p className="text-sm text-[#69583C]">
-        First pass: <span className="font-semibold">{shipEvent.firstPassApprovalStatus}</span>.
+        First pass: <span className="font-semibold">{shipEvent.firstPassApprovalStatus}</span>
+        {shipEvent.approvedSeconds != null && ` (${formatSeconds(shipEvent.approvedSeconds)} approved)`}.
         Edit below if you disagree, or submit as-is to confirm.
       </p>
 
-      <select
-        className={boxClass}
-        value={decision}
-        onChange={(e) => setDecision(e.target.value as Decision)}
-      >
+      <select className={boxClass} value={decision} onChange={(e) => setDecision(e.target.value as Decision)}>
         <option value="approved">Approve</option>
         <option value="changes_requested">Request Changes</option>
         <option value="perm_rejected">Permanently Reject</option>
       </select>
+
+      {decision === 'approved' && HoursOverrideInput}
 
       <textarea
         className={boxClass}
@@ -254,11 +191,7 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
         rows={2}
       />
 
-      <button
-        className={`${btnBase} bg-emerald-200 hover:bg-emerald-300 w-fit`}
-        disabled={isPending}
-        onClick={submitConfirm}
-      >
+      <button className={`${btnBase} bg-emerald-200 hover:bg-emerald-300 w-fit`} disabled={isPending} onClick={submitConfirm}>
         Submit Final Decision
       </button>
       {error && <p className="text-red-600 text-base">{error}</p>}

@@ -1,5 +1,5 @@
 import { getProject } from "@/actions/projects";
-import { Pencil, Ship } from "lucide-react";
+import { Hammer, Pencil, Ship } from "lucide-react";
 import { Rubik_Wet_Paint, Kalam } from "next/font/google";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -139,6 +139,7 @@ export default async function page({
               className="rounded-full border-2 border-[#c9a030]"
             />
             by {projectCreatedBy?.name}
+            {session.role.includes('admin') &&  <Link href={`/admin/users/${project.user.slackId}`}> <Hammer className="border-[#c9a030] border bg-[#fdf0c2] p-1"/></Link>}
           </div>
           <div className="flex items-center overflow-x-auto text-center">
             <div className="flex items-center gap-2">
@@ -230,19 +231,20 @@ export default async function page({
                   />
                 )}
 
-                {ShipStatusLabel && (
+                
+              </>
+            )}
+            {ShipStatusLabel && (
                   <div
                     className={`mx-2 flex h-12 shrink-0 items-center justify-center rounded-2xl border-2 px-4 py-1 text-md font-bold ${ShipStatusLabel.className}`}
                   >
                     {ShipStatusLabel.label}
                   </div>
                 )}
-              </>
-            )}
           </div>
 
           <div className="hidden sm:block">
-            <ReviewTimeLine events={project.shipEvents} />
+            <ReviewTimeLine events={project.shipEvents} isCurrentUsers={isCurrentUsers}/>
           </div>
         </div>
       </div>

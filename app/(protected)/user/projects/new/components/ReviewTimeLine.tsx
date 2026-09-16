@@ -8,13 +8,15 @@ type ShipEvent = {
     auditNote: string | null;
     withdrawnAt: Date | null;
     seconds: number;
-    potsAwarded: number;
+    potsAwarded: number | null;
     approvedSeconds: number
+    shipText: string
 }
 type Props = {
     events: ShipEvent[]
+    isCurrentUsers: boolean
 }
-export default function ReviewTimeLine({ events }: Props) {
+export default function ReviewTimeLine({ events, isCurrentUsers }: Props) {
     if (!events.length) {
         return null
     }
@@ -28,7 +30,7 @@ export default function ReviewTimeLine({ events }: Props) {
                     {timeLine.map((event) => {
                         const withdrawn = !!event.withdrawnAt;
                         return (
-                            <TimelineEvent key={event.id} event={event} withdrawn={withdrawn} />
+                            <TimelineEvent key={event.id} event={event} withdrawn={withdrawn} isCurrentUsers={isCurrentUsers}/>
                         )
                     })}
                 </div>
@@ -39,10 +41,12 @@ export default function ReviewTimeLine({ events }: Props) {
 
 function TimelineEvent({
     event,
-    withdrawn
+    withdrawn,
+    isCurrentUsers
 }: {
     event: ShipEvent,
-    withdrawn: boolean
+    withdrawn: boolean,
+    isCurrentUsers: boolean
 }) {
     let icon;
     let title;
@@ -81,7 +85,13 @@ function TimelineEvent({
                     <span className="text-sm text-[#6b4a32]">{event.approvalStatus == 'approved' && `${ Math.floor(event.seconds / 3600)}h ${Math.floor((event.seconds % 3600) / 60)}m shipped - ${ Math.floor(event.approvedSeconds / 3600)}h ${Math.floor((event.approvedSeconds % 3600) / 60)}m approved - ${event.potsAwarded} pots`}</span>
                     <span className="text-sm text-[#6b4a32]">{formatDate(event.createdAt)}</span>
                 </div>
-                {event.reviewerNote && (
+                {event.shipText && (
+                    <div className="mt-3">
+                        <p className="text-sm font-bold text-[#6b5a32]">Ship Text</p>
+                        <p className="text-lg text-[2a1a08]">{event.shipText}</p>
+                    </div>
+                )}
+                {event.reviewerNote && isCurrentUsers && (
                     <div className="mt-3">
                         <p className="text-sm font-bold text-[#6b5a32]">Reviewer Note</p>
                         <p className="text-lg text-[2a1a08]">{event.reviewerNote}</p>

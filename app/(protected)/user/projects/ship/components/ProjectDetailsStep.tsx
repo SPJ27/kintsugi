@@ -1,20 +1,26 @@
 "use client";
 
-import { ArrowLeft, ChevronLeft } from "lucide-react";
-import { useState } from "react";
+import { ChevronLeft } from "lucide-react";
+
+type FormData = {
+    name: string;
+    description: string;
+    shipText: string;
+    projectRepo: string;
+    projectDemo: string;
+}
 
 type ProjectDetailsStepProps = {
     project: any;
+    values: FormData;
+    onChange: (patch: Partial<FormData>) => void;
     onBack: () => void;
     onNext: () => void;
 }
+
 export default function ProjectDetailsStep({
-    project, onBack, onNext
+    project, values, onChange, onBack, onNext
 }: ProjectDetailsStepProps) {
-    const [name, setName] = useState(project?.name ?? "");
-    const [description, setDescription] = useState(project?.description ?? "");
-    const [projectRepo, setProjectRepo] = useState(project?.projectRepo ?? "");
-    const [projectDemo, setProjectDemo] = useState(project?.projectDemo ?? "");
     return (
         <div className="mx-6 relative">
             <button onClick={onBack} className="absolute hover:scale-90 transition-all duration-300 cursor-pointer -top-40 -left-12 bg-[#24221C] border-3 cursor-pointer  text-[#c9a030] px-1 py-1 rounded-xl border-[#c9a030]">
@@ -35,11 +41,21 @@ export default function ProjectDetailsStep({
                     <input
                         type="text"
                         id="project-name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={values.name}
+                        onChange={(e) => onChange({ name: e.target.value })}
                         placeholder="My awesome project."
                         className="ml-4 border-[#c9a030]  focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
-
+                    />
+                </div>
+                <div className="flex flex-col gap-2">
+                    <label htmlFor="ship-text" className="text-[#2A1A08] ml-4 text-2xl font-bold">Ship Text</label>
+                    <input
+                        type="text"
+                        id="ship-text"
+                        value={values.shipText}
+                        onChange={(e) => onChange({ shipText: e.target.value })}
+                        placeholder="My project does..."
+                        className="ml-4 border-[#c9a030]  focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
                     />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -47,8 +63,8 @@ export default function ProjectDetailsStep({
                     <textarea
                         id="project-description"
                         className="ml-4 border-[#c9a030] focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        value={values.description}
+                        onChange={(e) => onChange({ description: e.target.value })}
                         placeholder="Tell us about your project"
                         rows={5} />
                 </div>
@@ -57,11 +73,10 @@ export default function ProjectDetailsStep({
                     <input
                         type="url"
                         id="project-demo"
-                        value={projectDemo}
-                        onChange={(e) => setProjectDemo(e.target.value)}
+                        value={values.projectDemo}
+                        onChange={(e) => onChange({ projectDemo: e.target.value })}
                         placeholder="https://myproject.vercel.app"
                         className="ml-4 border-[#c9a030]  focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
-
                     />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -69,11 +84,10 @@ export default function ProjectDetailsStep({
                     <input
                         type="url"
                         id="project-repo"
-                        value={projectRepo}
-                        onChange={(e) => setProjectRepo(e.target.value)}
+                        value={values.projectRepo}
+                        onChange={(e) => onChange({ projectRepo: e.target.value })}
                         placeholder="https://myproject.vercel.app"
                         className="ml-4 border-[#c9a030]  focus:border-solid focus:scale-[105%] transition-all duration-300 ease-out border-2 text-xl text-[#2A1A08] py-4 px-4 rounded-2xl bg-[#fdf0c2] font-medium outline-none"
-
                     />
                 </div>
             </div>
