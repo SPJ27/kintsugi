@@ -1,5 +1,5 @@
 import { getSlackProfile, requireAuth } from "@/lib/auth-guard";
-import UserLayoutClient from "./user/components/UserLayoutClient";
+import UserLayoutClient from "../components/dashboard/UserLayoutClient";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
     const session = await requireAuth();

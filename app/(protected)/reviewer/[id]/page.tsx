@@ -3,7 +3,7 @@ import { getCommits } from '@/lib/github'
 import { shipEvents } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
-import {ReviewPanel} from '../components/ReviewForm'
+import {ReviewPanel} from '../../../components/review/ReviewForm'
 import { requireRole } from '@/lib/auth-guard'
 
 const page = async ({ params }: { params: Promise<{ id: number }> }) => {

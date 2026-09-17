@@ -5,8 +5,8 @@ import { db } from "@/db";
 import { desc, eq } from "drizzle-orm";
 import { projects, shipEvents } from "@/db/schema";
 import { getHackatimeProjects } from "@/lib/hackatime";
-import ProjectCard from "./new/components/ProjectCard";
-import DeleteProject from "./new/components/DeleteProject";
+import ProjectCard from "../../../components/projects/ProjectCard";
+import DeleteProject from "../../../components/projects/DeleteProject";
 
 const kalam = Kalam({
     subsets: ['latin'],

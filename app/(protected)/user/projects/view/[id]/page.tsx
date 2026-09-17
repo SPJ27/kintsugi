@@ -3,15 +3,15 @@ import { Hammer, Pencil, Ship } from "lucide-react";
 import { Rubik_Wet_Paint, Kalam } from "next/font/google";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import DeleteButton from "../components/DeleteButton";
+import DeleteButton from "../../../../../components/projects/DeleteButton";
 import Link from "next/link";
-import DeleteProject from "../../new/components/DeleteProject";
+import DeleteProject from "../../../../../components/projects/DeleteProject";
 import { getHackatimeProjects } from "@/lib/hackatime";
 import { getShipStatusLabel, ShipStatus } from "@/lib/ship-status";
-import UnShipButton from "../components/UnShipButon";
-import HideEditButton from "../components/HideEditButton";
-import HideDeleteButton from "../components/HideDeleteButton";
-import ReviewTimeLine from "../../new/components/ReviewTimeLine";
+import UnShipButton from "../../../../../components/projects/UnShipButon";
+import HideEditButton from "../../../../../components/projects/HideEditButton";
+import HideDeleteButton from "../../../../../components/projects/HideDeleteButton";
+import ReviewTimeLine from "../../../../../components/projects/ReviewTimeLine";
 import { getSlackProfile, requireAuth } from "@/lib/auth-guard";
 
 const rubik_Wet_Paint = Rubik_Wet_Paint({

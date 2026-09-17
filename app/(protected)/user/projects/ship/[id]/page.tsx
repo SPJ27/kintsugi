@@ -1,7 +1,7 @@
 import { getProject } from "@/actions/projects";
 import { Kalam } from "next/font/google";
 import { notFound } from "next/navigation";
-import ShipProjectForm from "../components/ShipProjectForm";
+import ShipProjectForm from "../../../../../components/ship/ShipProjectForm";
 import { getHackatimeProjects } from "@/lib/hackatime";
 const kalam = Kalam({
     subsets: ['latin'],

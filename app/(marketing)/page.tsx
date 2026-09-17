@@ -1,8 +1,8 @@
-import GotQuestions from "./components/Got-Questions";
-import Hero from "./components/Hero";
-import HowKintsugiWorks from "./components/How-Kintsugi-Works";
-import PotTiers from "./components/Pot-tiers";
-import SignUpSection from "./components/SignUpSection";
+import GotQuestions from "../components/landing/Got-Questions";
+import Hero from "../components/landing/Hero";
+import HowKintsugiWorks from "../components/landing/How-Kintsugi-Works";
+import PotTiers from "../components/landing/Pot-tiers";
+import SignUpSection from "../components/landing/SignUpSection";
 
 export default function homePage(){
     return(

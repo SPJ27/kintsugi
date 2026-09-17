@@ -1,5 +1,5 @@
 import { Kalam, Rubik_Wet_Paint } from "next/font/google"
-import ProjectForm from "./components/ProjectForm"
+import ProjectForm from "../../../../components/projects/ProjectForm"
 
 const kalam = Kalam({
   subsets: ['latin'],

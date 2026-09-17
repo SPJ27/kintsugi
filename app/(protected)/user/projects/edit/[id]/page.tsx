@@ -1,6 +1,6 @@
 import { getProject } from "@/actions/projects";
 import { notFound } from "next/navigation";
-import ProjectForm from "../../new/components/ProjectForm";
+import ProjectForm from "../../../../../components/projects/ProjectForm";
 import { Kalam, Rubik_Wet_Paint } from "next/font/google";
 const kalam = Kalam({
     subsets: ['latin'],

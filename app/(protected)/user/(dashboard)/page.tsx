@@ -2,7 +2,7 @@ import { requireAuth, requireRole } from "@/lib/auth-guard";
 import { getHackatimeStatus } from "@/lib/db/user";
 import { Kalam, Rubik_Wet_Paint } from "next/font/google";
 import { toast } from "sonner";
-import Button from "../components/Button";
+import Button from "../../../components/dashboard/Button";
 const kalamFont = Kalam({
     subsets: ['latin'],
     weight: ['300', '400', '700']

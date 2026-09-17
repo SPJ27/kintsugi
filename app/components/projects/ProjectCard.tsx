@@ -5,8 +5,8 @@ import { Kalam, Rubik_Wet_Paint } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import { getShipStatusLabel } from '@/lib/ship-status';
-import HideDeleteButton from "../../view/components/HideDeleteButton";
-import HideEditButton from "../../view/components/HideEditButton";
+import HideDeleteButton from "./HideDeleteButton";
+import HideEditButton from "./HideEditButton";
 
 const kalam = Kalam({
     subsets: ['latin'],
