@@ -15,7 +15,7 @@ export default async function Page({ params }: {
 }) {
     const { id } = await params;
     const result = await getProject(Number(id));
-    if (!result.success || !result.project || !result.userCreated) {
+    if (!result.success || !result.project || !result.userCreated || result.project.recentShipStatus === 'perm_rejected' || result.project.recentShipStatus === 'pending') {
         notFound();
     }
     return (

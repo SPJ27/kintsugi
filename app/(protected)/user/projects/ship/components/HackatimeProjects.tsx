@@ -8,6 +8,7 @@ import { toast } from "sonner";
 type HackatimeProject = {
     name: string;
     total_seconds?: number;
+    formattedString: string
 }
 type FormData = {
     name: string;
@@ -78,6 +79,7 @@ export default function FinalShip({ project, hackatimeProjects, formData, onBack
             setShipping(false);
         }
     }
+    const formattedString = (totalSeconds: number) => {return `${Math.floor(totalSeconds/3600)}h ${Math.floor((totalSeconds%3600)/60)}m`}
 
     return (
         <div className="mx-6 relative">
@@ -152,7 +154,7 @@ export default function FinalShip({ project, hackatimeProjects, formData, onBack
                                                     <div>
                                                         {selected ? <CircleCheck /> : <Circle />}
                                                     </div>
-                                                    <span className="truncate">{project.name}</span>
+                                                    <span className="truncate">{project.name} <span className="text-xs text-neutral-700">{formattedString(project.total_seconds ?? 0)}</span></span>
                                                 </div>
                                             )
                                         })}

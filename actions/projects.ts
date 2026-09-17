@@ -243,7 +243,7 @@ export async function deleteProject(projectId: number) {
       });
       return {
         success: false,
-        error: "Cannot delete a project while it has a pending ship review.",
+        error: "Cannot delete a project that has been shipped.",
       };
     }
 
@@ -334,10 +334,10 @@ export async function EditProject(projectId: number, formData: FormData) : Promi
       (event) => event.withdrawnAt === null
     );
 
-    if (activeShipEvent?.approvalStatus === "pending") {
+    if (activeShipEvent?.approvalStatus === "pending" || existingProject.recentShipStatus === "perm_rejected") {
       return {
         success: false,
-        error: "Cannot edit a project while it has a pending ship review.",
+        error: "Cannot edit a project while it has a pending ship review/perm rejected.",
       }
     }
 

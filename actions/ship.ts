@@ -224,7 +224,7 @@ export async function firstPassPermReject(shipEventId: number, reviewerNote?: st
 }
 
 /**
- ts for 2nd pass
+for 2nd pass
  - only admins can do ts
  - need to pass shipeventid
  - for the approved seconds, 

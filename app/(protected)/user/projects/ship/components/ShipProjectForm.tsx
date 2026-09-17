@@ -21,6 +21,7 @@ const rubiks_wet_Paint = Rubik_Wet_Paint({
 type HackatimeProject = {
     name: string;
     total_seconds?: number;
+    formattedString: string
 }
 type ShipProjectFormProps = {
     project: any;

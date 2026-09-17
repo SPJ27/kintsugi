@@ -60,6 +60,9 @@ export default function ProjectForm({ project }: ProjectFormProps) {
         const file = e.dataTransfer.files?.[0];
         handleFile(file)
     }
+    const formatSeconds = (seconds: number) => {
+        return `${Math.floor(seconds/3600)}h ${Math.floor((seconds%3600)/60)}`
+    }
     useEffect(() => {
         async function loadProjects() {
             const result = await getHackatimeProjects();
@@ -277,6 +280,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                                                             {selected ? <CircleCheck /> : <Circle />}
                                                         </div>
                                                         <span className="truncate">{project.name}</span>
+                                                        <span className="truncate text-sm text-neutral-700">{formatSeconds(project.total_seconds)}</span>
                                                     </div>
                                                 )
                                             })}

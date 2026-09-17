@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { shipEvents } from "@/db/schema";
 import { getSlackProfile, requireRole } from "@/lib/auth-guard";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne, not } from "drizzle-orm";
 import { Kalam } from "next/font/google";
 import Link from "next/link";
 
@@ -11,10 +11,11 @@ const kalamFont = Kalam({
 });
 
 export default async function Page() {
-  await requireRole("reviewer");
+  const session = await requireRole("reviewer");
 
   const shippedProjects = await db.query.shipEvents.findMany({
-    where: and( eq(shipEvents.approvalStatus, "pending"), ),
+    where: and( eq(shipEvents.approvalStatus, "pending")),
+    // where: and( eq(shipEvents.approvalStatus, "pending"), ne(shipEvents.userId, session.id), eq(shipEvents.needsSecondPass, false)), //MAKE SURE TO SWITCH TO THIS BEFORE STARTING (IMP.)
     with: { project: true, user: true },
   });
 

@@ -33,11 +33,11 @@ export default function ProjectCard({ project, hackatimeProjects }: ProjectCardP
         <>
             <div
                 key={project.id}
-                className={`${kalam.className} w-full md:w-[740px] lg:w-[940px] h-135 shadow-[3px_5px_0_rgba(26,18,9,0.18)]  flex flex-col  rounded-4xl border-[4px] shadow-[3px_5px_0_rgba(26,18,9,0.18)] border-[#24221C] bg-[#e8b93f] p-4`}
+                className={`${kalam.className} w-full md:w-[740px] lg:w-[940px] h-135 shadow-[3px_5px_0_rgba(26,18,9,0.18)]  flex flex-col  rounded-xl border-[4px] shadow-[3px_5px_0_rgba(26,18,9,0.18)] border-[#24221C] bg-[#e8b93f] p-4`}
             >
-                <div className="h-full overflow-y-auto w-full md:w-[700px] lg:w-[900px] scrollbar-none px-6 py-6 rounded-4xl border-[3px] gap-2 bg-[#fff9e8] border-[#24221C] flex flex-col">
+                <div className="h-full overflow-y-auto w-full md:w-[700px] lg:w-[900px] scrollbar-none px-6 py-6 rounded-xl border-[3px] gap-2 bg-[#fff9e8] border-[#24221C] flex flex-col">
                     <div className="flex justify-center items-center">
-                        <div className="relative w-[200px] sm:w-[300px] md:w-[500px] h-64 shrink-0 overflow-hidden rounded-3xl border-4">
+                        <div className="relative w-[200px] sm:w-[300px] md:w-[500px] h-64 shrink-0 overflow-hidden rounded-xl border-4">
                             {
                                 project.bannerUrl ? (
                                     <Image src={project.bannerUrl} alt={project.name} fill className="absolute object-cover" />

@@ -67,7 +67,6 @@ export async function getHackatimeHours(hackatimeProjects: string[], from? : str
     (sum, project) => sum + (project.total_seconds ?? 0),
     0
   );
-
   return {
     success: true,
     projects: filteredProjects,

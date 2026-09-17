@@ -25,7 +25,7 @@ export default async function page({
     if (result.project.recentShipStatus == 'pending' || result.project.recentShipStatus == 'perm_rejected') return <>Cant ship</>
     // @akshansh-kakkkar edit this later on, just very simple blocking for now
     const hackatimeResult = await getHackatimeProjects();
-
+    console.log(hackatimeResult)
     return (
         <main className={`${kalam.className} w-full h-[89vh] shadow-[3px_5px_0_rgba(26,18,9,0.18)]  flex flex-col  rounded-[55px] border-[4px] shadow-[3px_5px_0_rgba(26,18,9,0.18)] border-[#24221C] bg-[#e8b93f] p-4`}>
             <div className="absolute right-10 rotate-16 pointer-events-none top-12 z-2 border-1 w-30 h-8 border-[#d2b432] bg-[#FFF4968A]" />
