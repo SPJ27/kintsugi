@@ -180,7 +180,15 @@ export default async function page({
               return (
                 <div className="flex h-12 w-fit items-center justify-center whitespace-nowrap rounded-2xl text-neutral-600 text-md ">
                   {unshippedHours}h {unshippedMinutes}m since last ship ~{" "}
-                  {estimatedPoints} estimated pots
+                  <Image
+                    src="/pots/silver.png"
+                    alt="golden-pot"
+                    width={16}
+                    height={16}
+                    className="mx-1"
+                  />{estimatedPoints}
+                  {" "}
+                  estimated
                 </div>
               );
             })()}
@@ -207,7 +215,7 @@ export default async function page({
 
                   return (
                     <div className="flex">
-                      <div className="mx-2 flex h-12 items-center justify-center whitespace-nowrap rounded-2xl border-2 border-[#f0c14d] bg-[#2A1A08] px-4 py-1 text-xl text-[#f0c14d]">
+                      <div className="mx-2 flex h-12 items-center justify-center whitespace-nowrap rounded-lg border-2 border-[#f0c14d] bg-[#2A1A08] px-4 py-1 text-xl text-[#f0c14d]">
                         {hours}h {minutes}m
                       </div>
                     </div>
@@ -222,7 +230,7 @@ export default async function page({
                   href={project.projectDemo}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mx-2 flex h-12 items-center justify-center whitespace-nowrap rounded-2xl border-2 border-[#f0c14d] bg-[#2A1A08] px-4 py-1 text-xl text-[#f0c14d]"
+                  className="mx-2 flex h-12 items-center justify-center whitespace-nowrap rounded-lg border-2 border-[#f0c14d] bg-[#2A1A08] px-4 py-1 text-xl text-[#f0c14d]"
                 >
                   Demo
                 </a>
@@ -235,15 +243,21 @@ export default async function page({
                   href={project.projectRepo}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mx-2 flex h-12 items-center justify-center whitespace-nowrap rounded-2xl border-2 border-[#f0c14d] bg-[#2A1A08] px-4 py-1 text-xl text-[#f0c14d]"
+                  className="mx-2 flex h-12 items-center justify-center whitespace-nowrap rounded-lg border-2 border-[#f0c14d] bg-[#2A1A08] px-4 py-1 text-xl text-[#f0c14d]"
                 >
                   Repo
                 </a>
               </div>
             )}
             {!isCurrentUsers ? (
-              <LikeBtn projectId={project.id} hasCurrentUserLiked={hasLiked} likeCount={project.likes.length}/>
-            ) : <LikeCount likeCount={project.likes.length}/>}
+              <LikeBtn
+                projectId={project.id}
+                hasCurrentUserLiked={hasLiked}
+                likeCount={project.likes.length}
+              />
+            ) : (
+              <LikeCount likeCount={project.likes.length} />
+            )}
 
             {isCurrentUsers && (
               <>
@@ -252,7 +266,7 @@ export default async function page({
                 ) : (
                   <Link
                     href={`/user/projects/edit/${project.id}`}
-                    className="mx-2 flex h-12 items-center justify-center whitespace-nowrap rounded-2xl border-2 border-[#f0c14d] bg-[#2A1A08] px-4 py-1 text-xl text-[#f0c14d]"
+                    className="mx-2 flex h-12 items-center justify-center whitespace-nowrap rounded-lg border-2 border-[#f0c14d] bg-[#2A1A08] px-4 py-1 text-xl text-[#f0c14d]"
                   >
                     <Pencil />
                   </Link>
@@ -270,7 +284,7 @@ export default async function page({
             )}
             {isCurrentUsers && ShipStatusLabel && (
               <div
-                className={`mx-2 flex h-12 shrink-0 items-center justify-center rounded-2xl border-2 px-4 py-1 text-md font-bold ${ShipStatusLabel.className}`}
+                className={`mx-2 flex h-12 shrink-0 items-center justify-center rounded-lg border-2 px-4 py-1 text-md font-bold ${ShipStatusLabel.className}`}
               >
                 {ShipStatusLabel.label}
               </div>

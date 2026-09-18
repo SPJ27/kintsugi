@@ -1,4 +1,5 @@
 import { Check, Clock, Hammer, RotateCcw, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 type ShipEvent = {
@@ -12,14 +13,19 @@ type ShipEvent = {
   potsAwarded: number | null;
   approvedSeconds: number;
   shipText: string;
+  goldenPotsAwarded: boolean | null;
 };
 type Props = {
   events: ShipEvent[];
   isCurrentUsers: boolean;
-  isCurrentUserAdmin: boolean
+  isCurrentUserAdmin: boolean;
 };
 
-export default function ReviewTimeLine({ events, isCurrentUsers, isCurrentUserAdmin }: Props) {
+export default function ReviewTimeLine({
+  events,
+  isCurrentUsers,
+  isCurrentUserAdmin,
+}: Props) {
   if (!events.length) {
     return null;
   }
@@ -52,7 +58,7 @@ function TimelineEvent({
   event,
   withdrawn,
   isCurrentUsers,
-  isCurrentUserAdmin
+  isCurrentUserAdmin,
 }: {
   event: ShipEvent;
   withdrawn: boolean;
@@ -91,35 +97,56 @@ function TimelineEvent({
       >
         {icon}
       </div>
-      <div className="flex-1 border-2 border-[#c9a030] rounded-2xl bg-[#fd0c2] p-4">
+      <div className="flex-1 border-2 border-[#c9a030] rounded-md bg-[#fd0c2] p-4">
         <div className="flex items-center justify-between gap-4">
-          <div className="text-xl flex gap-2 font-bold text-[#2a1a08]">{title}  {isCurrentUserAdmin && (
+          <div className="text-xl flex gap-2 font-bold text-[#2a1a08]">
+            {title}{" "}
+            {isCurrentUserAdmin && (
               <Link href={`/admin/ships/${event.id}`}>
                 {" "}
                 <Hammer className="border-[#c9a030] border bg-[#fdf0c2] p-1" />
               </Link>
-            )} </div>
+            )}{" "}
+          </div>
 
-          
           <span className="text-sm text-[#6b4a32]">
             {formatDate(event.createdAt)}
           </span>
         </div>
-        <span className="text-sm text-[#6b4a32]">
-            {event.approvalStatus == "approved" &&
-              `${Math.floor(event.approvedSeconds / 3600)}h ${Math.floor((event.approvedSeconds % 3600) / 60)}m approved - ${
-                isCurrentUsers
-                  ? `${Math.floor(event.seconds / 3600)}h ${Math.floor((event.seconds % 3600) / 60)}m shipped - `
-                  : ""
-              }${event.potsAwarded} pots`}
-          </span>
+        <span className="text-sm text-[#6b4a32] flex items-center gap-1">
+          {event.approvalStatus == "approved" && (
+            <>
+              {Math.floor(event.approvedSeconds / 3600)}h{" "}
+              {Math.floor((event.approvedSeconds % 3600) / 60)}m approved -{" "}
+              {isCurrentUsers &&
+                `${Math.floor(event.seconds / 3600)}h ${Math.floor((event.seconds % 3600) / 60)}m shipped - `}
+              <Image
+                  src="/pots/silver.png"
+                  alt="golden-pot"
+                  width={16}
+                  height={16}
+                />{event.potsAwarded} 
+              {event.goldenPotsAwarded && (
+                <>
+                {' '}-
+                <Image
+                  src="/pots/golden.png"
+                  alt="golden-pot"
+                  width={16}
+                  height={16}
+                /> {'1'}
+                </>
+              )}
+            </>
+          )}
+        </span>
         {event.shipText && (
           <div className="mt-3">
             <p className="text-sm font-bold text-[#6b5a32]">Ship Text</p>
             <p className="text-lg text-[2a1a08]">{event.shipText}</p>
           </div>
         )}
-        {event.reviewerNote && (isCurrentUsers) && (
+        {event.reviewerNote && isCurrentUsers && (
           <div className="mt-3">
             <p className="text-sm font-bold text-[#6b5a32]">Reviewer Note</p>
             <p className="text-lg text-[2a1a08]">{event.reviewerNote}</p>

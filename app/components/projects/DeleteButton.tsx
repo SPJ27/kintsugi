@@ -11,7 +11,7 @@ export default function DeleteButton({
                 <button
             type="button"
             onClick={() => openDeleteModal(projectId, projectName)}
-            className="bg-[#2A1A08] text-xl px-6 py-3 rounded-2xl border-2 text-[#f0c14d] border-[#f0c14d]"
+            className="bg-[#2A1A08] text-xl px-6 py-2.5 rounded-lg border-2 text-[#f0c14d] border-[#f0c14d]"
         >
             <TrashIcon />
         </button>

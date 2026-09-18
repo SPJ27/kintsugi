@@ -1,0 +1,1 @@
+ALTER TABLE "projects" ADD COLUMN "golden_pots" integer DEFAULT 0;

@@ -47,8 +47,8 @@ export default function DeleteProject() {
                     className={`fixed z-40 px-4 disabled:cursor-not-allowed min-w-screen flex items-center inset-0 justify-center bg-black/20 backdrop-blur-xs ${kalam.className}`}>
                     <motion.div
                         onClick={(e) => e.stopPropagation()}
-                        className="relative w-[450px] flex flex-col gap-4 items-center text-center rounded-3xl border-4 border-[#2A1A08] border-dashed bg-[#fdf0c2] p-8 shadow-[2px_2px_0_rgba(26,18,9,0.25)]">
-                        <div className="text-[#c7a653] bg-[#c7a653]/30 border-4 rounded-full p-4 ">
+                        className="relative w-[450px] flex flex-col gap-4 items-center text-center rounded-lg border-4 border-[#2A1A08] border-dashed bg-[#fdf0c2] p-8 shadow-[2px_2px_0_rgba(26,18,9,0.25)]">
+                        <div className="text-[#c7a653] bg-[#c7a653]/30 border-4 rounded-lg p-4 ">
                             <TrashIcon size={32} strokeWidth={2} />
                         </div>
                         <div className="text-md">Are you sure you want to delete <span className="font-bold">&quot;{projectName}&quot;</span>?</div>

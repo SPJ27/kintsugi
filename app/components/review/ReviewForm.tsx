@@ -11,8 +11,8 @@ type Decision = 'approved' | 'changes_requested' | 'perm_rejected'
 
 interface ShipEvent {
   id: number
-  seconds: number                 // originally tracked, read-only ceiling
-  approvedSeconds?: number | null // first-pass reviewer's chosen value
+  seconds: number
+  approvedSeconds?: number | null
   approvalStatus: string
   firstPassApprovalStatus: string
   firstPassReviewerNote?: string | null
@@ -38,10 +38,11 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
   )
   const [reviewerNote, setReviewerNote] = useState(shipEvent.firstPassReviewerNote ?? '')
   const [auditNote, setAuditNote] = useState(shipEvent.firstPassAuditNote ?? '')
+  const [isGoldenPot, setIsGoldenPot] = useState(false)
 
- const [approvedSecondsStr, setApprovedSecondsStr] = useState(
-  String(Math.round(((shipEvent.approvedSeconds ?? shipEvent.seconds) / 3600) * 100) / 100)
-)
+  const [approvedSecondsStr, setApprovedSecondsStr] = useState(
+    String(Math.round(((shipEvent.approvedSeconds ?? shipEvent.seconds) / 3600) * 100) / 100)
+  )
 
   const boxClass = 'w-full rounded-xl border-2 border-[#c9a030]/40 bg-[#fdf0c2] p-3 text-base text-[#2A1A08]'
   const btnBase = 'px-5 py-2 rounded-xl border-2 border-[#24221C] font-semibold transition-colors disabled:opacity-50'
@@ -54,7 +55,7 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
     )
   }
 
-  const parsedSeconds = Math.round(Number(approvedSecondsStr) * 3600) 
+  const parsedSeconds = Math.round(Number(approvedSecondsStr) * 3600)
   const secondsValid = Number.isFinite(parsedSeconds) && parsedSeconds >= 0 && parsedSeconds <= shipEvent.seconds
 
   const HoursOverrideInput = (
@@ -77,6 +78,18 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
         </p>
       )}
     </div>
+  )
+
+  const GoldenPotToggle = (
+    <label className="flex items-center gap-2 text-sm text-[#2A1A08] font-medium select-none">
+      <input
+        type="checkbox"
+        className="h-4 w-4 accent-[#c9a030]"
+        checked={isGoldenPot}
+        onChange={(e) => setIsGoldenPot(e.target.checked)}
+      />
+      ✨ Award as a golden pot
+    </label>
   )
 
   if (shipEvent.firstPassApprovalStatus === 'pending') {
@@ -150,6 +163,7 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
       const res = await confirmReview(
         shipEvent.id,
         decision,
+        decision === 'approved' && isGoldenPot,
         decision === 'approved' ? parsedSeconds : 0,
         reviewerNote || undefined,
         auditNote || undefined
@@ -175,6 +189,7 @@ export function ReviewPanel({ shipEvent }: { shipEvent: ShipEvent }) {
       </select>
 
       {decision === 'approved' && HoursOverrideInput}
+      {decision === 'approved' && GoldenPotToggle}
 
       <textarea
         className={boxClass}

@@ -237,12 +237,11 @@ type ReviewDecision = 'approved' | 'changes_requested' | 'perm_rejected'
 export async function confirmReview(
     shipEventId: number,
     decision: ReviewDecision,
+    isGoldenPot: boolean,
     approvedSeconds: number,
     reviewerNote?: string,
     auditNote?: string,
-    isGoldenPot?: boolean
 ) {
-
     const session = await requireAnyRole(["admin"])
     const shipEvent = await db.query.shipEvents.findFirst({ where: eq(shipEvents.id, shipEventId) })
 
@@ -251,15 +250,13 @@ export async function confirmReview(
     if (shipEvent.firstPassApprovalStatus === 'pending') {
         return { success: false, error: 'first pass review has not been completed yet' }
     }
-    // if (shipEvent.firstPassReviewedBy === session.id) {
-    //     return { success: false, error: 'second pass must be completed by a different reviewer than the first pass' }
-    // }
     if (shipEvent.firstPassApprovalStatus === 'perm_rejected' && decision !== 'perm_rejected') {
         return { success: false, error: 'permanent rejection cannot be reversed' }
     }
 
     const potsToAward = decision === 'approved' ? Math.floor(approvedSeconds / 720) : 0
     const bumpsApprovedSeconds = decision === 'approved' || decision === 'perm_rejected'
+    const awardsGoldenPot = decision === 'approved' && isGoldenPot
 
     const result = await db.transaction(async (tx) => {
         const [updatedShipEvent] = await tx
@@ -273,7 +270,8 @@ export async function confirmReview(
                 potsAwarded: potsToAward,
                 secondPassReviewedBy: session.id,
                 needsSecondPass: false,
-                approvedSeconds
+                approvedSeconds,
+                goldenPotsAwarded: awardsGoldenPot,
             })
             .where(eq(shipEvents.id, shipEventId))
             .returning()
@@ -285,50 +283,56 @@ export async function confirmReview(
                 ...(bumpsApprovedSeconds
                     ? { approvedSeconds: sql`${projects.approvedSeconds} + ${shipEvent.seconds}` }
                     : {}),
+                ...(awardsGoldenPot
+                    ? { goldenPots: sql`${projects.goldenPots} + 1` }
+                    : {}),
             })
             .where(eq(projects.id, shipEvent.projectId))
             .returning()
 
         let updatedUser
         if (potsToAward > 0) {
-        await awardPots(
-            tx,
-            shipEvent.userId,
-            potsToAward,
-            'Ship Approved: Pots Awarded',
-            'ship_event_pots_awarded',
-            `shipEventId: ${shipEvent.id}`
-        )
-    }
+            updatedUser = await awardPots(
+                tx,
+                shipEvent.userId,
+                potsToAward,
+                'Ship Approved: Pots Awarded',
+                'ship_event_pots_awarded',
+                awardsGoldenPot,
+                `shipEventId: ${shipEvent.id}`
+            )
+        }
 
         return { updatedShipEvent, updatedProject, updatedUser }
     })
 
     await addLog({
-        title:
-            `Ship Event Confirmed: ${decision}`,
-        description:
-            'Second pass review confirmed the first pass decision as-is',
+        title: `Ship Event Confirmed: ${decision}`,
+        description: 'Second pass review confirmed the first pass decision as-is',
         location: '/projects/approve',
         type: 'ship_event_confirmed',
-        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}, decision: ${decision}, firstPassDecision: ${shipEvent.firstPassApprovalStatus}, pots: ${potsToAward}`,
+        metadata: `shipEventId: ${shipEvent.id}, reviewerId: ${session.id}, decision: ${decision}, firstPassDecision: ${shipEvent.firstPassApprovalStatus}, pots: ${potsToAward}, golden: ${awardsGoldenPot}`,
         userId: shipEvent.userId
     })
+
     await awardPots(
-    db,
-    session.id,
-    1,
-    'Second Pass Review Bonus',
-    'review_bonus',
-    `shipEventId: ${shipEvent.id}`
-)
-await awardPots(
-    db,
-    shipEvent.firstPassReviewedBy,
-    1,
-    'First Pass Review Bonus',
-    'review_bonus',
-    `shipEventId: ${shipEvent.id}`
-)
+        db,
+        session.id,
+        1,
+        'Second Pass Review Bonus',
+        'review_bonus',
+        false,
+        `shipEventId: ${shipEvent.id}`
+    )
+    await awardPots(
+        db,
+        shipEvent.firstPassReviewedBy,
+        1,
+        'First Pass Review Bonus',
+        'review_bonus',
+        false,
+        `shipEventId: ${shipEvent.id}`
+    )
+
     return { success: true, ...result }
 }

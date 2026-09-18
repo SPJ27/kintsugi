@@ -4,6 +4,7 @@ import { Loader2, MoveRight } from "lucide-react";
 import { Kalam, Rubik_Wet_Paint } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 const kalam = Kalam({

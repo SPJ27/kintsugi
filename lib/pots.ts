@@ -12,14 +12,19 @@ export async function awardPots(
     pots: number,
     title: string,
     type: string,
+    isGoldenPot: boolean = false,
     metadata?: string,
 ) {
     if (!userId || pots <= 0) return;
 
-    await dbOrTx
+    const [updatedUser] = await dbOrTx
         .update(user)
-        .set({ pots: sql`${user.pots} + ${pots}` })
-        .where(eq(user.id, userId));
+        .set({
+            pots: sql`${user.pots} + ${pots}`,
+            ...(isGoldenPot ? { goldenPots: sql`${user.goldenPots} + 1` } : {}),
+        })
+        .where(eq(user.id, userId))
+        .returning();
 
     await dbOrTx.insert(transactions).values({
         id: randomUUID(),
@@ -29,4 +34,6 @@ export async function awardPots(
         metadata,
         userId,
     });
+
+    return updatedUser;
 }
