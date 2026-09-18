@@ -176,6 +176,20 @@
       "when": 1789566521551,
       "tag": "0024_violet_shriek",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1789695950638,
+      "tag": "0025_spotty_spot",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1789740193918,
+      "tag": "0026_lethal_firebrand",
+      "breakpoints": true
     }
   ]
 }

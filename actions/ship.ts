@@ -239,7 +239,8 @@ export async function confirmReview(
     decision: ReviewDecision,
     approvedSeconds: number,
     reviewerNote?: string,
-    auditNote?: string
+    auditNote?: string,
+    isGoldenPot?: boolean
 ) {
 
     const session = await requireAnyRole(["admin"])

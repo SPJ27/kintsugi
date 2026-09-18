@@ -13,6 +13,8 @@ import HideEditButton from "../../../../../components/projects/HideEditButton";
 import HideDeleteButton from "../../../../../components/projects/HideDeleteButton";
 import ReviewTimeLine from "../../../../../components/projects/ReviewTimeLine";
 import { getSlackProfile, requireAuth } from "@/lib/auth-guard";
+import LikeBtn from "@/app/components/projects/LikeBtn";
+import LikeCount from "@/app/components/projects/LikeCount";
 
 const rubik_Wet_Paint = Rubik_Wet_Paint({
   subsets: ["latin"],
@@ -43,7 +45,6 @@ export default async function page({
   }
 
   const project = result.project;
-
   const hackatimeResult = await getHackatimeProjects();
   const hackatimeProjects = hackatimeResult.success
     ? hackatimeResult.projects
@@ -66,7 +67,9 @@ export default async function page({
         className: "bg-[#fff9e8] text-[#6b5a32] border-[#c9a030]",
       };
   const projectCreatedBy = await getSlackProfile(project?.user?.slackId || "");
-  console.log("p", projectCreatedBy);
+  const hasLiked = project.likes.some(
+    (like: any) => like.userId === session.id,
+  );
   return (
     <>
       <div
@@ -175,7 +178,7 @@ export default async function page({
               const estimatedPoints = unshippedHours * 5;
 
               return (
-                <div className="mb-1 flex h-12 w-fit items-center justify-center whitespace-nowrap rounded-2xl text-neutral-600 text-md ">
+                <div className="flex h-12 w-fit items-center justify-center whitespace-nowrap rounded-2xl text-neutral-600 text-md ">
                   {unshippedHours}h {unshippedMinutes}m since last ship ~{" "}
                   {estimatedPoints} estimated pots
                 </div>
@@ -238,6 +241,9 @@ export default async function page({
                 </a>
               </div>
             )}
+            {!isCurrentUsers ? (
+              <LikeBtn projectId={project.id} hasCurrentUserLiked={hasLiked} likeCount={project.likes.length}/>
+            ) : <LikeCount likeCount={project.likes.length}/>}
 
             {isCurrentUsers && (
               <>

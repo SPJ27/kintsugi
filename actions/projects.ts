@@ -191,7 +191,8 @@ export async function getProject(projectId: number) {
             desc(shipEvents.createdAt),
           ]
         },
-        user: true
+        user: true,
+        likes: true
       }
     });
   } catch (err) {

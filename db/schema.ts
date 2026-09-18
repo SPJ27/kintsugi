@@ -1,6 +1,6 @@
 import { string } from "better-auth";
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, integer, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -19,6 +19,7 @@ export const user = pgTable("user", {
     .notNull(),
   role: text("roles").array().default(["member"]).notNull(),
   hackatimeLinked: boolean('hackatime_linked').default(false),
+  goldenPots: integer('golden_pots').default(0),
   lastSyncedAt: timestamp("last_synced_at"),
 });
 
@@ -39,10 +40,29 @@ export const projects = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     recentShipStatus: text('recent_ship_status').default('draft')
-    // Possible statuses: draft, approved, changes_requested, rejected
   },
   (table) => [index("projects_userId_idx").on(table.userId)],
 );
+
+export const likes = pgTable(
+  "likes",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    projectId: integer("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("likes_userId_idx").on(table.userId),
+    index("likes_projectId_idx").on(table.projectId),
+    uniqueIndex("likes_userId_projectId_idx").on(table.userId, table.projectId),
+  ],
+);
+
 
 export const logs = pgTable(
   "logs",
@@ -178,6 +198,7 @@ export const shipEvents = pgTable(
     }),
     firstPassReviewedOn: timestamp("first_pass_reviewed_on"),
     potsAwarded: integer('pots_awarded').default(0),
+    goldenPotsAwarded: boolean('golden_pot_awarded').default(false),
     needsSecondPass: boolean('needs_second_pass').default(false)
   },
   (table) => [
@@ -193,6 +214,8 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
     references: [user.id],
   }),
   shipEvents: many(shipEvents),
+    likes: many(likes),
+
 }));
 
 export const userRelations = relations(user, ({ many }) => ({
@@ -203,6 +226,7 @@ export const userRelations = relations(user, ({ many }) => ({
   projects: many(projects),
   shipEvents: many(shipEvents),
   reviewedShipEvents: many(shipEvents, { relationName: "reviewer" }),
+  likes: many(likes),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -246,5 +270,16 @@ export const shipEventsRelations = relations(shipEvents, ({ one }) => ({
     fields: [shipEvents.reviewedBy],
     references: [user.id],
     relationName: "reviewer",
+  }),
+}));
+
+export const likesRelations = relations(likes, ({ one }) => ({
+  user: one(user, {
+    fields: [likes.userId],
+    references: [user.id],
+  }),
+  project: one(projects, {
+    fields: [likes.projectId],
+    references: [projects.id],
   }),
 }));
