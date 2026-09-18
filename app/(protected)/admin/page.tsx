@@ -1,4 +1,3 @@
-import { requireRole } from "@/lib/auth-guard";
 import Link from "next/link";
 
 export default async function page() {
@@ -14,7 +13,7 @@ export default async function page() {
             'Ship Events': '/shipevents',
             
         },
-        'Review': {
+        'Monitor': {
             'Logs': '/logs',
             'Transactions': '/transactions'
         }

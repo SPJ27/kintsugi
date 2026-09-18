@@ -70,11 +70,11 @@ export default async function page({
   return (
     <>
       <div
-        className={`${kalam.className} w-full h-[89vh] flex flex-col rounded-[55px] border-[4px] shadow-[3px_5px_0_rgba(26,18,9,0.18)] border-[#24221C] bg-[#e8b93f] p-4`}
+        className={`${kalam.className} w-full h-[89vh] flex flex-col rounded-[20px] border-[4px] shadow-[3px_5px_0_rgba(26,18,9,0.18)] border-[#24221C] bg-[#e8b93f] p-4`}
       >
         <div className="absolute left-40 top-12 z-2 -rotate-12 pointer-events-none border border-[#d2b432] bg-[#FFF4968A] w-30 h-8" />
 
-        <div className="relative h-full w-full overflow-y-auto scrollbar-none px-12 py-12 rounded-[45px] border-[3px] bg-[#fff9e8] border-[#24221C]">
+        <div className="relative h-full w-full overflow-y-auto scrollbar-none px-12 py-12 rounded-[20px] border-[3px] bg-[#fff9e8] border-[#24221C]">
           <div className="relative h-24">
             <h1
               className={`absolute left-[7px] top-[4px] text-center select-none text-4xl sm:text-6xl leading-none tracking-[2px] text-[#1a1209] ${rubik_Wet_Paint.className}`}
@@ -100,7 +100,7 @@ export default async function page({
               <UnShipButton projectId={project.id} />
             ) : isPermRejected ? (
               <div
-                className="absolute right-4 top-4 cursor-not-allowed rounded-xl border-3 border-[#c9a030] bg-[#2A1A08] px-4 py-2 opacity-50"
+                className="absolute right-4 top-4 cursor-not-allowed rounded-md border-3 border-[#c9a030] bg-[#2A1A08] px-4 py-2 opacity-50"
                 title="This project has been permanently rejected and cannot be shipped"
               >
                 <Ship size={24} className="text-[#c9a030]" strokeWidth={2.5} />
@@ -108,13 +108,13 @@ export default async function page({
             ) : (
               <Link
                 href={`/user/projects/ship/${id}`}
-                className="absolute right-4 top-4 rounded-xl border-3 border-[#c9a030] bg-[#2A1A08] px-4 py-2"
+                className="absolute right-4 top-4 rounded-md border-3 border-[#c9a030] bg-[#2A1A08] px-4 py-2"
               >
                 <Ship size={24} className="text-[#c9a030]" strokeWidth={2.5} />
               </Link>
             ))}
 
-          <div className="relative h-100 w-full shrink-0 overflow-hidden rounded-3xl border-4">
+          <div className="relative h-100 w-full shrink-0 overflow-hidden rounded-md border-4">
             {project.bannerUrl ? (
               <Image
                 src={project.bannerUrl}
@@ -133,7 +133,7 @@ export default async function page({
             Description
           </div>
 
-          <div className="my-4 rounded-2xl border-2 border-[#c9a030] bg-[#fdf0c2] px-4 py-4 text-xl font-medium text-[#2A1A08] outline-none transition-all duration-300 ease-out">
+          <div className="my-4 rounded-md border-2 border-[#c9a030] bg-[#fdf0c2] px-4 py-4 text-xl font-medium text-[#2A1A08] outline-none transition-all duration-300 ease-out">
             {project.description || "No Description added yet"}
           </div>
           <div className="mt-3 text-lg font-bold flex gap-2 text-[#161008] mb-3">

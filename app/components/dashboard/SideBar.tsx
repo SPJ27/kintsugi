@@ -62,7 +62,7 @@ export default function SideBar({
         <div className="flex gap-5 flex-col items-center text-center justify-center">
           <Link
             href="/user"
-            className={`flex hover:border outline-none transition-all duration-300 text-[#F5E4B0] hover:border-[#c9a030]/80 hover:text-[#c9a030]/80 relative items-center w-14 ${pinned ? "w-46" : "group-hover:w-46"} px-4 py-2 rounded-xl hover:bg-[#3d2a08] transition-all duration-500 border-dashed ${pathname === "/user" ? "border-[#c9a030] border-2 text-[#c9a030] bg-[#3d2a08]" : ""}`}
+            className={`flex hover:border outline-none transition-all duration-300 text-[#F5E4B0] hover:border-[#c9a030]/80 hover:text-[#c9a030]/80 relative items-center w-14 ${pinned ? "w-46" : "group-hover:w-46"} px-4 py-2 rounded-md hover:bg-[#3d2a08] transition-all duration-500 border-dashed ${pathname === "/user" ? "border-[#c9a030] border-2 text-[#c9a030] bg-[#3d2a08]" : ""}`}
           >
             <span>
               <HomeIcon />
@@ -75,7 +75,7 @@ export default function SideBar({
           </Link>
           <Link
             href={"/user/projects"}
-            className={`flex outline-none hover:border text-[#F5E4B0] hover:border-[#c9a030]/80 hover:text-[#c9a030]/80 relative items-center w-14 ${pinned ? "w-46" : "group-hover:w-46"} px-4 py-2 rounded-xl hover:bg-[#3d2a08] transition-all duration-500 border-dashed ${pathname === "/user/projects" ? "border-[#c9a030] border-2 text-[#c9a030] bg-[#3d2a08]" : ""}`}
+            className={`flex outline-none hover:border text-[#F5E4B0] hover:border-[#c9a030]/80 hover:text-[#c9a030]/80 relative items-center w-14 ${pinned ? "w-46" : "group-hover:w-46"} px-4 py-2 rounded-md hover:bg-[#3d2a08] transition-all duration-500 border-dashed ${pathname === "/user/projects" ? "border-[#c9a030] border-2 text-[#c9a030] bg-[#3d2a08]" : ""}`}
           >
             <span>
               <FilesIcon />
@@ -92,7 +92,7 @@ export default function SideBar({
                     </Link> */}
           <Link
             href={"/user/shop"}
-            className={`flex outline-none hover:border text-[#F5E4B0] hover:border-[#c9a030]/60 hover:text-[#c9a030]/80 relative items-center w-14 ${pinned ? "w-46" : "group-hover:w-46"} px-4 py-2 rounded-xl hover:bg-[#3d2a08] transition-all duration-500 border-dashed ${pathname === "/user/shop" ? "border-[#c9a030] border-2 text-[#c9a030] bg-[#3d2a08]" : ""}`}
+            className={`flex outline-none hover:border text-[#F5E4B0] hover:border-[#c9a030]/60 hover:text-[#c9a030]/80 relative items-center w-14 ${pinned ? "w-46" : "group-hover:w-46"} px-4 py-2 rounded-md hover:bg-[#3d2a08] transition-all duration-500 border-dashed ${pathname === "/user/shop" ? "border-[#c9a030] border-2 text-[#c9a030] bg-[#3d2a08]" : ""}`}
           >
             <span>
               <ShoppingBasket />
@@ -106,7 +106,7 @@ export default function SideBar({
           {roles.includes("admin") && (
             <Link
               href={"/admin"}
-              className={`flex outline-none text-[#F5E4B0] hover:border hover:border-[#c9a030]/60 hover:text-[#c9a030]/80 relative items-center w-14 ${pinned ? "w-46" : "group-hover:w-46"} px-4 py-2 rounded-xl hover:bg-[#3d2a08] transition-all duration-500 hover:border-dashed ${pathname === "/admin" ? "border-[#c9a030] border-2 text-[#c9a030] bg-[#3d2a08]" : ""}`}
+              className={`flex outline-none text-[#F5E4B0] hover:border hover:border-[#c9a030]/60 hover:text-[#c9a030]/80 relative items-center w-14 ${pinned ? "w-46" : "group-hover:w-46"} px-4 py-2 rounded-md hover:bg-[#3d2a08] transition-all duration-500 hover:border-dashed ${pathname === "/admin" ? "border-[#c9a030] border-2 text-[#c9a030] bg-[#3d2a08]" : ""}`}
             >
               <span>
                 <Eye />
@@ -121,7 +121,7 @@ export default function SideBar({
           {roles.includes("reviewer") && (
             <Link
               href={"/reviewer"}
-              className={`flex outline-none text-[#F5E4B0] hover:border hover:border-[#c9a030]/60 hover:text-[#c9a030]/80 relative items-center w-14 ${pinned ? "w-46" : "group-hover:w-46"} px-4 py-2 rounded-xl hover:bg-[#3d2a08] transition-all duration-500 hover:border-dashed ${pathname === "/reviewer" ? "border-[#c9a030] border-2 text-[#c9a030] bg-[#3d2a08]" : ""}`}
+              className={`flex outline-none text-[#F5E4B0] hover:border hover:border-[#c9a030]/60 hover:text-[#c9a030]/80 relative items-center w-14 ${pinned ? "w-46" : "group-hover:w-46"} px-4 py-2 rounded-md hover:bg-[#3d2a08] transition-all duration-500 hover:border-dashed ${pathname === "/reviewer" ? "border-[#c9a030] border-2 text-[#c9a030] bg-[#3d2a08]" : ""}`}
             >
               <span>
                 <ShieldCheck />
